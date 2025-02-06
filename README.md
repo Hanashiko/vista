@@ -2,6 +2,14 @@
 
 ### install pytohn dependences: 
 ```pip install -r requirements.txt```
+
+### make .env file:
+```
+DATABASE_URI = mysql+pymysql://username:password@localhost/database
+JWT_SECRET_KEY = key
+SECRET_KEY = key
+```
+
 ### use commands for database: 
 ```flask db init```
 
