@@ -1,0 +1,5 @@
+.env
+venv/
+migrations/
+instance/
+app/__pycache__/
