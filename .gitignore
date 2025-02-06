@@ -3,3 +3,4 @@ venv/
 migrations/
 instance/
 app/__pycache__/
+app/routes/__pycache__

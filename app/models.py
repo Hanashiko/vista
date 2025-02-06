@@ -42,3 +42,7 @@ class Rating(db.Model):
     quest_id = db.Column(db.Integer, db.ForeignKey('quest.id'), nullable=False)
     stars = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.Text, nullable=True)
+    
+class RevokedToken(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(120), nullable=False)

@@ -17,3 +17,7 @@ jwt.init_app(app)
 app.register_blueprint(auth_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(quest_bp)
+
+# @app.before_first_request
+# def create_tables():
+#     db.create_all()
