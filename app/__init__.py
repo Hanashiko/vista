@@ -1,6 +1,6 @@
 from flask import Flask
 from .config import Config
-from .extensions import db, migrate, bcrypt, login_manager, mail, jwt
+from .extensions import db, migrate, bcrypt, login_manager, jwt
 from .models import User, Quest, Task, UserQuest, Rating
 from .routes import auth_bp, profile_bp, quest_bp
 
@@ -11,13 +11,8 @@ db.init_app(app)
 migrate.init_app(app, db)
 bcrypt.init_app(app)
 login_manager.init_app(app)
-mail.init_app(app)
 jwt.init_app(app)
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(quest_bp)
-
-# @app.before_first_request
-# def create_tables():
-#     db.create_all()
