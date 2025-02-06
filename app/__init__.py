@@ -1,8 +1,12 @@
+import logging
 from flask import Flask
 from .config import Config
 from .extensions import db, migrate, bcrypt, login_manager, jwt
-from .models import User, Quest, Task, UserQuest, Rating
+from .models import User, RevokedToken, Quest, Task, UserQuest, Rating
 from .routes import auth_bp, profile_bp, quest_bp
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config.from_object(Config)

@@ -11,3 +11,5 @@ class Config:
     ALLOWED_HOSTS = ["*"]
     PORT = 5000
     HOST = '192.168.0.106'
+    UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'uploads')
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
