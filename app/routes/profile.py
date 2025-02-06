@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, send_from_directory
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger, bcrypt
 from ..models import User
@@ -14,10 +14,11 @@ def allowed_file(filename):
 def profile():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
+    avatar_url = f"{request.host_url}uploads/{user.avatar}" if user.avatar else None
     user_data = {
         "email": user.email,
         "name": user.name,
-        "avatar": user.avatar,
+        "avatar": avatar_url,
         "quests_created": [quest.title for quest in user.quests_created],
         "quests_taken": [user_quest.quest.title for user_quest in user.quests_taken]
     }
@@ -59,9 +60,13 @@ def upload_avatar():
         filename = f"{user_id}_{file.filename}"
         file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
-        user.avatar = file_path
+        user.avatar = filename
         db.session.commit()
         logger.info(f"Avatar updated for user: {user.email}")
-        return jsonify({"message": "Avatar updated successfully", "avatar_url": file_path}), 200
+        return jsonify({"message": "Avatar updated successfully", "avatar_url": f"{request.host_url}uploads/{filename}"}), 200
 
     return jsonify({"message": "Invalid file type"}), 400
+
+@profile_bp.route('/uploads/<filename>', methods=['GET'])
+def uploaded_file(filename):
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
