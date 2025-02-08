@@ -1,16 +1,12 @@
-## Run server
+## Run server without docker
 
 ### install pytohn dependences: 
 ```pip install -r requirements.txt```
 
-### make .env file:
-```
-DATABASE_URI = mysql+pymysql://username:password@localhost/database
-JWT_SECRET_KEY = key
-SECRET_KEY = key
-```
+### cope .env.example file to .env and write fields:
+```cp .env.example .env```
 
-### use commands for database: 
+### use commands for make database: 
 ```flask db init```
 
 ```flask db migrate -m "Initial migration"```
@@ -19,6 +15,12 @@ SECRET_KEY = key
 
 ### run server: 
 ```python run.py```
+
+
+## Run server with docker
+
+### run docker containers
+```sudo docker-compose up -d --build```
 
 
 ## Test commands:
