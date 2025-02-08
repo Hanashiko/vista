@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
-from ..models import Quest, Rating
+from ..models import Quest, Task, TaskOption, Rating
 
 quest_bp = Blueprint('quest', __name__)
 
@@ -38,12 +38,52 @@ def get_quest(quest_id):
                 "image": task.image,
                 "video": task.video,
                 "question_type": task.question_type,
-                "correct_answer": task.correct_answer
+                "correct_answer": task.correct_answer,
+                "options": [
+                    {
+                        "text": option.text,
+                        "is_correct": option.is_correct
+                    } for option in task.options
+                ]
             } for task in quest.tasks
         ]
     }
     logger.info(f"Quest data retrieved: {quest.title}")
     return jsonify(quest_data), 200
+
+@quest_bp.route('/quests/<int:quest_id>/tasks', methods=['POST'])
+@jwt_required()
+def add_task_to_quest(quest_id):
+    user_id = get_jwt_identity()
+    quest = Quest.query.get_or_404(quest_id)
+    
+    if quest.author_id != user_id:
+        return jsonify({"message": "You are not the author of this quest"}), 403
+    
+    data = request.get_json()
+    new_task = Task(
+        text=data['text'],
+        image=data.get('image'),
+        video=data.get('video'),
+        question_type=data['question_type'],
+        correct_answer=data.get('correct_answer'),
+        quest_id=quest_id
+    )
+    db.session.add(new_task)
+    db.session.commit()
+
+    if 'options' in data:
+        for option in data['options']:
+            new_option = TaskOption(
+                text=option['text'],
+                is_correct=option['is_correct'],
+                task_id=new_task.id
+            )
+            db.session.add(new_option)
+        db.session.commit()
+    
+    logger.info(f"Task added to quest {quest.title} by user {user_id}")
+    return jsonify({"message": "Task added successfully"}), 201
 
 @quest_bp.route('/quests/<int:quest_id>/rate', methods=['POST'])
 @jwt_required()

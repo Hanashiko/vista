@@ -23,7 +23,6 @@ def profile():
         "quests_taken": [user_quest.quest.title for user_quest in user.quests_taken]
     }
     logger.info(f"Profile data retrieved for user: {user.email}")
-    logger.info(f"Full request data: {request.__dict__}")
     return jsonify(user_data), 200
 
 @profile_bp.route('/profile', methods=['PUT'])

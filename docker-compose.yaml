@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: r8dD72SqQ
+      MYSQL_DATABASE: quests
+      MYSQL_USER: py
+      MYSQL_PASSWORD: JDsa87D7w
+    ports:
+      - "336:3306"
+    volumes:
+      - ./data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mariadb
+      PMA_USER: py
+      PMA_PASSWORD: JDsa87D7w
+    ports:
+      - "888:80"
+    depends_on:
+      - mariadb
+
+  flask_app:
+    build: .
+    restart: always
+    depends_on:
+      - mariadb
+    environment:
+      DATABASE_URI: mysql+pymysql://py:JDsa87D7w@mariadb:3306/quests
+      JWT_SECRET_KEY: 4301e91c-7b96-47c4-bfb6-d869f3232fba
+      SECRET_KEY: 229164f1-0877-44e8-b285-ad029aace192
+    ports:
+      - "5000:5000"
+
+volumes:
+  data:

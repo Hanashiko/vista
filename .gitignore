@@ -1,6 +1,5 @@
+data/
+__pycache__/
 .env
-venv/
-migrations/
-instance/
 app/__pycache__/
-app/routes/__pycache__
+app/routes/__pycache__/

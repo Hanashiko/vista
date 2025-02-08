@@ -26,8 +26,15 @@ class Task(db.Model):
     image = db.Column(db.String(150), nullable=True)
     video = db.Column(db.String(150), nullable=True)
     question_type = db.Column(db.String(50), nullable=False)
-    correct_answer = db.Column(db.Text, nullable=False)
+    correct_answer = db.Column(db.Text, nullable=True)
     quest_id = db.Column(db.Integer, db.ForeignKey('quest.id'), nullable=False)
+    options = db.relationship('TaskOption', backref='task', lazy=True)
+
+class TaskOption(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(150), nullable=False)
+    is_correct = db.Column(db.Boolean, nullable=False, default=False)
+    task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable=False)
 
 class UserQuest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,7 +49,7 @@ class Rating(db.Model):
     quest_id = db.Column(db.Integer, db.ForeignKey('quest.id'), nullable=False)
     stars = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.Text, nullable=True)
-    
+
 class RevokedToken(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120), nullable=False)
