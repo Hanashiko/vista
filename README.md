@@ -6,14 +6,15 @@
 ### cope .env.example file to .env and write fields:
 ```cp .env.example .env```
 
-### use commands for make database: 
-```flask db init```
+### first launches:
 
-```flask db migrate -m "Initial migration"```
+### make database and run server:
+```chmod +x entrypoint.sh```
+```sh enrypoint.sh```
 
-```flask db upgrade```
+### next launches:
 
-### run server: 
+### run server:
 ```python run.py```
 
 
