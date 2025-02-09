@@ -29,11 +29,19 @@ class Task(db.Model):
     correct_answer = db.Column(db.Text, nullable=True)
     quest_id = db.Column(db.Integer, db.ForeignKey('quest.id'), nullable=False)
     options = db.relationship('TaskOption', backref='task', lazy=True)
+    map_interactions = db.relationship('MapInteraction', backref='task', lazy=True)
 
 class TaskOption(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(150), nullable=False)
     is_correct = db.Column(db.Boolean, nullable=False, default=False)
+    task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable=False)
+
+class MapInteraction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(150), nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
     task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable=False)
 
 class UserQuest(db.Model):
