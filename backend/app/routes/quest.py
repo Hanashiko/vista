@@ -14,7 +14,6 @@ def create_quest():
     new_quest = Quest(
         title=data['title'],
         description=data['description'],
-        num_tasks=data['num_tasks'],
         time_limit=data['time_limit'],
         author_id=user_id
     )
@@ -30,7 +29,6 @@ def get_quest(quest_id):
     quest_data = {
         "title": quest.title,
         "description": quest.description,
-        "num_tasks": quest.num_tasks,
         "time_limit": quest.time_limit,
         "tasks": [
             {
@@ -39,6 +37,7 @@ def get_quest(quest_id):
                 "video": task.video,
                 "question_type": task.question_type,
                 "correct_answer": task.correct_answer,
+                "points": task.points,
                 "options": [
                     {
                         "text": option.text,
@@ -74,6 +73,7 @@ def add_task_to_quest(quest_id):
         video=data.get('video'),
         question_type=data['question_type'],
         correct_answer=data.get('correct_answer'),
+        points=data.get('points',0),
         quest_id=quest_id
     )
     db.session.add(new_task)

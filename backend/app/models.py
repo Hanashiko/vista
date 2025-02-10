@@ -14,7 +14,6 @@ class Quest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    num_tasks = db.Column(db.Integer, nullable=False)
     time_limit = db.Column(db.Integer, nullable=True)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     tasks = db.relationship('Task', backref='quest', lazy=True)
@@ -27,6 +26,7 @@ class Task(db.Model):
     video = db.Column(db.String(150), nullable=True)
     question_type = db.Column(db.String(50), nullable=False)
     correct_answer = db.Column(db.Text, nullable=True)
+    points = db.Column(db.Integer, nullable=False, default=0)
     quest_id = db.Column(db.Integer, db.ForeignKey('quest.id'), nullable=False)
     options = db.relationship('TaskOption', backref='task', lazy=True)
     map_interactions = db.relationship('MapInteraction', backref='task', lazy=True)
@@ -50,6 +50,7 @@ class UserQuest(db.Model):
     quest_id = db.Column(db.Integer, db.ForeignKey('quest.id'), nullable=False)
     progress = db.Column(db.Integer, nullable=False, default=0)
     time_spent = db.Column(db.Integer, nullable=False, default=0)
+    points_earned = db.Column(db.Integer, nullable=False, default=0)
 
 class Rating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
