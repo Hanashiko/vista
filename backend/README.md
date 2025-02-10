@@ -43,9 +43,11 @@
 ### /quests/\<int\> - get information about the quest:
 ```curl -X GET http://100.26.99.106:5000/quests/1 -H "Content-Type: application/json"  -H "Authorization: Bearer <token>"```
 ### /quests/\<int\>/tasks - get list of tasks:
-```curl -X GET http://100.26.99.106:5000/quests/<quest_id>/tasks \
+```
+curl -X GET http://100.26.99.106:5000/quests/<quest_id>/tasks \
 -H "Authorization: Bearer <token>" \
--H "Content-Type: application/json"```
+-H "Content-Type: application/json" 
+```
 ### /quests/\<int\>/rate - leave a review about the quest:
 ```curl -X POST http://100.26.99.106:5000/quests/1/rate -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"stars":,"comment":""}'```
 ### /quests/\<int\>/tasks - add task with multiple_choise type with one correct answer:
