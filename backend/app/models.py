@@ -51,6 +51,7 @@ class UserQuest(db.Model):
     progress = db.Column(db.Integer, nullable=False, default=0)
     time_spent = db.Column(db.Integer, nullable=False, default=0)
     points_earned = db.Column(db.Integer, nullable=False, default=0)
+    start_time = db.Column(db.DateTime, nullable=True)
 
 class Rating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
