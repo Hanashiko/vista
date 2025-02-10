@@ -2,6 +2,7 @@
 
 ### container docker launching:
 ```sudo docker-compose up -d mariadb```
+
 ```sudo docker-compose up -d flask_app --build```
 
 
@@ -86,19 +87,19 @@ curl -X POST http://100.26.99.106:5000/quests \
     "time_limit":
 }'
 ```
-### /quests/\<int\> - get information about the quest:
+### /quests/\<quest_id\> - get information about the quest:
 ```
 curl -X GET http://100.26.99.106:5000/quests/<quest_id> \
 -H "Content-Type: application/json"
 -H "Authorization: Bearer <token>"
 ```
-### /quests/\<int\>/tasks - get list of tasks:
+### /quests/\<quest_id\>/tasks - get list of tasks:
 ```
 curl -X GET http://100.26.99.106:5000/quests/<quest_id>/tasks \
 -H "Authorization: Bearer <token>" \
 -H "Content-Type: application/json" 
 ```
-### /quests/\<int\>/rate - leave a review about the quest:
+### /quests/\<quest_id\>/rate - leave a review about the quest:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/rate \
 -H "Content-Type: application/json" \
@@ -108,7 +109,7 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/rate \
     "comment":""
 }'
 ```
-### /quests/\<int\>/tasks - add task with multiple_choise type with one correct answer:
+### /quests/\<quest_id\>/tasks - add task with multiple_choise type with one correct answer:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
 -H "Content-Type: application/json"\
@@ -124,7 +125,7 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
     ]
 }'
 ```
-### /quests/\<int\>/tasks - add task with multiple_choise type with several correct answers:
+### /quests/\<quest_id\>/tasks - add task with multiple_choise type with several correct answers:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
 -H "Content-Type: application/json" \
@@ -142,7 +143,7 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
     ]
 }'
 ```
-### /quests/\<int\>/tasks - add task with open_ended type:
+### /quests/\<quest_id\>/tasks - add task with open_ended type:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
 -H "Content-Type: application/json" \
@@ -154,7 +155,7 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
     "correct_answer":""
 }'
 ```
-### /quests/\<int\>/tasks - add task with map_interactive type:
+### /quests/\<quest_id\>/tasks - add task with map_interactive type:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
 -H "Content-Type: application/json" \
@@ -168,13 +169,13 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
     ]
 }'
 ```
-### /quests/\<int\>/start - start the process of completing the quest:
+### /quests/\<quest_id\>/start - start the process of completing the quest:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/start \
 -H "Content-Type: application/json"
 -H "Authorization: Bearer <token>" \
 ```
-### /quests/\<int\>/tasks/\<task_id\>/answer - save your answer:
+### /quests/\<quest_id\>/tasks/\<task_id\>/answer - save your answer:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/answer \
 -H "Content-Type: application/json"
