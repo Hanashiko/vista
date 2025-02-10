@@ -40,12 +40,12 @@
 ```curl -X POST http://100.26.99.106:5000/profile/avatar -H "Authorization: Bearer <token>" -F "avatar=@./path_to_image"```
 ### /quests - create a quest:
 ```curl -X POST http://100.26.99.106:5000/quests -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"title":"","description":"","num_tasks":,"time_limit":}'```
-### /quests/<int> - get information about the quest:
+### /quests/<id:int> - get information about the quest:
 ```curl -X GET http://100.26.99.106:5000/quests/1 -H "Content-Type: application/json"  -H "Authorization: Bearer <token>"```
-### /quests/<int>/rate - leave a review about the quest:
+### /quests/<id:int>/rate - leave a review about the quest:
 ```curl -X POST http://100.26.99.106:5000/quests/1/rate -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"stars":,"comment":""}'```
 ### /quests/<int>/tasks - add task with multiple_choise type:
-```curl -X POST http://100.26.99.106:5000/quests/1/tasks -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"text": "", "question_type": "multiple_choice", "options": [{"text": "", "is_correct": true}, {"text": "", "is_correct": false}, {"text": "", "is_correct": false)]}'```
+```curl -X POST http://100.26.99.106:5000/quests/1/tasks -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"text": "", "question_type": "multiple_choice", "options": [{"text": "", "is_correct": true}, {"text": "", "is_correct": false}, {"text": "", "is_correct": false}]}'```
 ### /quests/<int>/tasks - add task with open_ended type:
 ```curl -X POST http://100.26.99.106:5000/quests/1/tasks -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"text":"","question_type":"open_ended","correct_answer":""}'```
 ### /quests/<int>/tasks - add task with map_interactive type:
