@@ -108,7 +108,7 @@ def add_task_to_quest(quest_id):
 @jwt_required()
 def get_tasks_for_quest(quest_id):
     quest = Quest.query.get_or_404(quest_id)
-    tasks = Task.query.filter_bu(quest_id=quest_id).all()
+    tasks = Task.query.filter_by(quest_id=quest_id).all()
     tasks_data = [
             {
                 "id":task.id,

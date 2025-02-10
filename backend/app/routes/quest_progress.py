@@ -1,3 +1,4 @@
+from datetime import datetime 
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
@@ -18,7 +19,8 @@ def start_quest(quest_id):
 
     new_progress = UserQuest(
             user_id=user_id,
-            quest_id=quest_id
+            quest_id=quest_id,
+            start_time=datetime.utcnow()
     )
     db.session.add(new_progress)
     db.session.commit()
@@ -36,6 +38,7 @@ def answer_task(quest_id, task_id):
 
     if progress.progress >= task_id:
         return jsonify({"message":"You have already answered this task"}), 400
+
     data = request.get_json()
     user_answer = data.get('answer')
     points_earned = 0
@@ -57,7 +60,7 @@ def answer_task(quest_id, task_id):
             points_earned = task.points
 
     progress.points_earned += points_earned
-    progress.progress = task_id
+    progress.progress += 1
     db.session.commit()
 
     logger.info(f"User {user_id} answered task {task_id} in quest {quest.title}")
@@ -73,6 +76,10 @@ def complete_quest(quest_id):
     total_tasks = len(quest.tasks)
     if progress.progress < total_tasks:
         return jsonify({"message":"You have not completed all tasks"}), 400
+
+    time_spent = (datetime.utcnow() - progress.start_time).total_seconds()
+    progress.time_spent = int(time_spent)
+    db.session.commit()
 
     logger.info(f"User {user_id} completed quest {quest.title}")
     return jsonify({"message":"Quest completed successfully","total_points_earned":progress.points_earned}), 200

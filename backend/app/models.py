@@ -18,6 +18,7 @@ class Quest(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     tasks = db.relationship('Task', backref='quest', lazy=True)
     ratings = db.relationship('Rating', backref='quest', lazy=True)
+    taken_by = db.relationship('UserQuest',backref='quest',lazy=True)
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
