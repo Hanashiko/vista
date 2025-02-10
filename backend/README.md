@@ -58,3 +58,24 @@ curl -X GET http://100.26.99.106:5000/quests/<quest_id>/tasks \
 ```curl -X POST http://100.26.99.106:5000/quests/1/tasks -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"text":"","question_type":"open_ended","points":,"correct_answer":""}'```
 ### /quests/\<int\>/tasks - add task with map_interactive type:
 ```curl -X POST http://100.26.99.106:5000/quests/1/tasks -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"text":"","question_type":"map_interactive","points":,"map_interactive":[{"description":"","latitude":,"longitude":}]}'```
+### /quests/\<int\>/start - start the process of completing the quest:
+```
+curl -X POST http://100.26.99.106:5000/quests/<quest_id>/start \
+-H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json"
+```
+### /quests/\<int\>/tasks/\<task_id\>/answer - save your answer:
+```
+curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/answer \
+-H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json" \
+-d '{
+    "answer": ["Paris"]
+}'
+```
+### /quests/\<quest_id\>/complete - complete the process of completing the quest:
+```
+curl -X POST http://100.26.99.106:5000/quests/<quest_id>/complete \
+-H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json"
+```
