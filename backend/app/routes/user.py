@@ -1,12 +1,12 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_requred, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
 from ..models import User
 
 user_bp = Blueprint('user',__name__)
 
 @user_bp.route('/user/<int:uner_id>',methods=['GET'])
-@jwt_requred()
+@jwt_required()
 def get_user_by_id(user_id):
     user = User.query.get_or_404(user_id)
     avatar_url = f"{request.host_url}uploads/{user.avatar}" if user.avatar else None
