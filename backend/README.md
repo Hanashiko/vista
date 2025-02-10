@@ -90,7 +90,7 @@ curl -X POST http://100.26.99.106:5000/quests \
 ### /quests/\<quest_id\> - get information about the quest:
 ```
 curl -X GET http://100.26.99.106:5000/quests/<quest_id> \
--H "Content-Type: application/json"
+-H "Content-Type: application/json"\
 -H "Authorization: Bearer <token>"
 ```
 ### /quests/\<quest_id\>/tasks - get list of tasks:
@@ -172,14 +172,14 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
 ### /quests/\<quest_id\>/start - start the process of completing the quest:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/start \
--H "Content-Type: application/json"
--H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json"\
+-H "Authorization: Bearer <token>" 
 ```
 ### /quests/\<quest_id\>/tasks/\<task_id\>/answer - save your answer:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/answer \
--H "Content-Type: application/json"
--H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json"\
+-H "Authorization: Bearer <token>" 
 -d '{
     "answer": ["Paris"]
 }'
@@ -187,6 +187,12 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/answer 
 ### /quests/\<quest_id\>/complete - complete the process of completing the quest:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/complete \
--H "Content-Type: application/json"
--H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json"\
+-H "Authorization: Bearer <token>" 
+```
+### /user/\<user_id\> - get information about user by id:
+```
+curl -X GET http://192.168.0.106:5000/user/<user_id> \
+-H "Content-Type: application/json"\
+-H "Authorization: Bearer <token>" 
 ```
