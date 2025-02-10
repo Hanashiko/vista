@@ -22,6 +22,58 @@ def create_quest():
     logger.info(f"Quest created successfully: {new_quest.title}")
     return jsonify({"message": "Quest created successfully"}), 201
 
+@quest_bp.route('/quests_tasks', methods=['POST'])
+@jwt_required()
+def create_quest_with_tasks():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    logger.info(f"Create quest request by user {user_id}: {data}")
+    new_quest = Quest(
+            title=data['title'],
+            description=data['description'],
+            time_limit=data['time_limit'],
+            author_id=user_id
+    )
+    db.session.add(new_quest)
+    db.session.commit()
+
+    if 'tasks' in data:
+        for task_data in data['tasks']:
+            new_task = Task(
+                text=task_data['text'],
+                image=task_data.get('image'),
+                video=task_data.get('video'),
+                question_type=task_data['question_type'],
+                correct_answer=task_data.get('correct_answer'),
+                points=task_data.get('points',0),
+                quest_id=new_quest.id
+            )
+            db.session.add(new_task)
+            db.session.commit()
+
+            if 'options' in task_data:
+                for option in task_data['options']:
+                    new_option = TaskOption(
+                            text=option['text'],
+                            is_correct=option['is_correct'],
+                            task_id=new_task.id
+                    )
+                    db.session.add(new_option)
+                db.session.commit()
+
+            if 'map_interactions' in task_data:
+                for interaction in task_data['map_interactions']:
+                    new_interaction = MapInteraction(
+                            description=interaction['description'],
+                            latitude=interaction['latitude'],
+                            longitude=interaction['longitude'],
+                            task_id=new_task.id
+                    )
+                    db.session.add(new_interaction)
+                db.session.commit()
+        logger.info(f"Quest created successfully: {new_quest.title} with tasks")
+        return jsonify({"message":"Quest and tasks created successfully"}),201
+
 @quest_bp.route('/quests/<int:quest_id>', methods=['GET'])
 @jwt_required()
 def get_quest(quest_id):
