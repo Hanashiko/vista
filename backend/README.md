@@ -227,7 +227,7 @@ curl -X POST http://100.26.99.106:5000/quests_tasks \
             "question_type": "multiple_choice",
             "points": ,
             "options": [
-                {"text": "", "is_correct": true},
+                {"text: "", "is_correct": true},
                 {"text": "", "is_correct": true},
                 {"text": "", "is_correct": true},
                 {"text": "", "is_correct": false}
@@ -243,4 +243,10 @@ curl -X POST http://100.26.99.106:5000/quests_tasks \
         }
     ]
 }'
+```
+### /quests/\<quest_id\>/public - get a public version of the quest, without marking the correct answers:
+```
+curl -X GET http://100.26.99.106:5000/quests/<quest_id>/public \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>"
 ```

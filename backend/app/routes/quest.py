@@ -110,6 +110,40 @@ def get_quest(quest_id):
     logger.info(f"Quest data retrieved: {quest.title}")
     return jsonify(quest_data), 200
 
+@quest_bp.route('/quests/<int:quest_id>/public', methods=['GET'])
+@jwt_required()
+def get_public_quest(quest_id):
+    quest = Quest.query.get_or_404(quest_id)
+    quest_data = {
+        "title": quest.title,
+        "description": quest.description,
+        "time_limit": quest.time_limit,
+        "tasks": [
+            {
+                "id": task.id,
+                "text": task.text,
+                "image": task.image,
+                "video": task.video,
+                "question_type": task.question_type,
+                "points": task.points,
+                "options": [
+                    {
+                        "text": option.text
+                    } for option in task.options
+                ],
+                "map_interactions": [
+                    {
+                        "description": interaction.description,
+                        "latitude": interaction.latitude,
+                        "longitude": interaction.longitude
+                    } for interaction in task.map_interactions
+                ]
+            } for task in quest.tasks
+        ]
+    }
+    logger.info(f"Public quest data retrieved: {quest.title}")
+    return jsonify(quest_data), 200
+
 @quest_bp.route('/quests/<int:quest_id>/tasks', methods=['POST'])
 @jwt_required()
 def add_task_to_quest(quest_id):
