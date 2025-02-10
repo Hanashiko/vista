@@ -42,13 +42,17 @@
 ```curl -X POST http://100.26.99.106:5000/quests -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"title":"","description":"","time_limit":}'```
 ### /quests/\<int\> - get information about the quest:
 ```curl -X GET http://100.26.99.106:5000/quests/1 -H "Content-Type: application/json"  -H "Authorization: Bearer <token>"```
+### /quests/\<int\>/tasks - get list of tasks:
+```curl -X GET http://100.26.99.106:5000/quests/<quest_id>/tasks \
+-H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json"```
 ### /quests/\<int\>/rate - leave a review about the quest:
 ```curl -X POST http://100.26.99.106:5000/quests/1/rate -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"stars":,"comment":""}'```
-### /quests/<int>/tasks - add task with multiple_choise type with one correct answer:
+### /quests/\<int\>/tasks - add task with multiple_choise type with one correct answer:
 ```curl -X POST http://100.26.99.106:5000/quests/1/tasks -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"text": "", "question_type": "multiple_choice", "points":, "options": [{"text": "", "is_correct": true}, {"text": "", "is_correct": false}, {"text": "", "is_correct": false}]}'```
-### /quests/<int>/tasks - add task with multiple_choise type with several correct answers:
+### /quests/\<int\>/tasks - add task with multiple_choise type with several correct answers:
 ```curl -X POST http://100.26.99.106:5000/quests/1/tasks -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"text": "", "question_type": "multiple_choice", "points":, "options": [{"text": "", "is_correct": true}, {"text": "", "is_correct": true}, {"text": "", "is_correct": false}, {"text": "", "is_correct":false}, {"text": "", "is_correct":true}]}'```
-### /quests/<int>/tasks - add task with open_ended type:
+### /quests/\<int\>/tasks - add task with open_ended type:
 ```curl -X POST http://100.26.99.106:5000/quests/1/tasks -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"text":"","question_type":"open_ended","points":,"correct_answer":""}'```
-### /quests/<int>/tasks - add task with map_interactive type:
+### /quests/\<int\>/tasks - add task with map_interactive type:
 ```curl -X POST http://100.26.99.106:5000/quests/1/tasks -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"text":"","question_type":"map_interactive","points":,"map_interactive":[{"description":"","latitude":,"longitude":}]}'```
