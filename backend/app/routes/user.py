@@ -5,7 +5,7 @@ from ..models import User
 
 user_bp = Blueprint('user',__name__)
 
-@user_bp.route('/user/<int:uner_id>',methods=['GET'])
+@user_bp.route('/user/<int:user_id>',methods=['GET'])
 @jwt_required()
 def get_user_by_id(user_id):
     user = User.query.get_or_404(user_id)
