@@ -32,6 +32,7 @@ def get_quest(quest_id):
         "time_limit": quest.time_limit,
         "tasks": [
             {
+                "id": task.id,
                 "text": task.text,
                 "image": task.image,
                 "video": task.video,
