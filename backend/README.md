@@ -192,7 +192,55 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/complete \
 ```
 ### /user/\<user_id\> - get information about user by id:
 ```
-curl -X GET http://192.168.0.106:5000/user/<user_id> \
+curl -X GET http://100.26.99.106:5000/user/<user_id> \
 -H "Content-Type: application/json"\
 -H "Authorization: Bearer <token>" 
+```
+### /quests_tasks - create a quest with questions right away:
+```
+curl -X POST http://100.26.99.106:5000/quests_tasks \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "title": "",
+    "description": "",
+    "time_limit": ,
+    "tasks": [
+        {
+            "text": "",
+            "question_type": "multiple_choice",
+            "points": ,
+            "options": [
+                {"text": "", "is_correct": true},
+                {"text": "", "is_correct": false},
+                {"text": "", "is_correct": false}
+            ]
+        },
+        {
+            "text": "",
+            "question_type": "open_ended",
+            "points": ,
+            "correct_answer": ""
+        },
+        {
+            "text": "",
+            "question_type": "multiple_choice",
+            "points": ,
+            "options": [
+                {"text": "", "is_correct": true},
+                {"text": "", "is_correct": true},
+                {"text": "", "is_correct": true},
+                {"text": "", "is_correct": false}
+            ]
+        },
+        {
+            "text": "",
+            "question_type": "map_interactive",
+            "points": ,
+            "map_interactive": [
+                {"description": "", "latitude": "longitude": }
+            ]
+        }
+    ]
+}'
 ```
