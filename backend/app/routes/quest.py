@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
-from ..models import Quest, Task, TaskOption, Rating, MapInteraction
+from ..models import Quest, Task, TaskOption, Rating, MapInteraction, User
 
 quest_bp = Blueprint('quest', __name__)
 
@@ -411,7 +411,6 @@ def rate_quest(quest_id):
 @quest_bp.route('/quests/user',methods=['GET'])
 @jwt_required()
 def get_user_quests():
-    # TODO: need debuging
     user_id = get_jwt_identity()
     user = User.query.get_or_404(user_id)
     quests = Quest.query.filter_by(author_id=user_id).all()
@@ -429,7 +428,6 @@ def get_user_quests():
 @quest_bp.route('/quests/user/<int:user_id>',methods=['GET'])
 @jwt_required()
 def get_quests_by_user_id(user_id):
-    # TODO: need debuging
     user = User.query.get_or_404(user_id)
     quests = Quest.query.filter_by(author_id=user_id).all()
     quests_data = [
@@ -445,7 +443,6 @@ def get_quests_by_user_id(user_id):
 
 @quest_bp.route('/quests/recent',methods=['GET'])
 def get_recent_quests():
-    # TODO: need debuging
     limit = request.args.get('limit',default=10,type=int)
     recent_quests = Quest.query.order_by(Quest.id.desc()).limit(limit).all()
     recent_quests_data = [

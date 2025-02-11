@@ -309,3 +309,20 @@ curl -X PUT http://100.26.99.106:5000/quests/<quest_id>/edit_with_tasks \
     ]
 }'
 ```
+### /quests/user - get all quest of client user:
+```
+curl -X GET http://100.26.99.106:5000/quests/user \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>"
+```
+### /quests/user/\<user_id\> - get all quest of user:
+```
+curl -X GET http://100.26.99.106:5000/quests/user/<user_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>"
+```
+### /quests/recent?limit=\<number\> - get last added quests:
+```
+curl -X GET "http://localhost:5000/quests/recent?limit=5" \
+-H "Content-Type: application/json"
+```
