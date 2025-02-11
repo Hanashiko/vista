@@ -31,17 +31,17 @@
 ### /register - register a user:
 ```
 curl -X POST http://100.26.99.106:5000/register \
--H "Content-Type: application/json"\
--d '{
-    "email":"@gmail.com",
-    "password":"",
-    "name":""
+-H "Content-Type: application/json" \
+-d '{ 
+    "email":"@gmail.com", 
+    "password":"", 
+    "name":"" 
 }'
 ```
 ### /login - log in the user:
 ```
 curl -X POST http://100.26.99.106:5000/login \
--H "Content-Type: application/json"\
+-H "Content-Type: application/json" \
 -d '{
     "email":"@gmail.com",
     "password":""
@@ -56,13 +56,13 @@ curl -X POST http://100.26.99.106:5000/logout \
 ### /profile - get information about the user:
 ```
 curl -X GET http://100.26.99.106:5000/profile \
--H "Content-Type: application/json"\
+-H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 ### /profile - change user data:
 ```
 curl -X PUT http://100.26.99.106:5000/profile \
--H "Content-Type: application/json"\
+-H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 -d '{
     "email": "@gmail.com",
@@ -112,7 +112,7 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/rate \
 ### /quests/\<quest_id\>/tasks - add task with multiple_choise type with one correct answer:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
--H "Content-Type: application/json"\
+-H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
     "text": "", 
@@ -147,7 +147,7 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer <token>"\
+-H "Authorization: Bearer <token>" \
 -d '{
     "text":"",
     "question_type":"open_ended",
@@ -172,13 +172,13 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
 ### /quests/\<quest_id\>/start - start the process of completing the quest:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/start \
--H "Content-Type: application/json"\
+-H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 ```
 ### /quests/\<quest_id\>/tasks/\<task_id\>/answer - save your answer:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/answer \
--H "Content-Type: application/json"\
+-H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 -d '{
     "answer": ["Paris"]
@@ -187,13 +187,13 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/answer 
 ### /quests/\<quest_id\>/complete - complete the process of completing the quest:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/complete \
--H "Content-Type: application/json"\
+-H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 ```
 ### /user/\<user_id\> - get information about user by id:
 ```
 curl -X GET http://100.26.99.106:5000/user/<user_id> \
--H "Content-Type: application/json"\
+-H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 ```
 ### /quests_tasks - create a quest with questions right away:
@@ -238,7 +238,7 @@ curl -X POST http://100.26.99.106:5000/quests_tasks \
             "question_type": "map_interactive",
             "points": ,
             "map_interactive": [
-                {"description": "", "latitude": "longitude": }
+                {"description": "", "latitude": ,"longitude": }
             ]
         }
     ]
@@ -247,6 +247,12 @@ curl -X POST http://100.26.99.106:5000/quests_tasks \
 ### /quests/\<quest_id\>/public - get a public version of the quest, without marking the correct answers:
 ```
 curl -X GET http://100.26.99.106:5000/quests/<quest_id>/public \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>"
+```
+### /quests/\<quest_id\>/tasks/\<task_id\> - delete task from quest:
+```
+curl -X DELETE http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id> \                               13:06:47
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```

@@ -19,8 +19,8 @@ def profile():
         "email": user.email,
         "name": user.name,
         "avatar": avatar_url,
-        "quests_created": [quest.title for quest in user.quests_created],
-        "quests_taken": [user_quest.quest.title for user_quest in user.quests_taken]
+        "quests_created": [{"id": quest.id, "title": quest.title} for quest in user.quests_created],
+        "quests_taken": [{"id":user_quest.quest.id, "title": user_quest.quest.title} for user_quest in user.quests_taken]
     }
     logger.info(f"Profile data retrieved for user: {user.email}")
     return jsonify(user_data), 200

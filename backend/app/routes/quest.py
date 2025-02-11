@@ -226,13 +226,17 @@ def get_tasks_for_quest(quest_id):
 @quest_bp.route('/quests/<int:quest_id>/tasks/<int:task_id>',methods=['DELETE'])
 @jwt_required()
 def delete_task(quest_id, task_id):
-    # TODO: need debugging
     user_id = get_jwt_identity()
     quest = Quest.query.get_or_404(quest_id)
     task = Task.query.get_or_404(task_id)
 
-    if quest.author_id != user_id:
+    if int(quest.author_id) != int(user_id):
         return jsonify({"message":"You are not authorized to delete this task"}), 403
+
+    logger.info(f"Deleting task {task_id} from quest {quest_id} by user {user_id}")
+
+    TaskOption.query.filter_by(task_id=task_id).delete()
+    MapInteraction.query.filter_by(task_id=task_id).delete()
 
     db.session.delete(task)
     db.session.commit()
@@ -242,12 +246,19 @@ def delete_task(quest_id, task_id):
 @quest_bp.route('/quests/<int:quest_id>',methods=['DELETE'])
 @jwt_required()
 def delete_quest(quest_id):
-    # TODO: need debugging
     user_id = get_jwt_identity()
     quest = Quest.query.get_or_404(quest_id)
 
-    if quest.author_id != user_id:
+    if int(quest.author_id) != int(user_id):
         return jsonify({"message":"You are not authorized to delete this quest"}), 403
+
+    logger.info(f"Deleting quest {quest_id} by user {user_id}")
+
+    tasks = Task.query.filter_by(quest_id=quest_id).all()
+    for task in tasks:
+        TaskOption.query.filter_by(task_id=task.id).delete()
+        MapInteraction.query.filter_by(task_id=task.id).delete()
+        db.session.delete(task)
 
     db.session.delete(quest)
     db.session.commit()
@@ -257,11 +268,10 @@ def delete_quest(quest_id):
 @quest_bp.route('/quests/<int:quest_id>',methods=['PUT'])
 @jwt_required()
 def edit_quest(quest_id):
-    # TODO: need debugging
     user_id = get_jwt_identity()
     quest = Quest.query.get_or_404(quest_id)
 
-    if quest.author_id != user_id:
+    if int(quest.author_id) != int(user_id):
         return jsonify({"message":"You are not authorized to edit this quest"}),403
 
     data = request.get_json()
@@ -275,15 +285,19 @@ def edit_quest(quest_id):
 @quest_bp.route('/quests/<int:quest_id>/tasks/<int:task_id>',methods=['PUT'])
 @jwt_required()
 def edit_task(quest_id, task_id):
-    # TODO: need debugging
     user_id = get_jwt_identity()
     quest = Quest.query.get_or_404(quest_id)
     task = Task.query.get_or_404(task_id)
 
-    if quest.author_id != user_id:
+    if int(quest.author_id) != int(user_id):
         return jsonify({"message":"You are not authorized to edit this task"}),403
 
     data = request.get_json()
+    
+    if task.question_type != data.get('question_type'):
+        TaskOption.query.filter_by(task_id=task_id).delete()
+        MapInteraction.query.filter_by(task_id=task_id).delete()
+
     task.text = data.get('text',task.text)
     task.image = data.get('image',task.image)
     task.video = data.get('video',task.video)
@@ -291,17 +305,38 @@ def edit_task(quest_id, task_id):
     task.correct_answer = data.get('correct_answer', task.correct_answer)
     task.points = data.get('points', task.points)
     db.session.commit()
+
+    if 'options' in data:
+        for option in data['option']:
+            new_option = TaskOption(
+                text=option['text'],
+                is_correct=option['is_correct'],
+                task_id=task.id 
+            )
+            db.session.add(new_option)
+        db.session.commit()
+
+    if 'map_interactions' in data:
+        for interaction in data['map_interactions']:
+            new_interaction = MapInteraction(
+                    description=interaction['description'],
+                    latitude=interaction['latitude'],
+                    longitude=interaction['longitude'],
+                    task_id=task.id 
+            )
+            db.session.add(new_interaction)
+        db.session.commit()            
+
     logger.info(f"Task {task_id} in quest {quest_id} edited by user {user_id}")
     return jsonify({"message":"Task edited successfully"}),200
 
 @quest_bp.route('/quests/<int:quest_id>/edit_with_tasks', methods=['PUT'])
 @jwt_required()
-def edit_quest_with tasks(quest_id):
-    # TODO: need debugging
+def edit_quest_with_tasks(quest_id):
     user_id = get_jwt_identity()
     quest = Quest.query.get_or_404(quest_id)
 
-    if quest.author_id != user_id:
+    if int(quest.author_id) != int(user_id):
         return jsonify({"message":"You are not authorized to edit this quest"}),403
 
     data = request.get_json()
@@ -315,6 +350,10 @@ def edit_quest_with tasks(quest_id):
             if task_id:
                 task = Task.query.get(task_id)
                 if task and task.quest_id == quest_id:
+                    if task.question_type != task_data.get('question_type'):
+                        TaskOption.query.filter_by(task_id=task_id).delete()
+                        MapInteraction.query.filter_by(task_id=task_id).delete()
+
                     task.text = task_data.get('text',task.text)
                     task.image = task_data.get('image',task.image)
                     task.video = task_data.get('video',task.video)
@@ -322,6 +361,30 @@ def edit_quest_with tasks(quest_id):
                     task.correct_answer = task_data.get('correct_answer', task.correct_answer)
                     task.points = task_data.get('points',task.points)
                     db.session.commit()
+
+                    TaskOption.query.filter_by(task_id=task_id).delete()
+                    MapInteraction.query.filter_by(task_id=task_id).delete()
+
+                    if 'option' in task_data:
+                        for option in task_data['options']:
+                            new_option = TaskOption(
+                                    text=option['text'],
+                                    is_correct=option['is_correct'],
+                                    task_id=task.id
+                            )
+                            db.session.add(new_option)
+                        db.session.commit()
+
+                    if 'map_interactions' in task_data:
+                        for interaction in task_data['map_interactions']:
+                            new_interaction = MapInteraction(
+                                    description=interaction['description'],
+                                    latitude=interaction['latitude'],
+                                    longitude=interaction['longitude'],
+                                    task_id=task.id
+                            )
+                            db.session.add(new_interaction)
+                        db.session.commit()                            
 
     db.session.commit()
     logger.info(f"Quest {quest_id} and its tasks edited by user {user_id}")
