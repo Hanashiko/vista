@@ -256,3 +256,56 @@ curl -X DELETE http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id> \    
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
+### /quests/\<quest_id\> - delete quest:
+```
+curl -X DELETE http://100.26.99.106:5000/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>"
+```
+### /quests/\<quest_id\> - edit quest:
+```
+curl -X PUT http://100.26.99.106:5000/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "title": "",
+    "description": "",
+    "time_limit": 
+}'
+```
+### /quests/\<quest_id\>/tasks/\<task_id\> - edit task in quest:
+```
+curl -X PUT http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "text": "",
+    "image": "",
+    "video": "",
+    "question_type": "open_ended",
+    "correct_answer": "",
+    "points": 
+}'
+```
+### /quests/\<quest_id\>/edit_with_tasks - edit info about quest and tasks:
+```
+curl -X PUT http://100.26.99.106:5000/quests/<quest_id>/edit_with_tasks \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "title": "",
+    "description": "",
+    "time_limit": ,
+    "tasks": [
+        {
+            "id": ,
+            "text": "",
+            "image": "",
+            "video": "",
+            "question_type": "open_ended",
+            "correct_answer": "",
+            "points": 
+        }
+    ]
+}'
+```
