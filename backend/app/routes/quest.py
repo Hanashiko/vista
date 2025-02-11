@@ -226,6 +226,7 @@ def get_tasks_for_quest(quest_id):
 @quest_bp.route('/quests/<int:quest_id>/tasks/<int:task_id>',methods=['DELETE'])
 @jwt_required()
 def delete_task(quest_id, task_id):
+    # TODO: need debugging
     user_id = get_jwt_identity()
     quest = Quest.query.get_or_404(quest_id)
     task = Task.query.get_or_404(task_id)
@@ -241,6 +242,7 @@ def delete_task(quest_id, task_id):
 @quest_bp.route('/quests/<int:quest_id>',methods=['DELETE'])
 @jwt_required()
 def delete_quest(quest_id):
+    # TODO: need debugging
     user_id = get_jwt_identity()
     quest = Quest.query.get_or_404(quest_id)
 
@@ -255,6 +257,7 @@ def delete_quest(quest_id):
 @quest_bp.route('/quests/<int:quest_id>',methods=['PUT'])
 @jwt_required()
 def edit_quest(quest_id):
+    # TODO: need debugging
     user_id = get_jwt_identity()
     quest = Quest.query.get_or_404(quest_id)
 
@@ -272,6 +275,7 @@ def edit_quest(quest_id):
 @quest_bp.route('/quests/<int:quest_id>/tasks/<int:task_id>',methods=['PUT'])
 @jwt_required()
 def edit_task(quest_id, task_id):
+    # TODO: need debugging
     user_id = get_jwt_identity()
     quest = Quest.query.get_or_404(quest_id)
     task = Task.query.get_or_404(task_id)
