@@ -252,6 +252,23 @@ def delete_quest(quest_id):
     logger.info(f"Quest {quest_id} deleted by user {user_id}")
     return jsonify({"message":"Quest deleted successfully"}), 200
 
+@quest_bp.route('/quests/<int:quest_id>',methods=['PUT'])
+@jwt_required()
+def edit_quest(quest_id):
+    user_id = get_jwt_identity()
+    quest = Quest.query.get_or_404(quest_id)
+
+    if quest.author_id != user_id:
+        return jsonify({"message":"You are not authorized to edit this quest"}),403
+
+    data = request.get_json()
+    quest.title = data.get('title', quest.title)
+    quest.description = data.get('description',quest.description)
+    quest.time_limit = data.get('time_limit', quest.time_limit)
+    db.session.commit()
+    logger.info(f"Quest {quest_id} edited by user {user_id}")
+    return jsonify({"message":"Quest edited successfully"}), 200
+
 @quest_bp.route('/quests/<int:quest_id>/rate', methods=['POST'])
 @jwt_required()
 def rate_quest(quest_id):
