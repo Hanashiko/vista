@@ -294,6 +294,39 @@ def edit_task(quest_id, task_id):
     logger.info(f"Task {task_id} in quest {quest_id} edited by user {user_id}")
     return jsonify({"message":"Task edited successfully"}),200
 
+@quest_bp.route('/quests/<int:quest_id>/edit_with_tasks', methods=['PUT'])
+@jwt_required()
+def edit_quest_with tasks(quest_id):
+    # TODO: need debugging
+    user_id = get_jwt_identity()
+    quest = Quest.query.get_or_404(quest_id)
+
+    if quest.author_id != user_id:
+        return jsonify({"message":"You are not authorized to edit this quest"}),403
+
+    data = request.get_json()
+    quest.title = data.get('title',quest.title)
+    quest.description = data.get('description',quest.description)
+    quest.time_limit = data.get('time_limit', quest.time_limit)
+
+    if 'tasks' in data:
+        for task_data in data['tasks']:
+            task_id = task_data.get('id')
+            if task_id:
+                task = Task.query.get(task_id)
+                if task and task.quest_id == quest_id:
+                    task.text = task_data.get('text',task.text)
+                    task.image = task_data.get('image',task.image)
+                    task.video = task_data.get('video',task.video)
+                    task.question_type = task_data.get('question_type',task.question_type)
+                    task.correct_answer = task_data.get('correct_answer', task.correct_answer)
+                    task.points = task_data.get('points',task.points)
+                    db.session.commit()
+
+    db.session.commit()
+    logger.info(f"Quest {quest_id} and its tasks edited by user {user_id}")
+    return jsonify({"message":"Quest and tasks edited successfully"}),200
+
 @quest_bp.route('/quests/<int:quest_id>/rate', methods=['POST'])
 @jwt_required()
 def rate_quest(quest_id):
