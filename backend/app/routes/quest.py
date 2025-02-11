@@ -238,7 +238,19 @@ def delete_task(quest_id, task_id):
     logger.info(f"Task {task_id} deleted from quest {quest_id} by user {user_id}")
     return jsonify({"message":"Task deleted successfully"}), 200
 
+@quest_bp.route('/quests/<int:quest_id>',methods=['DELETE'])
+@jwt_required()
+def delete_quest(quest_id):
+    user_id = get_jwt_identity()
+    quest = Quest.query.get_or_404(quest_id)
 
+    if quest.author_id != user_id:
+        return jsonify({"message":"You are not authorized to delete this quest"}), 403
+
+    db.session.delete(quest)
+    db.session.commit()
+    logger.info(f"Quest {quest_id} deleted by user {user_id}")
+    return jsonify({"message":"Quest deleted successfully"}), 200
 
 @quest_bp.route('/quests/<int:quest_id>/rate', methods=['POST'])
 @jwt_required()
