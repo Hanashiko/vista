@@ -124,9 +124,13 @@ def edit_quest(quest_id):
 
     data = request.get_json()
 
-    quest.title = data.get('title', quest.title)
-    quest.description = data.get('description', quest.description)
-    quest.time_limit = data.get('time_limit', quest.time_limit)
+    if 'title' in data:
+        quest.tite = data['title']
+    if 'description' in data['description']:
+        quest.description = data['description']
+    if 'time_limit' in data['time_limit']:
+        quest.time_limit = data['time_limit']
+
     db.session.commit()
     logger.info(f"Quest {quest_id} edited by user {user_id}")
     return jsonify({"message": "Quest edited successfully"}), 200
@@ -154,13 +158,19 @@ def edit_quest_with_tasks(quest_id):
                     if task.question_type != task_data.get('question_type'):
                         TaskOption.query.filter_by(task_id=task_id).delete()
                         MapInteraction.query.filter_by(task_id=task_id).delete()
-
-                    task.text = task_data.get('text', task.text)
-                    task.image = task_data.get('image', task.image)
-                    task.video = task_data.get('video', task.video)
-                    task.question_type = task_data.get('question_type', task.question_type)
-                    task.correct_answer = task_data.get('correct_answer', task.correct_answer)
-                    task.points = task_data.get('points', task.points)
+                    
+                    if 'text' in task_data:
+                        task.text = task_data['text']
+                    if 'image' in task_data:
+                        task.image = task_data['image']
+                    if 'video' in task_data:
+                        task.video = task_data['video']
+                    if 'question_type' in task_data:
+                        task.question_type = task_data['question_type']
+                    if 'correct_answer' in task_data:
+                        task.correct_answer = task_data['correct_answer']
+                    if 'points' in task_data:
+                        task.points = task_data['points']
                     db.session.commit()
 
                     TaskOption.query.filter_by(task_id=task_id).delete()
