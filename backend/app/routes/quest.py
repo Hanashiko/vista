@@ -406,3 +406,55 @@ def rate_quest(quest_id):
     db.session.commit()
     logger.info(f"Quest rated successfully by user {user_id}: {quest_id}")
     return jsonify({"message": "Quest rated successfully"}), 201
+
+
+@quest_bp.route('/quests/user',methods=['GET'])
+@jwt_required()
+def get_user_quests():
+    # TODO: need debuging
+    user_id = get_jwt_identity()
+    user = User.query.get_or_404(user_id)
+    quests = Quest.query.filter_by(author_id=user_id).all()
+    quests_data = [
+        {
+            "id": quest.id,
+            "title": quest.title,
+            "description": quest.description,
+            "time_limit": quest.time_limit
+        } for quest in quests
+    ]
+    logger.info(f"Quests retrieved for user {user.email}")
+    return jsonify(quests_data), 200
+
+@quest_bp.route('/quests/user/<int:user_id>',methods=['GET'])
+@jwt_required()
+def get_quests_by_user_id(user_id):
+    # TODO: need debuging
+    user = User.query.get_or_404(user_id)
+    quests = Quest.query.filter_by(author_id=user_id).all()
+    quests_data = [
+        {
+            "id":quest.id,
+            "title":quest.title,
+            "description":quest.description,
+            "time_limit":quest.time_limit
+        } for quest in quests
+    ]
+    logger.info(f"Quests retrieved for user {user.email}")
+    return jsonify(quests_data),200
+
+@quest_bp.route('/quests/recent',methods=['GET'])
+def get_recent_quests():
+    # TODO: need debuging
+    limit = request.args.get('limit',default=10,type=int)
+    recent_quests = Quest.query.order_by(Quest.id.desc()).limit(limit).all()
+    recent_quests_data = [
+            {
+                "id":quest.id,
+                "title":quest.title,
+                "description":quest.description,
+                "time_limit":quest.time_limit
+            } for quest in recent_quests
+    ]
+    logger.info(f"Recent {limit} quests retrieved")
+    return jsonify(recent_quests_data),200
