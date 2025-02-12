@@ -142,7 +142,7 @@ curl -X POST http://100.26.99.106:5000/v2/quests \
         }
     ]
 }'
-
+```
 ### /quests/\<quest_id\> - get information about the quest:
 ```
 curl -X GET http://100.26.99.106:5000/quests/<quest_id> \
@@ -374,5 +374,5 @@ curl -X DELETE http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id> \    
 ```
 curl -X GET http://100.26.99.106:5000/user/<user_id> \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" 
+-H "Authorization: Bearer <token>"
 ```
