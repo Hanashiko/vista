@@ -275,6 +275,12 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/complete \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 ```
+### /quests/all - get all quests:
+```
+curl -X GET http://100.26.99.106:5000/quests/all\?limit\=<int> \       11:14:28
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>"
+```
 
 ## rating routes
 

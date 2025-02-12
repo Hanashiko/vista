@@ -268,3 +268,19 @@ def get_recent_quests():
     ]
     logger.info(f"Recent {limit} quests retrieved")
     return jsonify(recent_quests_data), 200
+
+@quest_bp.route('/quests/all',methods=['GET'])
+@jwt_required()
+def get_all_quests():
+    limit = request.args.get('limit',default=10, type=int)
+    quests = Quest.query.order_by(Quest.id.desc()).limit(limit).all()
+    quests_data = [
+            {
+                "id": quest.id,
+                "title": quest.title,
+                "description": quest.description,
+                "time_limit": quest.time_limit 
+            } for quest in quests 
+    ]
+    logger.info(f"All {limit} quests retrieved")
+    return jsonify(quests_data),200
