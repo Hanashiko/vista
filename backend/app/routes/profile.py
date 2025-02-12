@@ -56,7 +56,7 @@ def upload_avatar():
         return jsonify({"message": "No selected file"}), 400
 
     if file and allowed_file(file.filename):
-        filename = f"{user_id}_{file.filename}"
+        filename = f"user_{user_id}_{file.filename}"
         file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         user.avatar = filename

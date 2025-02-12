@@ -1,9 +1,14 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
+from app.routes.profile import allowed_file
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
 from ..models import Quest, User, Task, TaskOption, MapInteraction
+import os
 
 quest_bp = Blueprint('quest', __name__)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
 
 @quest_bp.route('/v1/quests', methods=['POST'])
 @jwt_required()
@@ -284,3 +289,29 @@ def get_all_quests():
     ]
     logger.info(f"All {limit} quests retrieved")
     return jsonify(quests_data),200
+
+@quest_bp.route('/quests/<int:quest_id>/image', methods=['POST'])
+@jwt_required()
+def upload_quest_image(quest_id):
+    user_id = get_jwt_identity()
+    quest = Quest.query.get_or_404(quest_id)
+
+    if int(quest.author_id) != int(user_id):
+        return jsonify({"message":"You are not authorized to upload an image for this quest"}), 403
+
+    if 'image' not in request.files:
+        return jsonify({"message":"No image file provided"}), 400
+
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({"message":"No selected file"}), 400
+
+    if file and allowed_file(file.filename):
+        filename = f"quest_{quest_id}_{file.filename}"
+        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        quest.image = filename
+        db.session.commit()
+        logger.info(f"Image updated for quest: {quest.id} - {quest.title}")
+        return jsonify({"message":"Image of quest updated successfully", "image_url": f"{request.host_url}uploads/{filename}"}),200
+    return jsonify({"message":"Invalid file type"}),400

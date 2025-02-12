@@ -251,6 +251,18 @@ curl -X GET http://100.26.99.106:5000/quests/user/<user_id> \
 curl -X GET "http://100.26.99.106:5000/quests/recent?limit=<int>" \
 -H "Content-Type: application/json"
 ```
+### /quests/all - get all quests:
+```
+curl -X GET http://100.26.99.106:5000/quests/all\?limit\=<int> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>"
+```
+### /quests/\<quest_id\>/image - set image for quest:
+```
+curl -X POST http://100.26.99.106:5000/quests/<quest_id>/image \
+-H "Authorization: Bearer <token>" \
+-F "image=@./<path_to_image>"
+```
 
 ## quest_progress routes
 
@@ -274,12 +286,6 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/answer 
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/complete \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
-```
-### /quests/all - get all quests:
-```
-curl -X GET http://100.26.99.106:5000/quests/all\?limit\=<int> \       11:14:28
--H "Content-Type: application/json" \
--H "Authorization: Bearer <token>"
 ```
 
 ## rating routes

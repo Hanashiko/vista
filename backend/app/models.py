@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
 class Quest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
+    image = db.Column(db.String(150), nullable=True)
     description = db.Column(db.Text, nullable=False)
     time_limit = db.Column(db.Integer, nullable=True)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
