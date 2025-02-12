@@ -19,3 +19,18 @@ def get_user_by_id(user_id):
     }
     logger.info(f"User data retrieved for user ID: {user_id}")
     return jsonify(user_data), 200
+
+@user_bp.route('/users',methods=['GET'])    
+@jwt_required()
+def get_all_users():
+    limit = request.args.get('limit', default=10, type=int)
+    users = User.query.limit(limit).all()
+    users_data = [
+        {
+            "id": user.id,
+            "email": user.email,
+            "name": user.name
+        } for user in users
+    ]
+    logger.info(f"All {limit} users retrieved")
+    return jsonify(users_data), 200

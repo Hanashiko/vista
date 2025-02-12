@@ -388,3 +388,9 @@ curl -X GET http://100.26.99.106:5000/user/<user_id> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
+### /users - get all users:
+```
+curl -X GET http://100.26.99.106:5000/users\?limit\=<int> \          11:21:15
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>"
+```
