@@ -3,7 +3,7 @@ from flask import Flask
 from .config import Config
 from .extensions import db, migrate, bcrypt, login_manager, jwt
 from .models import User, RevokedToken, Quest, Task, UserQuest, Rating
-from .routes import auth_bp, profile_bp, quest_bp, progress_bp, user_bp
+from .routes import auth_bp, profile_bp, quest_bp, progress_bp, user_bp, rating_bp, stats_bp, task_bp
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,3 +22,6 @@ app.register_blueprint(profile_bp)
 app.register_blueprint(quest_bp)
 app.register_blueprint(progress_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(rating_bp)
+app.register_blueprint(stats_bp)
+app.register_blueprint(task_bp)

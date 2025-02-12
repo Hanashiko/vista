@@ -28,14 +28,16 @@
 
 # Test cli commands:
 
+## auth commands 
+
 ### /register - register a user:
 ```
 curl -X POST http://100.26.99.106:5000/register \
 -H "Content-Type: application/json" \
 -d '{ 
-    "email":"@gmail.com", 
-    "password":"", 
-    "name":"" 
+    "email":"<string>@gmail.com", 
+    "password":"<string>", 
+    "name":"<string>" 
 }'
 ```
 ### /login - log in the user:
@@ -43,8 +45,8 @@ curl -X POST http://100.26.99.106:5000/register \
 curl -X POST http://100.26.99.106:5000/login \
 -H "Content-Type: application/json" \
 -d '{
-    "email":"@gmail.com",
-    "password":""
+    "email":"<string>@gmail.com",
+    "password":"<string>"
 }'
 ```
 ### /logout - logout user:
@@ -53,6 +55,9 @@ curl -X POST http://100.26.99.106:5000/logout \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
+
+## profile routes
+
 ### /profile - get information about the user:
 ```
 curl -X GET http://100.26.99.106:5000/profile \
@@ -65,9 +70,9 @@ curl -X PUT http://100.26.99.106:5000/profile \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 -d '{
-    "email": "@gmail.com",
-    "name": "",
-    "password": ""
+    "email": "<string>@gmail.com",
+    "name": "<string>",
+    "password": "<string>"
 }'
 ```
 ### /profile/avatar - update the user's avatar:
@@ -76,99 +81,173 @@ curl -X POST http://100.26.99.106:5000/profile/avatar \
 -H "Authorization: Bearer <token>" \
 -F "avatar=@./<path_to_image>"
 ```
-### /quests - create a quest:
+
+## quests routes 
+
+### /v1/quests - create a quest:
 ```
-curl -X POST http://100.26.99.106:5000/quests \
+curl -X POST http://100.26.99.106:5000/v1/quests \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
-    "title":"",
-    "description":"",
-    "time_limit":
+    "title":"<string>",
+    "description":"<string>",
+    "time_limit": <int>
 }'
 ```
+### /v2/quests - create a quest with questions right away:
+```
+curl -X POST http://100.26.99.106:5000/v2/quests \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>,
+    "tasks": [
+        {
+            "text": "<string>",
+            "question_type": "multiple_choice",
+            "points": <int>,
+            "options": [
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>}
+            ]
+        },
+        {
+            "text": "<string>",
+            "question_type": "open_ended",
+            "points": <int>,
+            "correct_answer": "<string>"
+        },
+        {
+            "text": "<string>",
+            "question_type": "multiple_choice",
+            "points": <int>,
+            "options": [
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>}
+            ]
+        },
+        {
+            "text": "<string>",
+            "question_type": "map_interactive",
+            "points": <int>,
+            "map_interactive": [
+                {"description": "<string>", "latitude": <int>,"longitude": <int>}
+            ]
+        }
+    ]
+}'
+
 ### /quests/\<quest_id\> - get information about the quest:
 ```
 curl -X GET http://100.26.99.106:5000/quests/<quest_id> \
 -H "Content-Type: application/json"\
 -H "Authorization: Bearer <token>"
 ```
-### /quests/\<quest_id\>/tasks - get list of tasks:
+### /v1/quests/\<quest_id\> - edit information about the quest:
 ```
-curl -X GET http://100.26.99.106:5000/quests/<quest_id>/tasks \
--H "Authorization: Bearer <token>" \
--H "Content-Type: application/json" 
-```
-### /quests/\<quest_id\>/rate - leave a review about the quest:
-```
-curl -X POST http://100.26.99.106:5000/quests/<quest_id>/rate \
+curl -X PUT http://100.26.99.106:5000/v1/quests/<quest_id> \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" \
+-H "Authorization: Bearer " \
 -d '{
-    "stars":,
-    "comment":""
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>
 }'
 ```
-### /quests/\<quest_id\>/tasks - add task with multiple_choise type with one correct answer:
+### /v2/quests/\<quest_id\> - edit information about the quest with tasks:
 ```
-curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
+curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id>/ \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" \
+-H "Authorization: Bearer " \
 -d '{
-    "text": "", 
-    "question_type": "multiple_choice", 
-    "points":,
-    "options": [
-        {"text": "", "is_correct": true}, 
-        {"text": "", "is_correct": false}, 
-        {"text": "", "is_correct": false}
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>,
+    "tasks": [
+        {
+            "id": <int>,
+            "text": "<string>",
+            "image": "<string>",
+            "video": "<string>",
+            "question_type": "open_ended",
+            "correct_answer": "<string>",
+            "points": <int>
+        },
+        {
+            "id": <int>,
+            "text": "<string>",
+            "image": "<string>",
+            "video": "<string>",
+            "question_type": "multiple_choice",
+            "points": <int>,
+            "options": [
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>}
+            ]
+        },
+        {
+            "id": <int>,
+            "text": "<string>",
+            "image": "<string>",
+            "video": "<string>",
+            "question_type": "multiple_choice",
+            "points": <int>,
+            "options": [
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>}
+            ]
+        },
+        {
+            "id": <int>,
+            "text": "<string>",
+            "image": "<string>",
+            "video": "<string>",
+            "question_type": "map_interactive",
+            "points": <int>,
+            "map_interactive": [
+                {"description": "<string>", "latitude": <int>,"longitude": <int>}
+            ]
+        }
+
+
     ]
 }'
 ```
-### /quests/\<quest_id\>/tasks - add task with multiple_choise type with several correct answers:
+### /quests/\<quest_id\> - delete quest:
 ```
-curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
+curl -X DELETE http://100.26.99.106:5000/quests/<quest_id> \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" \
--d '{
-    "text": "", 
-    "question_type": "multiple_choice", 
-    "points":, 
-    "options": [
-        {"text": "", "is_correct": true}, 
-        {"text": "", "is_correct": true}, 
-        {"text": "", "is_correct": false}, 
-        {"text": "", "is_correct":false}, 
-        {"text": "", "is_correct":true}
-    ]
-}'
+-H "Authorization: Bearer <token>"
 ```
-### /quests/\<quest_id\>/tasks - add task with open_ended type:
+### /quests/user - get all quests of user:
 ```
-curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
+curl -X GET http://100.26.99.106:5000/quests/user \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" \
--d '{
-    "text":"",
-    "question_type":"open_ended",
-    "points":,
-    "correct_answer":""
-}'
+-H "Authorization: Bearer <token>"
 ```
-### /quests/\<quest_id\>/tasks - add task with map_interactive type:
+### /quests/user/\<user_id\> - get all quests of user by id:
 ```
-curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
+curl -X GET http://100.26.99.106:5000/quests/user/<user_id> \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" \
--d '{
-    "text":"",
-    "question_type":"map_interactive",
-    "points":,
-    "map_interactive":[
-        {"description":"","latitude":,"longitude":}
-    ]
-}'
+-H "Authorization: Bearer <token>"
 ```
+### /quests/recent - get last added quests:
+```
+curl -X GET "http://100.26.99.106:5000/quests/recent?limit=<int>" \
+-H "Content-Type: application/json"
+```
+
+## quest_progress routes
+
 ### /quests/\<quest_id\>/start - start the process of completing the quest:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/start \
@@ -181,148 +260,119 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/answer 
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 -d '{
-    "answer": ["Paris"]
+    "answer": ["<string>"]
 }'
 ```
-### /quests/\<quest_id\>/complete - complete the process of completing the quest:
+### /quests/<quest_id>/complete - complete the process of completing the quest:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/complete \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 ```
-### /user/\<user_id\> - get information about user by id:
+
+## rating routes
+
+### /quests/\<quest_id\>/rate - leave a review about the quest:
 ```
-curl -X GET http://100.26.99.106:5000/user/<user_id> \
--H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" 
-```
-### /quests_tasks - create a quest with questions right away:
-```
-curl -X POST http://100.26.99.106:5000/quests_tasks \
+curl -X POST http://100.26.99.106:5000/quests/<quest_id>/rate \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
-    "title": "",
-    "description": "",
-    "time_limit": ,
-    "tasks": [
-        {
-            "text": "",
-            "question_type": "multiple_choice",
-            "points": ,
-            "options": [
-                {"text": "", "is_correct": true},
-                {"text": "", "is_correct": false},
-                {"text": "", "is_correct": false}
-            ]
-        },
-        {
-            "text": "",
-            "question_type": "open_ended",
-            "points": ,
-            "correct_answer": ""
-        },
-        {
-            "text": "",
-            "question_type": "multiple_choice",
-            "points": ,
-            "options": [
-                {"text: "", "is_correct": true},
-                {"text": "", "is_correct": true},
-                {"text": "", "is_correct": true},
-                {"text": "", "is_correct": false}
-            ]
-        },
-        {
-            "text": "",
-            "question_type": "map_interactive",
-            "points": ,
-            "map_interactive": [
-                {"description": "", "latitude": ,"longitude": }
-            ]
-        }
-    ]
+    "stars": <int>,
+    "comment": "<string>"
 }'
 ```
-### /quests/\<quest_id\>/public - get a public version of the quest, without marking the correct answers:
+### /quests/\<quest_id\>/ratings - get ratings of quest:
 ```
-curl -X GET http://100.26.99.106:5000/quests/<quest_id>/public \
+curl -X GET http://100.26.99.106:5000/quests/<quest_id>/ratings\?limit\=<int> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
-### /quests/\<quest_id\>/tasks/\<task_id\> - delete task from quest:
+### /ratings/user/\<user_id\> - get ratings that write user:
+```
+curl -X GET http://100.26.99.106:5000/ratings/user/<user_id>\?limit\=<int> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>"
+```
+
+## stats routes
+
+### /top_reviewers - get top reviewers from all database:
+```
+curl -X GET http://100.26.99.106:5000/top_reviewers\?limit\=<int>
+```
+
+## task routes
+
+### /quests/\<quest_id\>/tasks - add task:
+```
+curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "text": "<string>", 
+    "question_type": "multiple_choice", 
+    "points": <int>,
+    "options": [
+        {"text": "<string>", "is_correct": <bool>}, 
+        {"text": "<string>", "is_correct": <bool>}, 
+        {"text": "<string>", "is_correct": <bool>}
+    ]
+}'
+```
+```
+curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "text": "<string>", 
+    "question_type": "multiple_choice", 
+    "points": <int>, 
+    "options": [
+        {"text": "<string>", "is_correct": <bool>}, 
+        {"text": "<string>", "is_correct": <bool>}, 
+        {"text": "<string>", "is_correct": <bool>}, 
+        {"text": "<string>", "is_correct": <bool>}, 
+        {"text": "<string>", "is_correct": <bool>}
+    ]
+}'
+```
+```
+curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "text":"<string>",
+    "question_type":"open_ended",
+    "points": <int>,
+    "correct_answer": "<string>"
+}'
+```
+```
+curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "text":"<string>",
+    "question_type":"map_interactive",
+    "points": <int>,
+    "map_interactive":[
+        {"description":"<string>","latitude": <int>,"longitude": <int>}
+    ]
+}'
+```
+### /quests/\<quest_id\>/tasks/\<task_id\> - delete task:
 ```
 curl -X DELETE http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id> \                               13:06:47
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
-### /quests/\<quest_id\> - delete quest:
+
+## user routes
+
+### /user/\<user_id\> - get information about user by id:
 ```
-curl -X DELETE http://100.26.99.106:5000/quests/<quest_id> \
+curl -X GET http://100.26.99.106:5000/user/<user_id> \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer <token>"
-```
-### /quests/\<quest_id\> - edit quest:
-```
-curl -X PUT http://100.26.99.106:5000/quests/<quest_id> \
--H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" \
--d '{
-    "title": "",
-    "description": "",
-    "time_limit": 
-}'
-```
-### /quests/\<quest_id\>/tasks/\<task_id\> - edit task in quest:
-```
-curl -X PUT http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id> \
--H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" \
--d '{
-    "text": "",
-    "image": "",
-    "video": "",
-    "question_type": "open_ended",
-    "correct_answer": "",
-    "points": 
-}'
-```
-### /quests/\<quest_id\>/edit_with_tasks - edit info about quest and tasks:
-```
-curl -X PUT http://100.26.99.106:5000/quests/<quest_id>/edit_with_tasks \
--H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" \
--d '{
-    "title": "",
-    "description": "",
-    "time_limit": ,
-    "tasks": [
-        {
-            "id": ,
-            "text": "",
-            "image": "",
-            "video": "",
-            "question_type": "open_ended",
-            "correct_answer": "",
-            "points": 
-        }
-    ]
-}'
-```
-### /quests/user - get all quest of client user:
-```
-curl -X GET http://100.26.99.106:5000/quests/user \
--H "Content-Type: application/json" \
--H "Authorization: Bearer <token>"
-```
-### /quests/user/\<user_id\> - get all quest of user:
-```
-curl -X GET http://100.26.99.106:5000/quests/user/<user_id> \
--H "Content-Type: application/json" \
--H "Authorization: Bearer <token>"
-```
-### /quests/recent?limit=\<number\> - get last added quests:
-```
-curl -X GET "http://localhost:5000/quests/recent?limit=5" \
--H "Content-Type: application/json"
+-H "Authorization: Bearer <token>" 
 ```
