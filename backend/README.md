@@ -375,7 +375,7 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
 ```
 ### /quests/\<quest_id\>/tasks/\<task_id\> - delete task:
 ```
-curl -X DELETE http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id> \                               13:06:47
+curl -X DELETE http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
@@ -390,7 +390,7 @@ curl -X GET http://100.26.99.106:5000/user/<user_id> \
 ```
 ### /users - get all users:
 ```
-curl -X GET http://100.26.99.106:5000/users\?limit\=<int> \          11:21:15
+curl -X GET http://100.26.99.106:5000/users\?limit\=<int> \ 
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
