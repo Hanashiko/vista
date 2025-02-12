@@ -57,7 +57,7 @@ curl -X POST http://100.26.99.106:5000/logout \
 ```
 ### /refresh - refresh access token:
 ```
-curl -X POST http://100.26.99.106:5000/refresh \                                              10:20:42
+curl -X POST http://100.26.99.106:5000/refresh \ 
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <refresh_token>"
 ```
