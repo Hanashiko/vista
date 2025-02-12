@@ -27,7 +27,7 @@ def create_quest():
     db.session.commit()
 
     logger.info(f"Quest created successfully: {new_quest.title}")
-    return jsonify({"message": "Quest created successfully"}), 201
+    return jsonify({"message": "Quest created successfully", "quest_id": new_quest.id}), 201
 
 @quest_bp.route('/v2/quests', methods=['POST'])
 @jwt_required()
