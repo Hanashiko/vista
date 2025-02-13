@@ -233,7 +233,7 @@ export default function FormAddQuestion({ onDelete }) {
       );
 
       const response = await fetch(
-        "http://100.26.99.106:5000/quests/18/tasks",
+        "http://3.91.195.136:5000/quests/18/tasks",
         {
           method: "POST",
           headers: headers,
