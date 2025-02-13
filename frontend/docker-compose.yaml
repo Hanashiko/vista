@@ -1,0 +1,13 @@
+services:
+  react-app:
+    image: node:20
+    container_name: react-app 
+    working_dir: /app 
+    volumes:
+      - .:/app 
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: ["sh", "-c", "npm install && npm start"]
