@@ -7,7 +7,7 @@ services:
       - .:/app 
       - /app/node_modules
     ports:
-      - "443:3000"
+      - "80:3000"
     environment:
       - NODE_ENV=development
     command: ["sh", "-c", "npm install && npm start"]
