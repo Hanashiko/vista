@@ -33,7 +33,7 @@ export default function CreateQuest() {
   //   };
 
   //   try {
-  //     const response = await fetch("http://100.26.99.106:5000/v1/quests", {
+  //     const response = await fetch("http://3.91.195.136:5000/v1/quests", {
   //       method: "POST",
   //       headers: {
   //         "Content-Type": "application/json",
