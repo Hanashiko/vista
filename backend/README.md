@@ -236,13 +236,13 @@ curl -X DELETE http://100.26.99.106:5000/quests/<quest_id> \
 ```
 ### /quests/user - get all quests of user:
 ```
-curl -X GET http://100.26.99.106:5000/quests/user \
+curl -X GET http://100.26.99.106:5000/quests/user?limit=<int> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 ### /quests/user/\<user_id\> - get all quests of user by id:
 ```
-curl -X GET http://100.26.99.106:5000/quests/user/<user_id> \
+curl -X GET http://100.26.99.106:5000/quests/user/<user_id>?limit=<int> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```

@@ -86,10 +86,12 @@ def create_quest_with_tasks():
 @jwt_required()
 def get_quest(quest_id):
     quest = Quest.query.get_or_404(quest_id)
+    image_url = f"{request.host_url}uploads/{quest.image}" if quest.image else None
     quest_data = {
         "title": quest.title,
         "description": quest.description,
         "time_limit": quest.time_limit,
+        "image": image_url,
         "tasks": [
             {
                 "id": task.id,
