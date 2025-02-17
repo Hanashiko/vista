@@ -12,7 +12,11 @@ def register():
     data = request.get_json()
     logger.info(f"Register request: {data}")
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(email=data['email'], password=hashed_password, name=data['name'])
+    name = data.get('name')
+    email = data.get('email')
+    if User.query.filter_by(email=email).first():
+        return jsonify({"error":"User alredy exists"}),400
+    new_user = User(email=email, password=hashed_password, name=name)
     db.session.add(new_user)
     db.session.commit()
     login_user(new_user)
