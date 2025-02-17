@@ -286,7 +286,7 @@ def get_recent_quests():
 @jwt_required()
 def get_all_quests():
     limit = request.args.get('limit',default=10, type=int)
-    quests = Quest.query.order_by(Quest.id.desc()).limit(limit).all()
+    quests = Quest.query.limit(limit).all()
     image_url = f"{request.host_url}uploads/{quest.image}" if quest.image else None
     quests_data = [
             {
