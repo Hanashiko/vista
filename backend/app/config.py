@@ -16,5 +16,5 @@ class Config:
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     UPLOAD_URL = f'http://{HOST}:{PORT}/uploads'
 
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=1)
-    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=7)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=20)

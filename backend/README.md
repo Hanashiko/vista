@@ -74,7 +74,7 @@ curl -X GET http://100.26.99.106:5000/profile \
 ```
 curl -X PUT http://100.26.99.106:5000/profile \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer <token>" 
+-H "Authorization: Bearer <token>" \
 -d '{
     "email": "<string>@gmail.com",
     "name": "<string>",
