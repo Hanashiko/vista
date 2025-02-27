@@ -269,14 +269,14 @@ def get_quests_by_user_id(user_id):
 def get_recent_quests():
     limit = request.args.get('limit', default=10, type=int)
     recent_quests = Quest.query.order_by(Quest.id.desc()).limit(limit).all()
-    image_url = f"{request.host_url}uploads/{quest.image}" if quest.image else None
+    # image_url = f"{request.host_url}uploads/{quest.image}" if quest.image else None
     recent_quests_data = [
         {
             "id": quest.id,
             "title": quest.title,
             "description": quest.description,
             "time_limit": quest.time_limit,
-            "image": image_url
+            "image": f"{request.host_url}uploads/{quest.image}" if quest.image else None
         } for quest in recent_quests
     ]
     logger.info(f"Recent {limit} quests retrieved")
@@ -286,10 +286,10 @@ def get_recent_quests():
 @jwt_required()
 def get_all_quests():
     limit = request.args.get('limit',default=10, type=int)
-    page = request.args.get('page', default=1, type=int)
-    if page < 1 or limit < 1:
-        return jsonify({"error":"page and limit must be positive integers"}), 400
-    quests = Quest.query.paginate(page=page, per_page=limit, error_out=False).items
+    # page = request.args.get('page', default=1, type=int)
+    # if page < 1 or limit < 1:
+        # return jsonify({"error":"page and limit must be positive integers"}), 400
+    quests = Quest.query.limit(limit).іall()
     if not quests:
         return jsonify({"error":"No quests found for the giver page"}), 404
     quests_data = [
