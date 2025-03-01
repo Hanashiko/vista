@@ -42,4 +42,3 @@ npm start
 ```
 
 > Детальніше в [frontend/README.md](./frontend/README.md)
-
