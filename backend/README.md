@@ -285,6 +285,40 @@ curl -X PUT http://<ip_address>/v1/quests/<quest_id> \
 -H "Authorization: Bearer " \
 -d '{
     "title": "<string>",
+    "time_limit": <int>
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "description": "<string>",
+    "time_limit": <int>
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "description": "<string>"
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "time_limit": <int>
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "title": "<string>",
     "description": "<string>",
     "time_limit": <int>
 }'
@@ -303,9 +337,206 @@ curl -X PUT http://<ip_address>/v2/quests/<quest_id> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer " \
 -d '{
+    "title": "<string>"
+}'
+```
+```
+curl -X PUT http://<ip_address>/v2/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "time_limit": <int>
+}'
+```
+```
+curl -X PUT http://<ip_address>/v2/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "title": "<string>",
+    "description": "<string>"
+}'
+```
+```
+curl -X PUT http://<ip_address>/v2/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "title": "<string>",
+    "time_limit": <int>
+}'
+```
+```
+curl -X PUT http://<ip_address>/v2/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "description": "<string>",
+    "time_limit": <int>
+}'
+```
+```
+curl -X PUT http://<ip_address>/v2/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
     "title": "<string>",
     "description": "<string>",
     "time_limit": <int>
+}'
+```
+```
+curl -X PUT http://<ip_address>/v2/quests/<quest_id>/ \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>,
+    "tasks": [
+        {
+            "id": <int>,
+            "text": "<string>",
+            "question_type": "open_ended",
+            "correct_answer": "<string>",
+            "points": <int>
+        }
+    ]
+}'
+```
+```
+curl -X PUT http://<ip_address>/v2/quests/<quest_id>/ \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>,
+    "tasks": [
+         {
+            "id": <int>,
+            "text": "<string>",
+            "question_type": "multiple_choice",
+            "points": <int>,
+            "options": [
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>}
+            ]
+        }
+   ]
+}'
+```
+```
+curl -X PUT http://<ip_address>/v2/quests/<quest_id>/ \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>,
+    "tasks": [
+        {
+            "id": <int>,
+            "text": "<string>",
+            "question_type": "multiple_choice",
+            "points": <int>,
+            "options": [
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>}
+            ]
+        },
+        {
+            "id": <int>,
+            "text": "<string>",
+            "question_type": "map_interactive",
+            "points": <int>,
+            "map_interactive": [
+                {"description": "<string>", "latitude": <int>,"longitude": <int>}
+            ]
+        }
+    ]
+}'
+```
+```
+curl -X PUT http://<ip_address>/v2/quests/<quest_id>/ \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>,
+    "tasks": [
+        {
+            "id": <int>,
+            "text": "<string>",
+            "question_type": "map_interactive",
+            "points": <int>,
+            "map_interactive": [
+                {"description": "<string>", "latitude": <int>,"longitude": <int>}
+            ]
+        }
+    ]
+}'
+```
+```
+curl -X PUT http://<ip_address>/v2/quests/<quest_id>/ \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>,
+    "tasks": [
+        {
+            "id": <int>,
+            "text": "<string>",
+            "question_type": "open_ended",
+            "correct_answer": "<string>",
+            "points": <int>
+        },
+        {
+            "id": <int>,
+            "text": "<string>",
+            "question_type": "multiple_choice",
+            "points": <int>,
+            "options": [
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>}
+            ]
+        }
+    ]
+}'
+```
+```
+curl -X PUT http://<ip_address>/v2/quests/<quest_id>/ \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>,
+    "tasks": [
+        {
+            "id": <int>,
+            "text": "<string>",
+            "question_type": "open_ended",
+            "correct_answer": "<string>",
+            "points": <int>
+        },
+        {
+            "id": <int>,
+            "text": "<string>",
+            "question_type": "map_interactive",
+            "points": <int>,
+            "map_interactive": [
+                {"description": "<string>", "latitude": <int>,"longitude": <int>}
+            ]
+        }
+    ]
 }'
 ```
 ```
@@ -356,8 +587,6 @@ curl -X PUT http://<ip_address>/v2/quests/<quest_id>/ \
                 {"description": "<string>", "latitude": <int>,"longitude": <int>}
             ]
         }
-
-
     ]
 }'
 ```
