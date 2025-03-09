@@ -385,6 +385,18 @@ curl -X DELETE http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
+### /quests/\<quest_id\>/tasks/\<task_id\>/image - set image for task:
+```
+curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/image \
+-H "Authorization: Bearer <token>" \
+-F "image=@./<path_to_image>"
+```
+### /quests/\<quest_id\>/tasks/\<task_id\>/video - set video for task:
+```
+curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/video \
+-H "Authorization: Bearer <token>" \
+-F "video=@./<path_to_image>"
+```
 
 ## user routes
 
