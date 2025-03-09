@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
 from ..models import Quest, User, Task, TaskOption, MapInteraction
 import os
+import uuid
 
 quest_bp = Blueprint('quest', __name__)
 
@@ -316,7 +317,8 @@ def upload_quest_image(quest_id):
         return jsonify({"message":"No selected file"}), 400
 
     if file and allowed_file(file.filename):
-        filename = f"quest_{quest_id}_{file.filename}"
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        filename = f"quest_{quest_id}_{uuid.uuid4()}.{ext}"
         file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         quest.image = filename

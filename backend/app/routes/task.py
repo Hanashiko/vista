@@ -1,4 +1,3 @@
-from re import L
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
@@ -6,6 +5,7 @@ from ..models import Task, TaskOption, MapInteraction, Quest
 from ..config import Config
 from werkzeug.utils import secure_filename
 import os
+import uuid
 
 task_bp = Blueprint('task', __name__)
 
@@ -112,7 +112,8 @@ def upload_task_image(quest_id, task_id):
         return jsonify({"message":"No selected file"}), 400
 
     if file and allowed_file_image(file.filename):
-        filename = f"quest_{quest_id}_task_{task_id}_{file.filename}"
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        filename = f"task_{task_id}_{uuid.uuid4()}.{ext}"
         file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         task.image = filename
@@ -139,7 +140,8 @@ def uploads_task_video(quest_id, task_id):
         return jsonify({"message":"No selected file"}), 400
 
     if file and allowed_file_video(file.filename):
-        filename = f"quest_{quest_id}_task_{task_id}_{file.filename}"
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        filename = f"task_{task_id}_{uuid.uuid4()}.{ext}"
         file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         task.video = filename

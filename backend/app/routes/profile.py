@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger, bcrypt
 from ..models import User
 import os
+import uuid
 
 profile_bp = Blueprint('profile', __name__)
 
@@ -56,7 +57,8 @@ def upload_avatar():
         return jsonify({"message": "No selected file"}), 400
 
     if file and allowed_file(file.filename):
-        filename = f"user_{user_id}_{file.filename}"
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        filename = f"user_{user_id}_{uuid.uuid4()}.{ext}"
         file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         user.avatar = filename
