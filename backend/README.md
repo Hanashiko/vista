@@ -157,6 +157,65 @@ curl -X POST http://<ip_address>/v2/quests \
 -d '{
     "title": "<string>",
     "description": "<string>",
+    "time_limit": <int>
+}'
+```
+```
+curl -X POST http://<ip_address>/v2/quests \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>,
+    "tasks": [
+        {
+            "text": "<string>",
+            "question_type": "open_ended",
+            "points": <int>,
+            "correct_answer": "<string>"
+        }
+    ]
+}'
+```
+```
+curl -X POST http://<ip_address>/v2/quests \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>,
+    "tasks": [
+        {
+            "text": "<string>",
+            "question_type": "multiple_choice",
+            "points": <int>,
+            "options": [
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>},
+                {"text": "<string>", "is_correct": <bool>}
+            ]
+        },
+        {
+            "text": "<string>",
+            "question_type": "map_interactive",
+            "points": <int>,
+            "map_interactive": [
+                {"description": "<string>", "latitude": <int>,"longitude": <int>}
+            ]
+        }
+    ]
+}'
+```
+```
+curl -X POST http://<ip_address>/v2/quests \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "title": "<string>",
+    "description": "<string>",
     "time_limit": <int>,
     "tasks": [
         {
