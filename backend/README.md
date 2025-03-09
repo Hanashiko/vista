@@ -368,6 +368,10 @@ curl -X DELETE http://<ip_address>/v1/quests/<quest_id> \
 ```
 ### /v1/quests/user - get all quests of user:
 ```
+curl -X GET http://<ip_address>/v1/quests/user \
+-H "Authorization: Bearer <token>"
+```
+```
 curl -X GET http://<ip_address>/v1/quests/user?limit=<int> \
 -H "Authorization: Bearer <token>"
 ```
