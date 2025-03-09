@@ -83,7 +83,7 @@ def create_quest_with_tasks():
         return jsonify({"message":"Quest and tasks created successfully"}),201
 
 
-@quest_bp.route('/quests/<int:quest_id>', methods=['GET'])
+@quest_bp.route('/v1/quests/<int:quest_id>', methods=['GET'])
 @jwt_required()
 def get_quest(quest_id):
     quest = Quest.query.get_or_404(quest_id)
@@ -206,7 +206,7 @@ def edit_quest_with_tasks(quest_id):
     logger.info(f"Quest {quest_id} and its tasks edited by user {user_id}")
     return jsonify({"message": "Quest and tasks edited successfully"}), 200
 
-@quest_bp.route('/quests/<int:quest_id>', methods=['DELETE'])
+@quest_bp.route('/v1/quests/<int:quest_id>', methods=['DELETE'])
 @jwt_required()
 def delete_quest(quest_id):
     user_id = get_jwt_identity()
@@ -226,7 +226,7 @@ def delete_quest(quest_id):
     logger.info(f"Quest {quest_id} deleted by user {user_id}")
     return jsonify({"message": "Quest deleted successfully"}), 200
 
-@quest_bp.route('/quests/user', methods=['GET'])
+@quest_bp.route('/v1/quests/user', methods=['GET'])
 @jwt_required()
 def get_user_quests():
     user_id = get_jwt_identity()
@@ -245,7 +245,7 @@ def get_user_quests():
     logger.info(f"Quests retrieved for user {user_id}")
     return jsonify(quests_data), 200
 
-@quest_bp.route('/quests/user/<int:user_id>', methods=['GET'])
+@quest_bp.route('/v1/quests/user/<int:user_id>', methods=['GET'])
 @jwt_required()
 def get_quests_by_user_id(user_id):
     limit = request.args.get('limit', default=10, type=int)
@@ -262,7 +262,7 @@ def get_quests_by_user_id(user_id):
     logger.info(f"Quests retrieved for user {user_id}")
     return jsonify(quests_data), 200
 
-@quest_bp.route('/quests/recent', methods=['GET'])
+@quest_bp.route('/v1/quests/recent', methods=['GET'])
 def get_recent_quests():
     limit = request.args.get('limit', default=10, type=int)
     recent_quests = Quest.query.order_by(Quest.id.desc()).limit(limit).all()
@@ -278,7 +278,7 @@ def get_recent_quests():
     logger.info(f"Recent {limit} quests retrieved")
     return jsonify(recent_quests_data), 200
 
-@quest_bp.route('/quests/all',methods=['GET'])
+@quest_bp.route('/v1/quests/all',methods=['GET'])
 @jwt_required()
 def get_all_quests():
     limit = request.args.get('limit',default=10, type=int)
@@ -297,7 +297,7 @@ def get_all_quests():
     logger.info(f"All {limit} quests retrieved")
     return jsonify(quests_data),200
 
-@quest_bp.route('/quests/<int:quest_id>/image', methods=['POST'])
+@quest_bp.route('/v1/quests/<int:quest_id>/image', methods=['POST'])
 @jwt_required()
 def upload_quest_image(quest_id):
     user_id = get_jwt_identity()

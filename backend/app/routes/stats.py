@@ -4,7 +4,7 @@ from ..models import Rating, User
 
 stats_bp = Blueprint('stats', __name__)
 
-@stats_bp.route('/top_reviewers', methods=['GET'])
+@stats_bp.route('/v1/top_reviewers', methods=['GET'])
 def get_top_reviewers():
     limit = request.args.get('limit', default=10, type=int)
     top_reviewers = db.session.query(User, db.func.count(Rating.id).label('reviews_count')) \

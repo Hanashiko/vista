@@ -5,7 +5,7 @@ from ..models import Rating, User
 
 rating_bp = Blueprint('rating', __name__)
 
-@rating_bp.route('/quests/<int:quest_id>/rate', methods=['POST'])
+@rating_bp.route('/v1/quests/<int:quest_id>/rate', methods=['POST'])
 @jwt_required()
 def rate_quest(quest_id):
     user_id = get_jwt_identity()
@@ -22,7 +22,7 @@ def rate_quest(quest_id):
     logger.info(f"Quest rated successfully by user {user_id}: {quest_id}")
     return jsonify({"message": "Quest rated successfully"}), 201
 
-@rating_bp.route('/quests/<int:quest_id>/ratings', methods=['GET'])
+@rating_bp.route('/v1/quests/<int:quest_id>/ratings', methods=['GET'])
 @jwt_required()
 def get_quest_ratings(quest_id):
     limit = request.args.get('limit', default=10, type=int)
@@ -38,7 +38,7 @@ def get_quest_ratings(quest_id):
     logger.info(f"Ratings retrieved for quest {quest_id}")
     return jsonify(ratings_data), 200
 
-@rating_bp.route('/ratings/user/<int:user_id>', methods=['GET'])
+@rating_bp.route('/v1/ratings/user/<int:user_id>', methods=['GET'])
 @jwt_required()
 def get_user_ratings(user_id):
     limit = request.args.get('limit', default=10, type=int)

@@ -6,7 +6,7 @@ from ..models import Quest, Task, TaskOption, MapInteraction, UserQuest
 
 progress_bp = Blueprint('progress',__name__)
 
-@progress_bp.route('/quests/<int:quest_id>/start', methods=['POST'])
+@progress_bp.route('/v1/quests/<int:quest_id>/start', methods=['POST'])
 @jwt_required()
 def start_quest(quest_id):
     user_id = get_jwt_identity()
@@ -28,7 +28,7 @@ def start_quest(quest_id):
     logger.info(f"User {user_id} started quest {quest.title}")
     return jsonify({"message":"Quest started successfully"}),201
 
-@progress_bp.route('/quests/<int:quest_id>/tasks/<int:task_id>/answer', methods=['POST'])
+@progress_bp.route('/v1/quests/<int:quest_id>/tasks/<int:task_id>/answer', methods=['POST'])
 @jwt_required()
 def answer_task(quest_id, task_id):
     user_id = get_jwt_identity()
@@ -66,7 +66,7 @@ def answer_task(quest_id, task_id):
     logger.info(f"User {user_id} answered task {task_id} in quest {quest.title}")
     return jsonify({"message":"Answer recorded successfully","points_earned":points_earned}),200
 
-@progress_bp.route('/quests/<int:quest_id>/complete', methods=['POST'])
+@progress_bp.route('/v1/quests/<int:quest_id>/complete', methods=['POST'])
 @jwt_required()
 def complete_quest(quest_id):
     user_id = get_jwt_identity()

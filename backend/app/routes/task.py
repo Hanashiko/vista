@@ -15,33 +15,22 @@ def allowed_file_image(filename):
 def allowed_file_video(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'gif','mp4','avi'}
 
-@task_bp.route('/quests/<int:quest_id>/tasks', methods=['POST'])
+@task_bp.route('/v1/quests/<int:quest_id>/tasks', methods=['POST'])
 @jwt_required()
 def add_task_to_quest(quest_id):
-    user_id = int(get_jwt_identity())
+    user_id = get_jwt_identity()
     quest = Quest.query.get_or_404(quest_id)
     
     logger.info(f"User {user_id} is trying to add a task to quest {quest_id}")
     
-    if int(quest.author_id) != user_id:
+    if int(quest.author_id) != int(user_id):
         logger.warning(f"User {user_id} is not the author of quest {quest_id}")
         return jsonify({"message": "You are not the author of this quest"}), 403
     
     data = request.get_json()
 
-    image = None
-    video = None
-
-    if 'image' in request.files and allowed_file(request.files['image'].filename):
-        image = save_file(request.files['image'], current_app.config['UPLOAD_FOLDER'])
-
-    if 'video' in request.files and allowed_file(request.files['video'].filename):
-        video = save_file(request.files['video'], current_app.config['UPLOAD_FOLDER'])
-
     new_task = Task(
         text=data['text'],
-        image=image,
-        video=video,
         question_type=data['question_type'],
         correct_answer=data.get('correct_answer'),
         points=data.get('points', 0),
@@ -74,7 +63,7 @@ def add_task_to_quest(quest_id):
     logger.info(f"Task added to quest {quest.title} by user {user_id}")
     return jsonify({"message": "Task added successfully"}), 201
 
-@task_bp.route('/quests/<int:quest_id>/tasks/<int:task_id>', methods=['DELETE'])
+@task_bp.route('/v1/quests/<int:quest_id>/tasks/<int:task_id>', methods=['DELETE'])
 @jwt_required()
 def delete_task(quest_id, task_id):
     user_id = get_jwt_identity()
@@ -94,7 +83,7 @@ def delete_task(quest_id, task_id):
     logger.info(f"Task {task_id} deleted from quest {quest_id} by user {user_id}")
     return jsonify({"message": "Task deleted successfully"}), 200
 
-@task_bp.route('/quests/<int:quest_id>/tasks/<int:task_id>/image', methods=['POST'])
+@task_bp.route('/v1/quests/<int:quest_id>/tasks/<int:task_id>/image', methods=['POST'])
 @jwt_required()
 def upload_task_image(quest_id, task_id):
     user_id = get_jwt_identity()
@@ -122,7 +111,7 @@ def upload_task_image(quest_id, task_id):
         return jsonify({"message":"Image of task updated successfully","image_url":f"{request.host_url}uploads/{filename}"}),200
     return jsonify({"message":"Invalid file type"}),400
 
-@task_bp.route('/quests/<int:quest_id>/tasks/<int:task_id>/video', methods=['POST'])
+@task_bp.route('/v1/quests/<int:quest_id>/tasks/<int:task_id>/video', methods=['POST'])
 @jwt_required()
 def uploads_task_video(quest_id, task_id):
     user_id = get_jwt_identity()
