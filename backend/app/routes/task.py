@@ -161,8 +161,7 @@ def edit_task(quest_id, task_id):
     if 'correct_answer' in data:
         task.correct_answer = data['correct_answer']
     if 'points' in data:
-
-~/web/vista/backend server-features ⇡ ❯ git a        task.points = data['points']
+        task.points = data['points']
 
     db.session.commit()
 
