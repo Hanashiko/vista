@@ -2,6 +2,7 @@ version: '3'
 
 services:
   mariadb:
+    container_name: vista-mariadb
     image: mariadb:latest
     restart: always
     environment:
@@ -15,6 +16,7 @@ services:
       - ./data:/var/lib/mysql
 
   phpmyadmin:
+    container_name: vista-phpmyadmin
     image: phpmyadmin/phpmyadmin
     restart: always
     environment:
@@ -27,6 +29,7 @@ services:
       - mariadb
 
   flask_app:
+    container_name: vista-flask
     build: .
     restart: always
     depends_on:
