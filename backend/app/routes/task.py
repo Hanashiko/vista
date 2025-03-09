@@ -138,4 +138,52 @@ def uploads_task_video(quest_id, task_id):
         logger.info(f"Video updated for task: {task.id} from quest: {quest.id} - {quest.title}")
         return jsonify({"message":"Video of task updated successfully","image_url":f"{request.host_url}uploads/{filename}"})
     return jsonify({"message":"Invalid file type"}),400
-        
+       
+@task_bp.route('/v1/quests/<int:quest_id>/tasks/<int:task_id>', methods=['PUT'])
+@jwt_required()
+def edit_task(quest_id, task_id):
+    user_id = get_jwt_identity()
+    quest = Quest.query.get_or_404(quest_id)
+    task = Task.query.get_or_404(task_id)
+
+    if int(quest.author_id) != int(user_id):
+        return jsonify({"message":"You are not authorized to edit this task"}),403
+
+    data = request.get_json()
+
+    if 'text' in data:
+        task.text = data['text']
+    if 'question_type' in data:
+        task.question_type = data['question_type']
+    if 'correct_answer' in data:
+        task.correct_answer = data['correct_answer']
+    if 'points' in data:
+        task.points = data['points']
+
+    db.session.commit()
+
+    if 'options' in data:
+        TaskOption.query.filter_by(task_id=task_id).delete()
+        for option in data['options']:
+            new_option = TaskOption(
+                text=option['text'],
+                is_correct=option['is_correct'],
+                task_id=task.id 
+            )
+            db.session.add(new_option)
+        db.session.commit()
+
+    if 'map_interactions' in data:
+        MapInteraction.query.filter_by(task_id=task_id).delete()
+        for interaction in data['map_interactions']:
+            new_interaction = MapInteraction(
+                description=interaction['description'],
+                latitude=interaction['latitude'],
+                longitude=interaction['longitude'],
+                task_id=task.id
+            )
+            db.session.add(new_interaction)
+        db.session.commit()
+    
+    logger.info(f"Task {task_id} in quest {quest_id} edited by user {user_id}")           
+    return jsonify({"message":"Task edited successfully"}),200
