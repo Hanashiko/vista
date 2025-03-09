@@ -73,6 +73,57 @@ curl -X PUT http://100.26.99.106:5000/v1/profile \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
+    "email": "<string>@gmail.com"
+}'
+```
+```
+curl -X PUT http://100.26.99.106:5000/v1/profile \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "name": "<string>"
+}'
+```
+```
+curl -X PUT http://100.26.99.106:5000/v1/profile \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "password": "<string>"
+}'
+```
+```
+curl -X PUT http://100.26.99.106:5000/v1/profile \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "email": "<string>@gmail.com",
+    "password": "<string>"
+}'
+```
+```
+curl -X PUT http://100.26.99.106:5000/v1/profile \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "email": "<string>@gmail.com",
+    "name": "<string>"
+}'
+```
+```
+curl -X PUT http://100.26.99.106:5000/v1/profile \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "name": "<string>",
+    "password": "<string>"
+}'
+```
+```
+curl -X PUT http://100.26.99.106:5000/v1/profile \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
     "email": "<string>@gmail.com",
     "name": "<string>",
     "password": "<string>"
