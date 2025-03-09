@@ -276,6 +276,15 @@ curl -X PUT http://<ip_address>/v1/quests/<quest_id> \
 -H "Authorization: Bearer " \
 -d '{
     "title": "<string>",
+    "description": "<string>"
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "title": "<string>",
     "description": "<string>",
     "time_limit": <int>
 }'
