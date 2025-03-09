@@ -52,13 +52,11 @@ curl -X POST http://100.26.99.106:5000/login \
 ### /logout - logout user:
 ```
 curl -X POST http://100.26.99.106:5000/logout \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 ### /refresh - refresh access token:
 ```
 curl -X POST http://100.26.99.106:5000/refresh \ 
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <refresh_token>"
 ```
 
@@ -67,7 +65,6 @@ curl -X POST http://100.26.99.106:5000/refresh \
 ### /profile - get information about the user:
 ```
 curl -X GET http://100.26.99.106:5000/profile \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 ### /profile - change user data:
@@ -152,7 +149,6 @@ curl -X POST http://100.26.99.106:5000/v2/quests \
 ### /quests/\<quest_id\> - get information about the quest:
 ```
 curl -X GET http://100.26.99.106:5000/quests/<quest_id> \
--H "Content-Type: application/json"\
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/quests/\<quest_id\> - edit information about the quest:
@@ -223,30 +219,25 @@ curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id>/ \
 ### /quests/\<quest_id\> - delete quest:
 ```
 curl -X DELETE http://100.26.99.106:5000/quests/<quest_id> \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 ### /quests/user - get all quests of user:
 ```
 curl -X GET http://100.26.99.106:5000/quests/user?limit=<int> \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 ### /quests/user/\<user_id\> - get all quests of user by id:
 ```
 curl -X GET http://100.26.99.106:5000/quests/user/<user_id>?limit=<int> \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 ### /quests/recent - get last added quests:
 ```
-curl -X GET "http://100.26.99.106:5000/quests/recent?limit=<int>" \
--H "Content-Type: application/json"
+curl -X GET "http://100.26.99.106:5000/quests/recent?limit=<int>"
 ```
 ### /quests/all - get all quests:
 ```
 curl -X GET http://100.26.99.106:5000/quests/all\?limit\=<int> \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 ### /quests/\<quest_id\>/image - set image for quest:
@@ -261,7 +252,6 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/image \
 ### /quests/\<quest_id\>/start - start the process of completing the quest:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/start \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 ```
 ### /quests/\<quest_id\>/tasks/\<task_id\>/answer - save your answer:
@@ -276,7 +266,6 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/answer 
 ### /quests/\<quest_id\>/complete - complete the process of completing the quest:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/complete \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 ```
 
@@ -295,13 +284,11 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/rate \
 ### /quests/\<quest_id\>/ratings - get ratings of quest:
 ```
 curl -X GET http://100.26.99.106:5000/quests/<quest_id>/ratings\?limit\=<int> \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 ### /ratings/user/\<user_id\> - get ratings that write user:
 ```
 curl -X GET http://100.26.99.106:5000/ratings/user/<user_id>\?limit\=<int> \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 
@@ -374,7 +361,6 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks \
 ### /quests/\<quest_id\>/tasks/\<task_id\> - delete task:
 ```
 curl -X DELETE http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id> \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 ### /quests/\<quest_id\>/tasks/\<task_id\>/image - set image for task:
@@ -395,12 +381,10 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/video \
 ### /user/\<user_id\> - get information about user by id:
 ```
 curl -X GET http://100.26.99.106:5000/user/<user_id> \
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
 ### /users - get all users:
 ```
 curl -X GET http://100.26.99.106:5000/users\?limit\=<int> \ 
--H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>"
 ```
