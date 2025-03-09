@@ -21,18 +21,3 @@ def get_top_reviewers():
     ]
     logger.info(f"Top reviewers retrieved")
     return jsonify(reviewers_data), 200
-
-# TODO: need to test
-@stats_bp.route('/v1/users', methods=['GET'])    
-def get_all_users():
-    limit = request.args.get('limit', default=10, type=int)
-    users = User.query.limit(limit).all()
-    users_data = [
-        {
-            "id": user.id,
-            "email": user.email,
-            "name": user.name
-        } for user in users
-    ]
-    logger.info(f"All users retrieved")
-    return jsonify(users_data), 200
