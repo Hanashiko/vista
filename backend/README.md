@@ -157,12 +157,38 @@ curl -X PUT http://100.26.99.106:5000/v1/quests/<quest_id> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer " \
 -d '{
+    "title": "<string>"
+}'
+```
+```
+curl -X PUT http://100.26.99.106:5000/v1/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
     "title": "<string>",
     "description": "<string>",
     "time_limit": <int>
 }'
 ```
 ### /v2/quests/\<quest_id\> - edit information about the quest with tasks:
+```
+curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "description": "<string>"
+}'
+```
+```
+curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer " \
+-d '{
+    "title": "<string>",
+    "description": "<string>",
+    "time_limit": <int>
+}'
+```
 ```
 curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id>/ \
 -H "Content-Type: application/json" \
