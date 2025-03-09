@@ -377,6 +377,10 @@ curl -X GET http://<ip_address>/v1/quests/user?limit=<int> \
 ```
 ### /v1/quests/user/\<user_id\> - get all quests of user by id:
 ```
+curl -X GET http://<ip_address>/v1/quests/user/<user_id> \
+-H "Authorization: Bearer <token>"
+```
+```
 curl -X GET http://<ip_address>/v1/quests/user/<user_id>?limit=<int> \
 -H "Authorization: Bearer <token>"
 ```
