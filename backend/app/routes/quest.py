@@ -284,7 +284,7 @@ def get_recent_quests():
 @jwt_required()
 def get_all_quests():
     limit = request.args.get('limit',default=10, type=int)
-    quests = Quest.query.limit(limit).іall()
+    quests = Quest.query.limit(limit).all()
     if not quests:
         return jsonify({"error":"No quests found for the giver page"}), 404
     quests_data = [
