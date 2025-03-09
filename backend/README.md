@@ -889,6 +889,15 @@ curl -X PUT http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id> \
     ]
 }'
 ```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "text": "<string>", 
+    "points": <int>
+}'
+```
 
 ## user routes
 
