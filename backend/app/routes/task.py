@@ -154,12 +154,15 @@ def edit_task(quest_id, task_id):
 
     if 'text' in data:
         task.text = data['text']
-    if 'question_type' in data:
+    if 'question_type' in data and task.question_type != data['question_type']:
+        TaskOption.query.filter_by(task_id=task_id).delete()
+        MapInteraction.query.filter_by(task_id=task_id).delete()
         task.question_type = data['question_type']
     if 'correct_answer' in data:
         task.correct_answer = data['correct_answer']
     if 'points' in data:
-        task.points = data['points']
+
+~/web/vista/backend server-features ⇡ ❯ git a        task.points = data['points']
 
     db.session.commit()
 
