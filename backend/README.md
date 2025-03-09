@@ -179,8 +179,6 @@ curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id>/ \
         {
             "id": <int>,
             "text": "<string>",
-            "image": "<string>",
-            "video": "<string>",
             "question_type": "open_ended",
             "correct_answer": "<string>",
             "points": <int>
@@ -188,8 +186,6 @@ curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id>/ \
         {
             "id": <int>,
             "text": "<string>",
-            "image": "<string>",
-            "video": "<string>",
             "question_type": "multiple_choice",
             "points": <int>,
             "options": [
@@ -201,8 +197,6 @@ curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id>/ \
         {
             "id": <int>,
             "text": "<string>",
-            "image": "<string>",
-            "video": "<string>",
             "question_type": "multiple_choice",
             "points": <int>,
             "options": [
@@ -215,8 +209,6 @@ curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id>/ \
         {
             "id": <int>,
             "text": "<string>",
-            "image": "<string>",
-            "video": "<string>",
             "question_type": "map_interactive",
             "points": <int>,
             "map_interactive": [
@@ -281,7 +273,7 @@ curl -X POST http://100.26.99.106:5000/quests/<quest_id>/tasks/<task_id>/answer 
     "answer": ["<string>"]
 }'
 ```
-### /quests/<quest_id>/complete - complete the process of completing the quest:
+### /quests/\<quest_id\>/complete - complete the process of completing the quest:
 ```
 curl -X POST http://100.26.99.106:5000/quests/<quest_id>/complete \
 -H "Content-Type: application/json" \
