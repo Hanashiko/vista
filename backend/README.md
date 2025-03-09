@@ -386,6 +386,10 @@ curl -X GET http://<ip_address>/v1/quests/user/<user_id>?limit=<int> \
 ```
 ### /v1/quests/recent - get last added quests:
 ```
+curl -X GET "http://<ip_address>/v1/quests/recent"
+```
+
+```
 curl -X GET "http://<ip_address>/v1/quests/recent?limit=<int>"
 ```
 ### /v1/quests/all - get all quests:
