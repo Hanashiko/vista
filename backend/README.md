@@ -32,7 +32,7 @@
 
 ### /v1/register - register a user:
 ```
-curl -X POST http://100.26.99.106:5000/v1/register \
+curl -X POST http://<ip_address>/v1/register \
 -H "Content-Type: application/json" \
 -d '{ 
     "email":"<string>@gmail.com", 
@@ -42,7 +42,7 @@ curl -X POST http://100.26.99.106:5000/v1/register \
 ```
 ### /v1/login - log in the user:
 ```
-curl -X POST http://100.26.99.106:5000/v1/login \
+curl -X POST http://<ip_address>/v1/login \
 -H "Content-Type: application/json" \
 -d '{
     "email":"<string>@gmail.com",
@@ -51,12 +51,12 @@ curl -X POST http://100.26.99.106:5000/v1/login \
 ```
 ### /v1/logout - logout user:
 ```
-curl -X POST http://100.26.99.106:5000/v1/logout \
+curl -X POST http://<ip_address>/v1/logout \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/refresh - refresh access token:
 ```
-curl -X POST http://100.26.99.106:5000/v1/refresh \ 
+curl -X POST http://<ip_address>/v1/refresh \ 
 -H "Authorization: Bearer <refresh_token>"
 ```
 
@@ -64,20 +64,20 @@ curl -X POST http://100.26.99.106:5000/v1/refresh \
 
 ### /v1/profile - get information about the user:
 ```
-curl -X GET http://100.26.99.106:5000/v1/profile \
+curl -X GET http://<ip_address>/v1/profile \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/profile - change user data:
 ```
-curl -X PUT http://100.26.99.106:5000/v1/profile \
+curl -X PUT http://<ip_address>/v1/profile \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
-    "email": "<string>@gmail.com"
+    "email": "<string>@gmail.com"<F5>
 }'
 ```
 ```
-curl -X PUT http://100.26.99.106:5000/v1/profile \
+curl -X PUT http://<ip_address>/v1/profile \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -85,7 +85,7 @@ curl -X PUT http://100.26.99.106:5000/v1/profile \
 }'
 ```
 ```
-curl -X PUT http://100.26.99.106:5000/v1/profile \
+curl -X PUT http://<ip_address>/v1/profile \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -93,7 +93,7 @@ curl -X PUT http://100.26.99.106:5000/v1/profile \
 }'
 ```
 ```
-curl -X PUT http://100.26.99.106:5000/v1/profile \
+curl -X PUT http://<ip_address>/v1/profile \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -102,7 +102,7 @@ curl -X PUT http://100.26.99.106:5000/v1/profile \
 }'
 ```
 ```
-curl -X PUT http://100.26.99.106:5000/v1/profile \
+curl -X PUT http://<ip_address>/v1/profile \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -111,7 +111,7 @@ curl -X PUT http://100.26.99.106:5000/v1/profile \
 }'
 ```
 ```
-curl -X PUT http://100.26.99.106:5000/v1/profile \
+curl -X PUT http://<ip_address>/v1/profile \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -120,7 +120,7 @@ curl -X PUT http://100.26.99.106:5000/v1/profile \
 }'
 ```
 ```
-curl -X PUT http://100.26.99.106:5000/v1/profile \
+curl -X PUT http://<ip_address>/v1/profile \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -131,7 +131,7 @@ curl -X PUT http://100.26.99.106:5000/v1/profile \
 ```
 ### /v1/profile/avatar - update the user's avatar:
 ```
-curl -X POST http://100.26.99.106:5000/v1/profile/avatar \
+curl -X POST http://<ip_address>/v1/profile/avatar \
 -H "Authorization: Bearer <token>" \
 -F "avatar=@./<path_to_image>"
 ```
@@ -140,7 +140,7 @@ curl -X POST http://100.26.99.106:5000/v1/profile/avatar \
 
 ### /v1/quests - create a quest:
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests \
+curl -X POST http://<ip_address>/v1/quests \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -151,7 +151,7 @@ curl -X POST http://100.26.99.106:5000/v1/quests \
 ```
 ### /v2/quests - create a quest with questions right away:
 ```
-curl -X POST http://100.26.99.106:5000/v2/quests \
+curl -X POST http://<ip_address>/v2/quests \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -199,12 +199,12 @@ curl -X POST http://100.26.99.106:5000/v2/quests \
 ```
 ### /v1/quests/\<quest_id\> - get information about the quest:
 ```
-curl -X GET http://100.26.99.106:5000/v1/quests/<quest_id> \
+curl -X GET http://<ip_address>/v1/quests/<quest_id> \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/quests/\<quest_id\> - edit information about the quest:
 ```
-curl -X PUT http://100.26.99.106:5000/v1/quests/<quest_id> \
+curl -X PUT http://<ip_address>/v1/quests/<quest_id> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer " \
 -d '{
@@ -212,7 +212,7 @@ curl -X PUT http://100.26.99.106:5000/v1/quests/<quest_id> \
 }'
 ```
 ```
-curl -X PUT http://100.26.99.106:5000/v1/quests/<quest_id> \
+curl -X PUT http://<ip_address>/v1/quests/<quest_id> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer " \
 -d '{
@@ -223,7 +223,7 @@ curl -X PUT http://100.26.99.106:5000/v1/quests/<quest_id> \
 ```
 ### /v2/quests/\<quest_id\> - edit information about the quest with tasks:
 ```
-curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id> \
+curl -X PUT http://<ip_address>/v2/quests/<quest_id> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer " \
 -d '{
@@ -231,7 +231,7 @@ curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id> \
 }'
 ```
 ```
-curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id> \
+curl -X PUT http://<ip_address>/v2/quests/<quest_id> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer " \
 -d '{
@@ -241,7 +241,7 @@ curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id> \
 }'
 ```
 ```
-curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id>/ \
+curl -X PUT http://<ip_address>/v2/quests/<quest_id>/ \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer " \
 -d '{
@@ -295,31 +295,31 @@ curl -X PUT http://100.26.99.106:5000/v2/quests/<quest_id>/ \
 ```
 ### /v1/quests/\<quest_id\> - delete quest:
 ```
-curl -X DELETE http://100.26.99.106:5000/v1/quests/<quest_id> \
+curl -X DELETE http://<ip_address>/v1/quests/<quest_id> \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/quests/user - get all quests of user:
 ```
-curl -X GET http://100.26.99.106:5000/v1/quests/user?limit=<int> \
+curl -X GET http://<ip_address>/v1/quests/user?limit=<int> \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/quests/user/\<user_id\> - get all quests of user by id:
 ```
-curl -X GET http://100.26.99.106:5000/v1/quests/user/<user_id>?limit=<int> \
+curl -X GET http://<ip_address>/v1/quests/user/<user_id>?limit=<int> \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/quests/recent - get last added quests:
 ```
-curl -X GET "http://100.26.99.106:5000/v1/quests/recent?limit=<int>"
+curl -X GET "http://<ip_address>/v1/quests/recent?limit=<int>"
 ```
 ### /v1/quests/all - get all quests:
 ```
-curl -X GET http://100.26.99.106:5000/v1/quests/all\?limit\=<int> \
+curl -X GET http://<ip_address>/v1/quests/all\?limit\=<int> \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/quests/\<quest_id\>/image - set image for quest:
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/image \
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/image \
 -H "Authorization: Bearer <token>" \
 -F "image=@./<path_to_image>"
 ```
@@ -328,12 +328,12 @@ curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/image \
 
 ### /v1/quests/\<quest_id\>/start - start the process of completing the quest:
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/start \
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/start \
 -H "Authorization: Bearer <token>" 
 ```
 ### /v1/quests/\<quest_id\>/tasks/\<task_id\>/answer - save your answer:
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks/<task_id>/answer \
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id>/answer \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 -d '{
@@ -342,7 +342,7 @@ curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks/<task_id>/answ
 ```
 ### /v1/quests/\<quest_id\>/complete - complete the process of completing the quest:
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/complete \
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/complete \
 -H "Authorization: Bearer <token>" 
 ```
 
@@ -350,7 +350,7 @@ curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/complete \
 
 ### /v1/quests/\<quest_id\>/rate - leave a review about the quest:
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/rate \
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/rate \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -360,12 +360,12 @@ curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/rate \
 ```
 ### /v1/quests/\<quest_id\>/ratings - get ratings of quest:
 ```
-curl -X GET http://100.26.99.106:5000/v1/quests/<quest_id>/ratings\?limit\=<int> \
+curl -X GET http://<ip_address>/v1/quests/<quest_id>/ratings\?limit\=<int> \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/ratings/user/\<user_id\> - get ratings that write user:
 ```
-curl -X GET http://100.26.99.106:5000/v1/ratings/user/<user_id>\?limit\=<int> \
+curl -X GET http://<ip_address>/v1/ratings/user/<user_id>\?limit\=<int> \
 -H "Authorization: Bearer <token>"
 ```
 
@@ -373,14 +373,14 @@ curl -X GET http://100.26.99.106:5000/v1/ratings/user/<user_id>\?limit\=<int> \
 
 ### /v1/top_reviewers - get top reviewers from all database:
 ```
-curl -X GET http://100.26.99.106:5000/v1/top_reviewers\?limit\=<int>
+curl -X GET http://<ip_address>/v1/top_reviewers\?limit\=<int>
 ```
 
 ## task routes
 
 ### /v1/quests/\<quest_id\>/tasks - add task:
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks \
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/tasks \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -395,7 +395,7 @@ curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks \
 }'
 ```
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks \
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/tasks \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -412,7 +412,7 @@ curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks \
 }'
 ```
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks \
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/tasks \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -423,7 +423,7 @@ curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks \
 }'
 ```
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks \
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/tasks \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" \
 -d '{
@@ -437,18 +437,18 @@ curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks \
 ```
 ### /v1/quests/\<quest_id\>/tasks/\<task_id\> - delete task:
 ```
-curl -X DELETE http://100.26.99.106:5000/v1/quests/<quest_id>/tasks/<task_id> \
+curl -X DELETE http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id> \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/quests/\<quest_id\>/tasks/\<task_id\>/image - set image for task:
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks/<task_id>/image \
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id>/image \
 -H "Authorization: Bearer <token>" \
 -F "image=@./<path_to_image>"
 ```
 ### /v1/quests/\<quest_id\>/tasks/\<task_id\>/video - set video for task:
 ```
-curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks/<task_id>/video \
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id>/video \
 -H "Authorization: Bearer <token>" \
 -F "video=@./<path_to_image>"
 ```
@@ -457,11 +457,11 @@ curl -X POST http://100.26.99.106:5000/v1/quests/<quest_id>/tasks/<task_id>/vide
 
 ### /v1/user/\<user_id\> - get information about user by id:
 ```
-curl -X GET http://100.26.99.106:5000/v1/user/<user_id> \
+curl -X GET http://<ip_address>/v1/user/<user_id> \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/users - get all users:
 ```
-curl -X GET http://100.26.99.106:5000/v1/users\?limit\=<int> \ 
+curl -X GET http://<ip_address>/v1/users\?limit\=<int> \ 
 -H "Authorization: Bearer <token>"
 ```
