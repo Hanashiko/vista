@@ -472,6 +472,9 @@ curl -X GET http://<ip_address>/v1/ratings/user/<user_id>\?limit\=<int> \
 
 ### /v1/top_reviewers - get top reviewers from all database:
 ```
+curl -X GET http://<ip_address>/v1/top_reviewers
+```
+```
 curl -X GET http://<ip_address>/v1/top_reviewers\?limit\=<int>
 ```
 
@@ -560,6 +563,10 @@ curl -X GET http://<ip_address>/v1/user/<user_id> \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/users - get all users:
+```
+curl -X GET http://<ip_address>/v1/users \ 
+-H "Authorization: Bearer <token>"
+```
 ```
 curl -X GET http://<ip_address>/v1/users\?limit\=<int> \ 
 -H "Authorization: Bearer <token>"
