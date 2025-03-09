@@ -138,7 +138,8 @@ def uploads_task_video(quest_id, task_id):
         logger.info(f"Video updated for task: {task.id} from quest: {quest.id} - {quest.title}")
         return jsonify({"message":"Video of task updated successfully","image_url":f"{request.host_url}uploads/{filename}"})
     return jsonify({"message":"Invalid file type"}),400
-       
+
+# TODO: need to test
 @task_bp.route('/v1/quests/<int:quest_id>/tasks/<int:task_id>', methods=['PUT'])
 @jwt_required()
 def edit_task(quest_id, task_id):
