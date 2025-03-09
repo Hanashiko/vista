@@ -420,6 +420,14 @@ curl -X POST http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id>/answer \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <token>" 
 -d '{
+    "answer": ["<string>","<string>"]
+}'
+```
+```
+curl -X POST http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id>/answer \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" 
+-d '{
     "answer": ["<string>"]
 }'
 ```
