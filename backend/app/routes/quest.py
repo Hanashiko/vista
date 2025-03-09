@@ -49,8 +49,6 @@ def create_quest_with_tasks():
         for task_data in data['tasks']:
             new_task = Task(
                 text=task_data['text'],
-                image=task_data.get('image'),
-                video=task_data.get('video'),
                 question_type=task_data['question_type'],
                 correct_answer=task_data.get('correct_answer'),
                 points=task_data.get('points',0),
