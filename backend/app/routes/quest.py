@@ -132,12 +132,9 @@ def edit_quest(quest_id):
 
     data = request.get_json()
 
-    if 'title' in data:
-        quest.tite = data['title']
-    if 'description' in data['description']:
-        quest.description = data['description']
-    if 'time_limit' in data['time_limit']:
-        quest.time_limit = data['time_limit']
+    quest.title = data.get('title', quest.title)
+    quest.description = data.get('description', quest.description)
+    quest.time_limit = data.get('time_limit', quest.time_limit)
 
     db.session.commit()
     logger.info(f"Quest {quest_id} edited by user {user_id}")
