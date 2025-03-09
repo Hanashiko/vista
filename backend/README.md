@@ -783,6 +783,112 @@ curl -X POST http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id>/video \
 -H "Authorization: Bearer <token>" \
 -F "video=@./<path_to_image>"
 ```
+### /v1/quests/\<quest_id\>/tasks/\<task_id\> - edit information about the task:
+```
+curl -X PUT http://<ip_address>/v1?quests/<quest_id>/tasks/<task_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "text":"<string>",
+    "question_type": "multiple_choice",
+    "points": <int>,
+    "options": [
+        {"text":"<string>", "is_correct":"<bool>"},
+        {"text":"<string>", "is_correct":"<bool>"},
+        {"text":"<string>", "is_correct":"<bool>"}
+    ]
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "text": "<string>", 
+    "question_type": "multiple_choice", 
+    "points": <int>, 
+    "options": [
+        {"text": "<string>", "is_correct": <bool>}, 
+        {"text": "<string>", "is_correct": <bool>}, 
+        {"text": "<string>", "is_correct": <bool>}, 
+        {"text": "<string>", "is_correct": <bool>}, 
+        {"text": "<string>", "is_correct": <bool>}
+    ]
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "text":"<string>",
+    "question_type":"open_ended",
+    "points": <int>,
+    "correct_answer": "<string>"
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "text":"<string>",
+    "question_type":"map_interactive",
+    "points": <int>,
+    "map_interactive":[
+        {"description":"<string>","latitude": <int>,"longitude": <int>}
+    ]
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1?quests/<quest_id>/tasks/<task_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "text":"<string>"
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "points": <int>
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1?quests/<quest_id>/tasks/<task_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "question_type": "multiple_choice",
+    "options": [
+        {"text":"<string>", "is_correct":"<bool>"},
+        {"text":"<string>", "is_correct":"<bool>"},
+        {"text":"<string>", "is_correct":"<bool>"}
+    ]
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "question_type":"open_ended",
+    "correct_answer": "<string>"
+}'
+```
+```
+curl -X PUT http://<ip_address>/v1/quests/<quest_id>/tasks/<task_id> \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <token>" \
+-d '{
+    "question_type":"map_interactive",
+    "map_interactive":[
+        {"description":"<string>","latitude": <int>,"longitude": <int>}
+    ]
+}'
+```
 
 ## user routes
 
