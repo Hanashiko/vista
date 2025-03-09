@@ -451,10 +451,18 @@ curl -X POST http://<ip_address>/v1/quests/<quest_id>/rate \
 ```
 ### /v1/quests/\<quest_id\>/ratings - get ratings of quest:
 ```
+curl -X GET http://<ip_address>/v1/quests/<quest_id>/ratings \
+-H "Authorization: Bearer <token>"
+```
+```
 curl -X GET http://<ip_address>/v1/quests/<quest_id>/ratings\?limit\=<int> \
 -H "Authorization: Bearer <token>"
 ```
 ### /v1/ratings/user/\<user_id\> - get ratings that write user:
+```
+curl -X GET http://<ip_address>/v1/ratings/user/<user_id> \
+-H "Authorization: Bearer <token>"
+```
 ```
 curl -X GET http://<ip_address>/v1/ratings/user/<user_id>\?limit\=<int> \
 -H "Authorization: Bearer <token>"
