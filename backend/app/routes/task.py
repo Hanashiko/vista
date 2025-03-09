@@ -139,7 +139,6 @@ def uploads_task_video(quest_id, task_id):
         return jsonify({"message":"Video of task updated successfully","image_url":f"{request.host_url}uploads/{filename}"})
     return jsonify({"message":"Invalid file type"}),400
 
-# TODO: need to test
 @task_bp.route('/v1/quests/<int:quest_id>/tasks/<int:task_id>', methods=['PUT'])
 @jwt_required()
 def edit_task(quest_id, task_id):
@@ -157,6 +156,8 @@ def edit_task(quest_id, task_id):
     if 'question_type' in data and task.question_type != data['question_type']:
         TaskOption.query.filter_by(task_id=task_id).delete()
         MapInteraction.query.filter_by(task_id=task_id).delete()
+        if task.question_type == "open_ended":
+            task.correct_answer = None
         task.question_type = data['question_type']
     if 'correct_answer' in data:
         task.correct_answer = data['correct_answer']
