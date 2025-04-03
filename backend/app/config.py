@@ -18,3 +18,7 @@ class Config:
 
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=30)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=60)
+
+    SWAGGER = {
+        "title": "API Documentation for quest system"
+    }
