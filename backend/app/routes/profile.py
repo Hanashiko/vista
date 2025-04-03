@@ -3,13 +3,14 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger, bcrypt
 from ..models import User
 import os
+import uuid
 
 profile_bp = Blueprint('profile', __name__)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
 
-@profile_bp.route('/profile', methods=['GET'])
+@profile_bp.route('/v1/profile', methods=['GET'])
 @jwt_required()
 def profile():
     user_id = get_jwt_identity()
@@ -25,7 +26,7 @@ def profile():
     logger.info(f"Profile data retrieved for user: {user.email}")
     return jsonify(user_data), 200
 
-@profile_bp.route('/profile', methods=['PUT'])
+@profile_bp.route('/v1/profile', methods=['PUT'])
 @jwt_required()
 def update_profile():
     user_id = get_jwt_identity()
@@ -43,7 +44,7 @@ def update_profile():
     logger.info(f"Profile updated for user: {user.email}")
     return jsonify({"message": "Profile updated successfully"}), 200
 
-@profile_bp.route('/profile/avatar', methods=['POST'])
+@profile_bp.route('/v1/profile/avatar', methods=['POST'])
 @jwt_required()
 def upload_avatar():
     user_id = get_jwt_identity()
@@ -56,7 +57,8 @@ def upload_avatar():
         return jsonify({"message": "No selected file"}), 400
 
     if file and allowed_file(file.filename):
-        filename = f"user_{user_id}_{file.filename}"
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        filename = f"user_{user_id}_{uuid.uuid4()}.{ext}"
         file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         user.avatar = filename
@@ -66,6 +68,6 @@ def upload_avatar():
 
     return jsonify({"message": "Invalid file type"}), 400
 
-@profile_bp.route('/uploads/<filename>', methods=['GET'])
+@profile_bp.route('/v1/uploads/<filename>', methods=['GET'])
 def uploaded_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)

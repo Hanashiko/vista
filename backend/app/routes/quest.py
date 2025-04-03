@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
 from ..models import Quest, User, Task, TaskOption, MapInteraction
 import os
+import uuid
 
 quest_bp = Blueprint('quest', __name__)
 
@@ -48,8 +49,6 @@ def create_quest_with_tasks():
         for task_data in data['tasks']:
             new_task = Task(
                 text=task_data['text'],
-                image=task_data.get('image'),
-                video=task_data.get('video'),
                 question_type=task_data['question_type'],
                 correct_answer=task_data.get('correct_answer'),
                 points=task_data.get('points',0),
@@ -82,14 +81,16 @@ def create_quest_with_tasks():
         return jsonify({"message":"Quest and tasks created successfully"}),201
 
 
-@quest_bp.route('/quests/<int:quest_id>', methods=['GET'])
+@quest_bp.route('/v1/quests/<int:quest_id>', methods=['GET'])
 @jwt_required()
 def get_quest(quest_id):
     quest = Quest.query.get_or_404(quest_id)
+    image_url = f"{request.host_url}uploads/{quest.image}" if quest.image else None
     quest_data = {
         "title": quest.title,
         "description": quest.description,
         "time_limit": quest.time_limit,
+        "image": image_url,
         "tasks": [
             {
                 "id": task.id,
@@ -129,12 +130,9 @@ def edit_quest(quest_id):
 
     data = request.get_json()
 
-    if 'title' in data:
-        quest.tite = data['title']
-    if 'description' in data['description']:
-        quest.description = data['description']
-    if 'time_limit' in data['time_limit']:
-        quest.time_limit = data['time_limit']
+    quest.title = data.get('title', quest.title)
+    quest.description = data.get('description', quest.description)
+    quest.time_limit = data.get('time_limit', quest.time_limit)
 
     db.session.commit()
     logger.info(f"Quest {quest_id} edited by user {user_id}")
@@ -206,7 +204,7 @@ def edit_quest_with_tasks(quest_id):
     logger.info(f"Quest {quest_id} and its tasks edited by user {user_id}")
     return jsonify({"message": "Quest and tasks edited successfully"}), 200
 
-@quest_bp.route('/quests/<int:quest_id>', methods=['DELETE'])
+@quest_bp.route('/v1/quests/<int:quest_id>', methods=['DELETE'])
 @jwt_required()
 def delete_quest(quest_id):
     user_id = get_jwt_identity()
@@ -226,24 +224,26 @@ def delete_quest(quest_id):
     logger.info(f"Quest {quest_id} deleted by user {user_id}")
     return jsonify({"message": "Quest deleted successfully"}), 200
 
-@quest_bp.route('/quests/user', methods=['GET'])
+@quest_bp.route('/v1/quests/user', methods=['GET'])
 @jwt_required()
 def get_user_quests():
     user_id = get_jwt_identity()
     limit = request.args.get('limit', default=10, type=int)
     quests = Quest.query.filter_by(author_id=user_id).order_by(Quest.id.desc()).limit(limit).all()
+    image_url = f"{request.host_url}uploads/{quest.image}" if quest.image else None
     quests_data = [
         {
             "id": quest.id,
             "title": quest.title,
             "description": quest.description,
-            "time_limit": quest.time_limit
+            "time_limit": quest.time_limit,
+            "image": image_url
         } for quest in quests
     ]
     logger.info(f"Quests retrieved for user {user_id}")
     return jsonify(quests_data), 200
 
-@quest_bp.route('/quests/user/<int:user_id>', methods=['GET'])
+@quest_bp.route('/v1/quests/user/<int:user_id>', methods=['GET'])
 @jwt_required()
 def get_quests_by_user_id(user_id):
     limit = request.args.get('limit', default=10, type=int)
@@ -253,13 +253,14 @@ def get_quests_by_user_id(user_id):
             "id": quest.id,
             "title": quest.title,
             "description": quest.description,
-            "time_limit": quest.time_limit
+            "time_limit": quest.time_limit,
+            "image": f"{request.host_url}uploads/{quest.image}" if quest.image else None
         } for quest in quests
     ]
     logger.info(f"Quests retrieved for user {user_id}")
     return jsonify(quests_data), 200
 
-@quest_bp.route('/quests/recent', methods=['GET'])
+@quest_bp.route('/v1/quests/recent', methods=['GET'])
 def get_recent_quests():
     limit = request.args.get('limit', default=10, type=int)
     recent_quests = Quest.query.order_by(Quest.id.desc()).limit(limit).all()
@@ -268,29 +269,33 @@ def get_recent_quests():
             "id": quest.id,
             "title": quest.title,
             "description": quest.description,
-            "time_limit": quest.time_limit
+            "time_limit": quest.time_limit,
+            "image": f"{request.host_url}uploads/{quest.image}" if quest.image else None
         } for quest in recent_quests
     ]
     logger.info(f"Recent {limit} quests retrieved")
     return jsonify(recent_quests_data), 200
 
-@quest_bp.route('/quests/all',methods=['GET'])
+@quest_bp.route('/v1/quests/all',methods=['GET'])
 @jwt_required()
 def get_all_quests():
     limit = request.args.get('limit',default=10, type=int)
-    quests = Quest.query.order_by(Quest.id.desc()).limit(limit).all()
+    quests = Quest.query.limit(limit).all()
+    if not quests:
+        return jsonify({"error":"No quests found for the giver page"}), 404
     quests_data = [
             {
                 "id": quest.id,
                 "title": quest.title,
                 "description": quest.description,
-                "time_limit": quest.time_limit 
+                "time_limit": quest.time_limit,
+                "image": f"{request.host_url}uploads/{quest.image}" if quest.image else None
             } for quest in quests 
     ]
     logger.info(f"All {limit} quests retrieved")
     return jsonify(quests_data),200
 
-@quest_bp.route('/quests/<int:quest_id>/image', methods=['POST'])
+@quest_bp.route('/v1/quests/<int:quest_id>/image', methods=['POST'])
 @jwt_required()
 def upload_quest_image(quest_id):
     user_id = get_jwt_identity()
@@ -307,7 +312,8 @@ def upload_quest_image(quest_id):
         return jsonify({"message":"No selected file"}), 400
 
     if file and allowed_file(file.filename):
-        filename = f"quest_{quest_id}_{file.filename}"
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        filename = f"quest_{quest_id}_{uuid.uuid4()}.{ext}"
         file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         quest.image = filename
