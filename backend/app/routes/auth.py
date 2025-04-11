@@ -36,12 +36,20 @@ def register():
 @swag_from(SWAGGER_FILE, validation=True)
 def login():
     data = request.get_json()
-    logger.info(f"Login request: {data}")
+    logger.info(f"Login request for email: {data.get('email')}")
+
+    if not data or 'email' not in data or 'password' not in data:
+        return jsonify({"message": "Email and password are required"}), 400
+
     user = User.query.filter_by(email=data['email']).first()
-    
-    if not user and bcrypt.check_password_hash(user.password, data['password']):
-        logger.warning(f"Login failed for email: {data['email']}")
-        return jsonify({"message": "Login failed"}), 401
+
+    if not user:
+        logger.warning(f"Login failed - user not found: {data['email']}")
+        return jsonify({"message":"Invalid email or password"}), 401
+
+    if not bcrypt.check_password_hash(user.password, data['password']):
+        logger.warning(f"Login failed - invalid password for: {data['email']}")
+        return jsonify({"message":"Invalid email or password"}), 401
     
     login_user(user)
     
@@ -49,7 +57,11 @@ def login():
     refresh_token = create_refresh_token(identity=str(user.id))
     
     logger.info(f"User logged in successfully: {user.email}")
-    return jsonify({"message": "Logged in successfully", "access_token": access_token, "refresh_token": refresh_token}), 200
+    return jsonify({
+        "message": "Logged in successfully", 
+        "access_token": access_token, 
+        "refresh_token": refresh_token
+    }), 200
 
 @auth_bp.route('/v1/refresh',methods=['POST'])
 @swag_from(SWAGGER_FILE,validation=True)
