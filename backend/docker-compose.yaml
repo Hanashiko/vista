@@ -28,7 +28,7 @@ services:
     depends_on:
       - mariadb
 
-  flask_app:
+  flaskapp:
     container_name: vista-flask
     build: .
     restart: always
