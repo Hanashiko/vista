@@ -22,11 +22,11 @@ export default function MyHistoryQuests() {
       const headers = new Headers();
       headers.append(
         "Authorization",
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczOTc5MjM2NCwianRpIjoiMWZiMWZjMTctNDRiMC00ZThjLTljOGEtNmE4MjYxOTU0ZDE3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIiLCJuYmYiOjE3Mzk3OTIzNjQsImNzcmYiOiJlMWYyNTA4OS01MmU5LTQwNGQtOTJkMS01YzFlZmMzOWI2NDQiLCJleHAiOjE3Mzk4Nzg3NjR9._3xa9tXJbVnj3u-V4bSlsmZUC-BAmkt9Mram8EjBpEk"
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0ODExNjMyMSwianRpIjoiZTc5MDQxOTUtMTlhMy00ZDFkLThmNDYtZjg1Y2JhMGI4M2JkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjE0IiwibmJmIjoxNzQ4MTE2MzIxLCJjc3JmIjoiZjFmNGVhZTgtYzc0Ny00NWRkLWE0YWQtNTc3ZmUzNDU4NzVhIiwiZXhwIjoxNzUwNzA4MzIxfQ.cAMjuyH28twxzBnEtw6McvoYp2J16JaabRv_QMbh88U"
       );
 
       const response = await fetch(
-        `http://54.89.245.167:5000/quests/recent?limit=3`,
+        `http://46.63.19.144:5000/v1/quests/recent?limit=3`,
         {
           method: "GET",
           headers: headers,
