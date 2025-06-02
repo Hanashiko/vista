@@ -30,7 +30,7 @@ export default function MyQuests() {
       headers.append("Content-Type", "application/json");
       headers.append(
         "Authorization",
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0ODExNjMyMSwianRpIjoiZTc5MDQxOTUtMTlhMy00ZDFkLThmNDYtZjg1Y2JhMGI4M2JkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjE0IiwibmJmIjoxNzQ4MTE2MzIxLCJjc3JmIjoiZjFmNGVhZTgtYzc0Ny00NWRkLWE0YWQtNTc3ZmUzNDU4NzVhIiwiZXhwIjoxNzUwNzA4MzIxfQ.cAMjuyH28twxzBnEtw6McvoYp2J16JaabRv_QMbh88U"
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0ODg5NTE2MiwianRpIjoiYTM4YWJhOWMtZmJlMC00NDk5LTgyYzgtYjQ0ZGNmY2Q5ZDExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NDg4OTUxNjIsImNzcmYiOiJhMzZmMTBlYS0yYzIwLTQ0N2EtYjNhNy00YzA1NTA5YTUwZWUiLCJleHAiOjE3NTE0ODcxNjJ9.JsN8GP71WaPBZgcup6eLgZkLpPOS0_owFVMNM6kG110"
       );
 
       const response = await fetch(`http://46.63.19.144:5000/v1/quests/${id}`, {
@@ -53,7 +53,7 @@ export default function MyQuests() {
       const headers = new Headers();
       headers.append(
         "Authorization",
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0ODExNjMyMSwianRpIjoiZTc5MDQxOTUtMTlhMy00ZDFkLThmNDYtZjg1Y2JhMGI4M2JkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjE0IiwibmJmIjoxNzQ4MTE2MzIxLCJjc3JmIjoiZjFmNGVhZTgtYzc0Ny00NWRkLWE0YWQtNTc3ZmUzNDU4NzVhIiwiZXhwIjoxNzUwNzA4MzIxfQ.cAMjuyH28twxzBnEtw6McvoYp2J16JaabRv_QMbh88U"
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0ODg5NTE2MiwianRpIjoiYTM4YWJhOWMtZmJlMC00NDk5LTgyYzgtYjQ0ZGNmY2Q5ZDExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NDg4OTUxNjIsImNzcmYiOiJhMzZmMTBlYS0yYzIwLTQ0N2EtYjNhNy00YzA1NTA5YTUwZWUiLCJleHAiOjE3NTE0ODcxNjJ9.JsN8GP71WaPBZgcup6eLgZkLpPOS0_owFVMNM6kG110"
       );
 
       const response = await fetch(
@@ -96,39 +96,6 @@ export default function MyQuests() {
               setSearchText={setSearchText}
             />
             <div className="MainContentQuests">
-              {/* {quests && (
-                <ul className="MainListOfQuest">
-                  {quests.map((quest) => (
-                    <li key={quest.id} className="MainItemofListQuest">
-                      <img
-                        src={quest.image}
-                        alt="фото квесту"
-                        className="ListOfQuestOfImage"
-                      />
-                      <h3 className="ListOfQuestTitle"> {quest.title}</h3>
-
-                      <div className="DateAndBtn">
-                        <p className="ListOfQuestDate">{date}</p>
-                        <button
-                          className="MainListOfQuestBtnRedit"
-                          type="button"
-                          onClick={() => handleEdit(quest.id)}
-                        >
-                          Редагувати
-                        </button>
-                      </div>
-                      <button
-                        className="MainListOfQuestBtnDelete"
-                        type="button"
-                        onClick={() => DeleteFunc(quest.id)}
-                      >
-                        Видалити
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )} */}
-
               <div className="filterOfQuestOnPageOfQuest">
                 {filterOfQuest.map((filterOfQuest) => (
                   <ul className="MainListOfQuest">

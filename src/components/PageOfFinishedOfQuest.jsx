@@ -18,32 +18,6 @@ export default function JustQuest() {
     correctAnswers: 0,
   };
   const { questId } = useParams();
-  // const fetchAllQuests = async () => {
-  //   try {
-  //     const headers = new Headers();
-  //     headers.append(
-  //       "Authorization",
-  //       "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczOTk2OTYxMiwianRpIjoiNTFlNTNmMGUtZGJlMS00YjZmLTgyZjYtOGFjY2UyMjZiNzU3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3Mzk5Njk2MTIsImNzcmYiOiI2NmU0NjJhNS1jMGZkLTRmN2EtOGYxNS1hZDljYmEwYTJkODYiLCJleHAiOjE3NDI1NjE2MTJ9.1q6B7-rzchZgUwTEf_rBY5-No-7D6qDqk4ynbeO0neQ"
-  //     );
-
-  //     const response = await fetch(
-  //       `http://54.89.245.167:5000/quests/${questId}`,
-  //       {
-  //         method: "GET",
-  //         headers: headers,
-  //       }
-  //     );
-
-  //     if (!response.ok) throw new Error("Помилка при отриманні даних");
-
-  //     const data = await response.json();
-
-  //     setArrayOfPage(data);
-  //     setArrayOfPageData(data.tasks || []);
-  //   } catch (error) {
-  //     console.log("Помилка:", error);
-  //   }
-  // };
 
   const [createForm, setCreateForm] = useState(false);
 
