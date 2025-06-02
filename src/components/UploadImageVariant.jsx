@@ -21,15 +21,6 @@ export default function UploadImageVariant() {
     setImage(false);
   };
 
-  // const PostOfImage = async () => {
-  //   const data = {};
-
-  //   try {
-  //   } catch (error) {
-  //     console.log("Помилка:", error);
-  //   }
-  // };
-
   return (
     <div>
       <div>

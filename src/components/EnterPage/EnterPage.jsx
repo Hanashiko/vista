@@ -8,13 +8,8 @@ export default function EnterPage() {
     <div className="registration-page">
       <div className="containerForm">
         <div className="enter-form">
-          {/* <h1 className="registration">Вхід</h1>
-          <p className="textOfRegistration">
-            Будь ласка ведіть ваші дані аби продовжити далі.
-          </p> */}
           <EnterForm />
         </div>
-        {/* <RegistratioImage /> */}
       </div>
     </div>
   );

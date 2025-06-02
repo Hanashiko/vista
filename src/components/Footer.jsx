@@ -24,10 +24,7 @@ export default function Footer() {
                 </a>
               </li>
               <li className="SocialIconItem">
-                <a
-                  href="https://www.instagram.com/xq.iris?igsh=MTFvcDR4bzA2emtvdQ=="
-                  target="_blank"
-                >
+                <a href="#" target="_blank">
                   <img src={instagramIcon} alt="Instagram" />
                 </a>
               </li>

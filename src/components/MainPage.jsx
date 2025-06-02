@@ -8,6 +8,7 @@ import HistoryContent from "./HistoryContent";
 
 export default function MainPage() {
   const [searchText, setSearchText] = useState("");
+  const [searchOfInfo, setSearchOfInfo] = useState("");
 
   return (
     <div>
@@ -17,7 +18,10 @@ export default function MainPage() {
         </aside>
         <div className="content">
           <div className="container">
-            <Header setSearchText={setSearchText} />
+            <Header
+              setSearchText={setSearchText}
+              setSearchOfInfo={setSearchOfInfo}
+            />
             <div className="MainContent">
               <ListQuests searchText={searchText} />
               <HistoryContent />
