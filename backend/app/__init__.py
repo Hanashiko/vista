@@ -1,4 +1,5 @@
 import logging
+from logging.handlers import RotatingFileHandler
 from flask import Flask
 from .config import Config
 from .extensions import db, migrate, bcrypt, login_manager, jwt
@@ -6,7 +7,7 @@ from .models import User, RevokedToken, Quest, Task, UserQuest, Rating
 from .routes import auth_bp, profile_bp, quest_bp, progress_bp, user_bp, rating_bp, stats_bp, task_bp
 from flask_cors import CORS
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)

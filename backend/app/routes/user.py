@@ -9,7 +9,7 @@ user_bp = Blueprint('user',__name__)
 @jwt_required()
 def get_user_by_id(user_id):
     user = User.query.get_or_404(user_id)
-    avatar_url = f"{request.host_url}uploads/{user.avatar}" if user.avatar else None
+    avatar_url = f"{request.host_url}v1/uploads/{user.avatar}" if user.avatar else None
     user_data = {
             "email": user.email,
             "name": user.name,
