@@ -27,6 +27,7 @@ def backup_images():
 
     return send_file(zip_path, as_attachment=True)
 
+
 @backup_bp.route("/v1/backup/images/restore", methods=["POST"])
 @requires_secret_key()
 def restore_images_backup():
