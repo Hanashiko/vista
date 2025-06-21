@@ -6,3 +6,4 @@ app/routes/__pycache__/
 migrations/
 venv/
 app/uploads/
+app/routes/backups/
