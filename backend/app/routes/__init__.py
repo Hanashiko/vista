@@ -6,3 +6,4 @@ from .user import user_bp
 from .rating import rating_bp
 from .stats import stats_bp
 from .task import task_bp
+from .backup import backup_bp

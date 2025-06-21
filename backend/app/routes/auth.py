@@ -1,13 +1,18 @@
+import os
 from flask import Blueprint, request, jsonify
-from jinja2.runtime import identity
-from flask_login import login_user, logout_user
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_jwt_identity, create_refresh_token
+from flask_login import login_user
+from flask_jwt_extended import (
+    create_access_token,
+    jwt_required,
+    get_jwt,
+    get_jwt_identity,
+    create_refresh_token,
+)
+from flasgger.utils import swag_from
 from ..extensions import db, bcrypt, logger
 from ..models import User, RevokedToken
-from flasgger.utils import swag_from
-import os 
 
-auth_bp = Blueprint('auth', __name__)
+auth_bp = Blueprint("auth", __name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SWAGGER_FILE = os.path.join(BASE_DIR, "docs", "auth.yaml")
@@ -15,39 +20,43 @@ SWAGGER_FILE = os.path.join(BASE_DIR, "docs", "auth.yaml")
 SWAGGER_REGISTER_FILE = os.path.join(BASE_DIR, "docs", "register.yaml")
 SWAGGER_LOGIN_FILE = os.path.join(BASE_DIR, "docs", "login.yaml")
 
-@auth_bp.route('/v1/register', methods=['POST'])
+
+@auth_bp.route("/v1/register", methods=["POST"])
 @swag_from(SWAGGER_FILE, validation=True)
 def register():
     data = request.get_json()
     logger.info(f"Register request: {data}")
-    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    name = data.get('name')
-    email = data.get('email')
+    hashed_password = bcrypt.generate_password_hash(data["password"]).decode("utf-8")
+    name = data.get("name")
+    email = data.get("email")
     if User.query.filter_by(email=email).first():
-        return jsonify({"error":"User alredy exists"}),400
-    new_user = User(email=email, password=hashed_password, name=name, avatar='user_avatar.jpg')
+        return jsonify({"error": "User alredy exists"}), 400
+    new_user = User(
+        email=email, password=hashed_password, name=name, avatar="user_avatar.jpg"
+    )
     db.session.add(new_user)
     db.session.commit()
     login_user(new_user)
     logger.info(f"User registered successfully: {new_user.email}")
     return jsonify({"message": "User registered successfully"}), 201
 
-@auth_bp.route('/v1/login', methods=['POST'])
+
+@auth_bp.route("/v1/login", methods=["POST"])
 @swag_from(SWAGGER_FILE, validation=True)
 def login():
     data = request.get_json()
     if not data:
-        return jsonify({"message":"No data provided"}),400
+        return jsonify({"message": "No data provided"}), 400
 
-    email = data.get('email')
-    password = data.get('password')
+    email = data.get("email")
+    password = data.get("password")
 
     if not email or not password:
-        return jsonify({"message":"Email and password are required"}), 400
+        return jsonify({"message": "Email and password are required"}), 400
 
     logger.info(f"Login request for email: {email}")
 
-    if not data or 'email' not in data or 'password' not in data:
+    if not data or "email" not in data or "password" not in data:
         return jsonify({"message": "Email and password are required"}), 400
 
     user = User.query.filter_by(email=email).first()
@@ -56,31 +65,39 @@ def login():
 
     if user and bcrypt.check_password_hash(user.password, password):
         login_user(user)
-    
+
         access_token = create_access_token(identity=str(user.id))
         refresh_token = create_refresh_token(identity=str(user.id))
-    
-        logger.info(f"User logged in successfully: id - {user.id}; email - {user.email}")
-        return jsonify({
-            "message": "Logged in successfully", 
-            "access_token": access_token, 
-            "refresh_token": refresh_token
-        }), 200
+
+        logger.info(
+            f"User logged in successfully: id - {user.id}; email - {user.email}"
+        )
+        return (
+            jsonify(
+                {
+                    "message": "Logged in successfully",
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
+                }
+            ),
+            200,
+        )
 
     logger.warning(f"Failed login request for email: {email}")
-    return jsonify({"message":auth_fail_message})
+    return jsonify({"message": auth_fail_message})
 
 
-@auth_bp.route('/v1/refresh',methods=['POST'])
-@swag_from(SWAGGER_FILE,validation=True)
+@auth_bp.route("/v1/refresh", methods=["POST"])
+@swag_from(SWAGGER_FILE, validation=True)
 @jwt_required(refresh=True)
 def refresh():
     user_id = get_jwt_identity()
     access_token = create_access_token(identity=user_id)
-    return jsonify({"access_token":access_token}), 200
+    return jsonify({"access_token": access_token}), 200
 
-@auth_bp.route('/v1/logout', methods=['POST'])
-@swag_from(SWAGGER_FILE,validation=True)
+
+@auth_bp.route("/v1/logout", methods=["POST"])
+@swag_from(SWAGGER_FILE, validation=True)
 @jwt_required()
 def logout():
     jti = get_jwt()["jti"]
