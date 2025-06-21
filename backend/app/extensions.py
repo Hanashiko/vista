@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_jwt_extended import JWTManager
 import logging
+from flasgger import Swagger
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,6 +14,7 @@ migrate = Migrate()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 jwt = JWTManager()
+swagger = Swagger()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -25,3 +27,4 @@ def check_if_token_revoked(jwt_header, jwt_payload):
     jti = jwt_payload["jti"]
     token = RevokedToken.query.filter_by(jti=jti).first()
     return token is not None
+

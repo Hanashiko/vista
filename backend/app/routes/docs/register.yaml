@@ -1,0 +1,40 @@
+tags:
+  - Authentication
+summary: User Registration
+description: Registers a new user with email, password, and optional name.
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@gmail.com
+        password:
+          type: string
+          example: "123"
+        name:
+          type: string
+          example: John Doe
+      required:
+        - email
+        - password
+responses:
+  201:
+    description: User registered successfully
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User registered successfully
+  400:
+    description: User already exists
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: User already exists

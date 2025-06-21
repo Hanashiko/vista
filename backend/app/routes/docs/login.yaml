@@ -1,0 +1,44 @@
+tags:
+  - Authentication
+
+summary: User Login
+description: Authenticates a user and returns an access token and refresh token.
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@gmail.com
+        password:
+          type: string
+          example: "123"
+      required:
+        - email
+        - password
+responses:
+  200:
+    description: User logged in successfully
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Logged in successfully
+        access_token:
+          type: string
+          example: eyJhbGciOiJIUzI1...
+        refresh_token:
+          type: string
+          example: eyJhbGciOiJIUzI1...
+  401:
+    description: Login failed
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Login failed

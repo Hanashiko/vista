@@ -22,7 +22,8 @@ def create_quest():
         title=data['title'],
         description=data['description'],
         time_limit=data['time_limit'],
-        author_id=user_id
+        author_id=user_id,
+        image='quest_image.jpg'
     )
     db.session.add(new_quest)
     db.session.commit()
@@ -40,7 +41,9 @@ def create_quest_with_tasks():
             title=data['title'],
             description=data['description'],
             time_limit=data['time_limit'],
-            author_id=user_id
+            author_id=user_id,
+            image='quest_image.jpg'
+
     )
     db.session.add(new_quest)
     db.session.commit()

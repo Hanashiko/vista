@@ -71,3 +71,4 @@ def upload_avatar():
 @profile_bp.route('/v1/uploads/<filename>', methods=['GET'])
 def uploaded_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+
