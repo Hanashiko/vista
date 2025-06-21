@@ -28,14 +28,12 @@ services:
     depends_on:
       - mariadb
 
-  flaskapp:
+  flask_app:
     container_name: vista-flask
     build: .
     restart: always
-    depends_on:
-      - mariadb
     environment:
-      DATABASE_URI: mysql+pymysql://py:JDsa87D7w@mariadb:3306/quests
+      DATABASE_URI: mysql+pymysql://py:hjkASD81*#jkdisq@localhost:3306/quests
       JWT_SECRET_KEY: 4301e91c-7b96-47c4-bfb6-d869f3232fba
       SECRET_KEY: 229164f1-0877-44e8-b285-ad029aace192
     ports:
