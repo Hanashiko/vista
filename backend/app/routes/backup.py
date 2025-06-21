@@ -8,7 +8,7 @@ from app.config import Config
 backup_bp = Blueprint('backup', __name__)
 
 @backup_bp.route('/v1/backup/images', methods=['GET'])
-@requires_secret_key('admin-images')
+@requires_secret_key()
 def backup_images():
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))

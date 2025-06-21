@@ -7,6 +7,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')
     SECRET_KEY = os.getenv('SECRET_KEY')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+    ADMIN_SECRET_KEY = os.getenv('ADMIN_SECRET_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ALLOWED_HOSTS = ["*"]
     DEBUG = os.getenv("DEBUG", "False") == "True"
