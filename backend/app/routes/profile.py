@@ -16,7 +16,6 @@ def profile():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     avatar_url = f"{request.host_url}v1/uploads/{user.avatar}" if user.avatar else None
-    logger.info(f"Avatar URL: {avatar_url}")
 
     user_data = {
         "email": user.email,
