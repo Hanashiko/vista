@@ -2,7 +2,7 @@ from functools import wraps
 from flask import request, abort
 from app.config import Config
 
-def requires_secret_key(required_value: str):
+def requires_secret_key():
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
