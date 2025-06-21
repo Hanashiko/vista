@@ -1,19 +1,57 @@
 import React, { useState } from "react";
 import UploadImageVariant from "./UploadImageVariant";
 
-export default function FormAddQuestion({ onDelete, questId }) {
-  const [questionType, setQuestionType] = useState("");
-  const [selectedRadio, setSelectedRadio] = useState(null);
-  const [answers, setAnswers] = useState([
-    { id: 1, text: "", checked: false },
-    { id: 2, text: "", checked: false },
-    { id: 3, text: "", checked: false },
-  ]);
+export default function FormAddQuestion({ onDelete, questId, question }) {
+  // const [questionType, setQuestionType] = useState("");
+  // const [selectedRadio, setSelectedRadio] = useState(null);
+  // const [answers, setAnswers] = useState([
+  //   { id: 1, text: "", checked: false },
+  //   { id: 2, text: "", checked: false },
+  //   { id: 3, text: "", checked: false },
+  // ]);
+
+  // const [formData, setformData] = useState({
+  //   pointsOfForm: "",
+  //   questionOfForm: "",
+  // });
+
+  const [questionType, setQuestionType] = useState(() => {
+    if (!question) return "";
+    if (question.question_type === "open") return "open";
+    const correctCount =
+      question.options?.filter((o) => o.is_correct).length || 0;
+    return correctCount > 1 ? "multiple" : "single";
+  });
+
+  const [selectedRadio, setSelectedRadio] = useState(() => {
+    if (questionType === "single") {
+      const correct = question?.options?.find((o) => o.is_correct);
+      return correct ? correct.id : null;
+    }
+    return null;
+  });
+
+  const [answers, setAnswers] = useState(() => {
+    if (question?.options) {
+      return question.options.map((opt, idx) => ({
+        id: idx + 1,
+        text: opt.text,
+        checked: opt.is_correct,
+      }));
+    }
+    return [
+      { id: 1, text: "", checked: false },
+      { id: 2, text: "", checked: false },
+      { id: 3, text: "", checked: false },
+    ];
+  });
 
   const [formData, setformData] = useState({
-    pointsOfForm: "",
-    questionOfForm: "",
+    pointsOfForm: question?.points?.toString() || "",
+    questionOfForm: question?.text || "",
   });
+
+  // ------------
 
   const handleChange = (e) => {
     setformData({ ...formData, [e.target.name]: e.target.value });
@@ -182,7 +220,7 @@ export default function FormAddQuestion({ onDelete, questId }) {
             </button>
           </div>
         </form>
-        <UploadImageVariant />
+        {/* <UploadImageVariant /> */}
       </div>
     </div>
   );
