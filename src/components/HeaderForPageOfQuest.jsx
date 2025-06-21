@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export default function HeaderForPageOfQuest() {
   return (
-    <div className="">
+    <div className="HeaderForPageOfQuest">
       <div className="PageOfheaderContent"></div>
       <ul className="PageOfheaderContentList">
         <li className="PageOfheaderContentItem">
@@ -15,9 +15,13 @@ export default function HeaderForPageOfQuest() {
         </li>
 
         <li className="PageOfheaderContentItem">
-          <Link to="" className="PageOfheaderContentItemLinkTwo">
+          <a
+            href="https://github.com/Margin-interteiment/vista"
+            target="_blank"
+            className="PageOfheaderContentItemLinkTwo"
+          >
             Більше про нас
-          </Link>
+          </a>
         </li>
       </ul>
 

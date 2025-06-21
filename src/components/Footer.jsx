@@ -12,8 +12,15 @@ export default function Footer() {
         <img src={logo} alt="logo" />
         <div className="FooterContacts">
           <div className="FooterSectionOne">
-            <p>Про Vista</p>
-            <p>Автори проекту</p>
+            <a
+              href="https://github.com/Margin-interteiment/vista"
+              target="_blank"
+            >
+              <p>Про Vista</p>
+            </a>
+            <a href="https://github.com/Hanashiko" target="_blank">
+              <p>Автори проекту</p>
+            </a>
           </div>
           <div className="FooterSectionTwo">
             <p>Наші контакти</p>

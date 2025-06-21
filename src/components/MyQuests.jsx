@@ -3,7 +3,7 @@ import MainTopbarSection from "./MainTopbarSection";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
-import demo from "../assets/demo.png";
+import defaultPhoto from "../assets/defaultPhoto.jpg";
 
 export default function MyQuests() {
   const [searchOfInfo, setSearchOfInfo] = useState("");

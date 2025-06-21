@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from "react";
 import "../App.css";
 import avatar from "../assets/Avatar.png";
+import { Link } from "react-router-dom";
 
 export default function Header({ avatarUrl, setSearchText, setSearchOfInfo }) {
   const date = new Date().toLocaleDateString("uk-UA", {
@@ -58,7 +59,9 @@ export default function Header({ avatarUrl, setSearchText, setSearchOfInfo }) {
           />
         </form>
         <span className="date">{date}</span>
-        <img src={imageProfile.avatar} alt="Avatar" className="avatar" />
+        <Link to="/mainPage/myProfile" className="avatar-link">
+          <img src={imageProfile.avatar} alt="Avatar" className="avatar" />
+        </Link>
       </div>
     </div>
   );

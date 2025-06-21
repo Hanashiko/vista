@@ -169,16 +169,17 @@ export default function EditQuest() {
                     key={question.id}
                     onDelete={() => removeQuestion(question.id)}
                     questId={questId}
+                    question={question}
                   />
                 ))}
 
-                {questionsWithCard.map((question) => (
+                {/* {questionsWithCard.map((question) => (
                   <FormAddQuestionWithCard
                     key={question.id}
                     onDeleteFunc={() => removeQuestionWithCard(question.id)}
                     questId={questId}
                   />
-                ))}
+                ))} */}
 
                 <div className="mainQuestsCreateBaseContent">
                   <button
@@ -189,14 +190,14 @@ export default function EditQuest() {
                     Створити питання
                     <span className="mainQuestsCreateBaseBtnSpan">+</span>
                   </button>
-                  <button
+                  {/* <button
                     className="mainQuestsCreateBaseBtnTwo "
                     type="button"
                     onClick={addNewQuestionWithCard}
                   >
                     Створити питання з картою
                     <span className="mainQuestsCreateBaseBtnSpan">+</span>
-                  </button>
+                  </button> */}
                   <button
                     className="mainQuestsCreateBaseBtnThree "
                     type="button"
@@ -214,7 +215,10 @@ export default function EditQuest() {
                   <ol>
                     {questions.length > 0 ? (
                       questions.map((question) => (
-                        <li key={question.id} className="ItemofListQuest">
+                        <li
+                          key={question.id}
+                          className="ItemofListQuest ItemofListQuestEdit"
+                        >
                           <h3 className="ListOfQuestTitle">{question.text}</h3>
                           <ul>
                             {question.options.map((option, index) => (

@@ -9,6 +9,8 @@
     "cra-template": "1.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-image-puzzle": "^0.1.1",
+    "react-jigsaw-puzzle": "^1.0.5",
     "react-rater": "^6.0.5",
     "react-rating-stars-component": "^2.2.0",
     "react-router-dom": "^7.1.5",

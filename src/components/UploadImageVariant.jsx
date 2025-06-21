@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
 import upload from "../assets/upload.png";
+import { useParams } from "react-router-dom";
 
 export default function UploadImageVariant() {
+  const { questId } = useParams();
   const fileInputRef = useRef(null);
   const [image, setImage] = useState(null);
 
@@ -25,7 +27,7 @@ export default function UploadImageVariant() {
     <div>
       <div>
         <div className="uploadBoxVariant" onClick={handleClick}>
-          <h1 className="uploadBoxTitle">Фото профілю</h1>
+          <h1 className="uploadBoxTitle">Фото питання</h1>
 
           {image ? (
             <img src={image} alt="Зображення" className="preview-image" />

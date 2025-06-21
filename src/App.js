@@ -27,6 +27,9 @@ import EditQuest from "./components/EditQuest";
 import PageOfQuest from "./components/PageOfQuest";
 import JustQuest from "./components/JustQuest";
 import PageOfFinishedOfQuest from "./components/PageOfFinishedOfQuest";
+import MyGames from "./components/MyGames";
+import GameOfPuzzle from "./components/GameOfPuzzle";
+import GameOfDrop from "./components/GameOfDrop";
 
 export default function App() {
   return (
@@ -38,6 +41,10 @@ export default function App() {
         <Route path="/mainPage/createQuest" element={<CreateQuest />} />
         <Route path="/mainPage/myProfile" element={<MyProfile />} />
         <Route path="/mainPage/myQuests" element={<MyQuests />} />
+        <Route path="/mainPage/myGames" element={<MyGames />} />
+        <Route path="/mainPage/myGames/puzzle" element={<GameOfPuzzle />} />
+        <Route path="/mainPage/myGames/drop" element={<GameOfDrop />} />
+
         {/* <Route path="/mainPage/EditQuest" element={<EditQuest />} /> */}
 
         <Route path="/mainPage/EditQuest/:questId" element={<EditQuest />} />
