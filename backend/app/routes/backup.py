@@ -1,7 +1,7 @@
 import os
 import zipfile
 from datetime import datetime
-from flask import Blueprint, send_file
+from flask import Blueprint, request, send_file, jsonify
 from app.decorators import requires_secret_key
 from app.config import Config
 
@@ -26,3 +26,29 @@ def backup_images():
                 zipf.write(filepath, arcname)
 
     return send_file(zip_path, as_attachment=True)
+
+@backup_bp.route("/v1/backup/images/restore", methods=["POST"])
+@requires_secret_key()
+def restore_images_backup():
+    if "backup_file" not in request.files:
+        return jsonify({"error": "No backup_file part in the request"}), 400
+
+    backup_file = request.files["backup_file"]
+    if backup_file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+
+    if not backup_file.filename.endswith(".zip"):
+        return jsonify({"error": "Only .zip files are allowed"}), 400
+
+    tmp_path = os.path.join("/tmp", backup_file.filename)
+    backup_file.save(tmp_path)
+
+    try:
+        with zipfile.ZipFile(tmp_path, "r") as zip_ref:
+            zip_ref.extractall(Config.UPLOAD_FOLDER)
+    except zipfile.BadZipFile:
+        return jsonify({"error": "Invalid ZIP file"}), 400
+    finally:
+        os.remove(tmp_path)
+
+    return jsonify({"message": "Backup restored successfully"}), 200
