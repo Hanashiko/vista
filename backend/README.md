@@ -915,3 +915,26 @@ curl -X GET http://<ip_address>/v1/users \
 curl -X GET http://<ip_address>/v1/users\?limit\=<int> \ 
 -H "Authorization: Bearer <token>"
 ```
+
+## backups routes
+
+### /v1/backup/images - generate backups for uploads directory:
+```
+curl -X GET http://<ip_address>/v1/backup/images \
+-H "X-Secret-Key: <key>" \ 
+-o backup_images.zip
+```
+```
+curl -X GET http://<ip_address>/v1/backup/images\?secret_key\=<key> \
+-o backup_images.zip
+```
+### /v1/backup/images/restore - restore uploads directory from backup:
+```
+curl -X POST http://<ip_address>/v1/backup/images/restore \
+-H "X-Secret-Key: <key>" \ 
+-F "backup_file=@./backup_images.zip"
+```
+```
+curl -X POST http://<ip_address>/v1/backup/images/restore\?secret_key\=<key> \
+-F "backup_file=@./backup_images.zip"
+```
