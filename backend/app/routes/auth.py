@@ -1,11 +1,10 @@
+import os
 from flask import Blueprint, request, jsonify
-from jinja2.runtime import identity
-from flask_login import login_user, logout_user
+from flask_login import login_user
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_jwt_identity, create_refresh_token
+from flasgger.utils import swag_from
 from ..extensions import db, bcrypt, logger
 from ..models import User, RevokedToken
-from flasgger.utils import swag_from
-import os 
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -56,10 +55,10 @@ def login():
 
     if user and bcrypt.check_password_hash(user.password, password):
         login_user(user)
-    
+
         access_token = create_access_token(identity=str(user.id))
         refresh_token = create_refresh_token(identity=str(user.id))
-    
+
         logger.info(f"User logged in successfully: id - {user.id}; email - {user.email}")
         return jsonify({
             "message": "Logged in successfully", 

@@ -1,10 +1,10 @@
+import os
+import uuid
 from flask import Blueprint, request, jsonify, current_app
 from app.routes.profile import allowed_file
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
-from ..models import Quest, User, Task, TaskOption, MapInteraction
-import os
-import uuid
+from ..models import Quest, Task, TaskOption, MapInteraction
 
 quest_bp = Blueprint('quest', __name__)
 
@@ -154,7 +154,7 @@ def edit_quest_with_tasks(quest_id):
     quest.title = data.get('title', quest.title)
     quest.description = data.get('description', quest.description)
     quest.time_limit = data.get('time_limit', quest.time_limit)
-    
+
     if 'tasks' in data:
         for task_data in data['tasks']:
             task_id = task_data.get('id')
@@ -164,7 +164,7 @@ def edit_quest_with_tasks(quest_id):
                     if task.question_type != task_data.get('question_type'):
                         TaskOption.query.filter_by(task_id=task_id).delete()
                         MapInteraction.query.filter_by(task_id=task_id).delete()
-                    
+            
                     if 'text' in task_data:
                         task.text = task_data['text']
                     if 'image' in task_data:
@@ -293,7 +293,7 @@ def get_all_quests():
                 "description": quest.description,
                 "time_limit": quest.time_limit,
                 "image": f"{request.host_url}v1/uploads/{quest.image}" if quest.image else None
-            } for quest in quests 
+            } for quest in quests
     ]
     logger.info(f"All {limit} quests retrieved")
     return jsonify(quests_data),200

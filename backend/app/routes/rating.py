@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
-from ..models import Rating, User
+from ..models import Rating
 
 rating_bp = Blueprint('rating', __name__)
 

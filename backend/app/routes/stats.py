@@ -19,5 +19,5 @@ def get_top_reviewers():
             "reviews_count": reviewer.reviews_count
         } for reviewer in top_reviewers
     ]
-    logger.info(f"Top reviewers retrieved")
+    logger.info("Top reviewers retrieved")
     return jsonify(reviewers_data), 200

@@ -1,9 +1,9 @@
+import os
+import uuid
 from flask import Blueprint, request, jsonify, current_app, send_from_directory
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger, bcrypt
 from ..models import User
-import os
-import uuid
 
 profile_bp = Blueprint('profile', __name__)
 
@@ -71,4 +71,3 @@ def upload_avatar():
 @profile_bp.route('/v1/uploads/<filename>', methods=['GET'])
 def uploaded_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
-

@@ -1,11 +1,9 @@
+import os
+import uuid
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
 from ..models import Task, TaskOption, MapInteraction, Quest
-from ..config import Config
-from werkzeug.utils import secure_filename
-import os
-import uuid
 
 task_bp = Blueprint('task', __name__)
 
@@ -20,13 +18,13 @@ def allowed_file_video(filename):
 def add_task_to_quest(quest_id):
     user_id = get_jwt_identity()
     quest = Quest.query.get_or_404(quest_id)
-    
+
     logger.info(f"User {user_id} is trying to add a task to quest {quest_id}")
-    
+
     if int(quest.author_id) != int(user_id):
         logger.warning(f"User {user_id} is not the author of quest {quest_id}")
         return jsonify({"message": "You are not the author of this quest"}), 403
-    
+
     data = request.get_json()
 
     new_task = Task(
@@ -48,7 +46,7 @@ def add_task_to_quest(quest_id):
             )
             db.session.add(new_option)
         db.session.commit()
-    
+
     if 'map_interactions' in data:
         for interaction in data['map_interactions']:
             new_interaction = MapInteraction(
@@ -59,7 +57,7 @@ def add_task_to_quest(quest_id):
             )
             db.session.add(new_interaction)
         db.session.commit()
-    
+
     logger.info(f"Task added to quest {quest.title} by user {user_id}")
     return jsonify({"message": "Task added successfully"}), 201
 
@@ -120,7 +118,7 @@ def uploads_task_video(quest_id, task_id):
 
     if int(quest.author_id) != int(user_id):
         return jsonify({"message":"You are not authorized to upload an video for this task"}), 403
-    
+
     if 'video' not in request.files:
         return jsonify({"message":"No video file provided"}), 400
 
@@ -172,7 +170,7 @@ def edit_task(quest_id, task_id):
             new_option = TaskOption(
                 text=option['text'],
                 is_correct=option['is_correct'],
-                task_id=task.id 
+                task_id=task.id
             )
             db.session.add(new_option)
         db.session.commit()
@@ -188,6 +186,6 @@ def edit_task(quest_id, task_id):
             )
             db.session.add(new_interaction)
         db.session.commit()
-    
-    logger.info(f"Task {task_id} in quest {quest_id} edited by user {user_id}")           
+
+    logger.info(f"Task {task_id} in quest {quest_id} edited by user {user_id}")
     return jsonify({"message":"Task edited successfully"}),200

@@ -1,9 +1,9 @@
-from flask import Blueprint, request, jsonify, send_file
 import os
 import zipfile
 from datetime import datetime
+from flask import Blueprint, send_file
 from app.decorators import requires_secret_key
-from app.config import Config 
+from app.config import Config
 
 backup_bp = Blueprint('backup', __name__)
 
@@ -24,5 +24,5 @@ def backup_images():
                 arcname = os.path.relpath(filepath, Config.UPLOAD_FOLDER)
                 zipf.write(filepath, arcname)
 
-    return send_file(zip_path, as_attachment=True)                
-    
+    return send_file(zip_path, as_attachment=True)
+

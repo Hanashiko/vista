@@ -1,8 +1,8 @@
-from datetime import datetime 
+from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db, logger
-from ..models import Quest, Task, TaskOption, MapInteraction, UserQuest
+from ..models import Quest, Task, MapInteraction, UserQuest
 
 progress_bp = Blueprint('progress',__name__)
 
