@@ -108,7 +108,7 @@ def upload_task_image(quest_id, task_id):
         task.image = filename
         db.session.commit()
         logger.info(f"Image updated for task: {task.id} from quest: {quest.id} - {quest.title}")
-        return jsonify({"message":"Image of task updated successfully","image_url":f"{request.host_url}uploads/{filename}"}),200
+        return jsonify({"message":"Image of task updated successfully","image_url":f"{request.host_url}v1/uploads/{filename}"}),200
     return jsonify({"message":"Invalid file type"}),400
 
 @task_bp.route('/v1/quests/<int:quest_id>/tasks/<int:task_id>/video', methods=['POST'])
@@ -136,7 +136,7 @@ def uploads_task_video(quest_id, task_id):
         task.video = filename
         db.session.commit()
         logger.info(f"Video updated for task: {task.id} from quest: {quest.id} - {quest.title}")
-        return jsonify({"message":"Video of task updated successfully","image_url":f"{request.host_url}uploads/{filename}"})
+        return jsonify({"message":"Video of task updated successfully","image_url":f"{request.host_url}v1/uploads/{filename}"})
     return jsonify({"message":"Invalid file type"}),400
 
 @task_bp.route('/v1/quests/<int:quest_id>/tasks/<int:task_id>', methods=['PUT'])

@@ -85,7 +85,7 @@ def create_quest_with_tasks():
 @jwt_required()
 def get_quest(quest_id):
     quest = Quest.query.get_or_404(quest_id)
-    image_url = f"{request.host_url}uploads/{quest.image}" if quest.image else None
+    image_url = f"{request.host_url}v1/uploads/{quest.image}" if quest.image else None
     quest_data = {
         "title": quest.title,
         "description": quest.description,
@@ -230,7 +230,7 @@ def get_user_quests():
     user_id = get_jwt_identity()
     limit = request.args.get('limit', default=10, type=int)
     quests = Quest.query.filter_by(author_id=user_id).order_by(Quest.id.desc()).limit(limit).all()
-    image_url = f"{request.host_url}uploads/{quest.image}" if quest.image else None
+    image_url = f"{request.host_url}v1/uploads/{quest.image}" if quest.image else None
     quests_data = [
         {
             "id": quest.id,
@@ -254,7 +254,7 @@ def get_quests_by_user_id(user_id):
             "title": quest.title,
             "description": quest.description,
             "time_limit": quest.time_limit,
-            "image": f"{request.host_url}uploads/{quest.image}" if quest.image else None
+            "image": f"{request.host_url}v1/uploads/{quest.image}" if quest.image else None
         } for quest in quests
     ]
     logger.info(f"Quests retrieved for user {user_id}")
@@ -270,7 +270,7 @@ def get_recent_quests():
             "title": quest.title,
             "description": quest.description,
             "time_limit": quest.time_limit,
-            "image": f"{request.host_url}uploads/{quest.image}" if quest.image else None
+            "image": f"{request.host_url}v1/uploads/{quest.image}" if quest.image else None
         } for quest in recent_quests
     ]
     logger.info(f"Recent {limit} quests retrieved")
@@ -289,7 +289,7 @@ def get_all_quests():
                 "title": quest.title,
                 "description": quest.description,
                 "time_limit": quest.time_limit,
-                "image": f"{request.host_url}uploads/{quest.image}" if quest.image else None
+                "image": f"{request.host_url}v1/uploads/{quest.image}" if quest.image else None
             } for quest in quests 
     ]
     logger.info(f"All {limit} quests retrieved")
@@ -319,5 +319,5 @@ def upload_quest_image(quest_id):
         quest.image = filename
         db.session.commit()
         logger.info(f"Image updated for quest: {quest.id} - {quest.title}")
-        return jsonify({"message":"Image of quest updated successfully", "image_url": f"{request.host_url}uploads/{filename}"}),200
+        return jsonify({"message":"Image of quest updated successfully", "image_url": f"{request.host_url}v1/uploads/{filename}"}),200
     return jsonify({"message":"Invalid file type"}),400

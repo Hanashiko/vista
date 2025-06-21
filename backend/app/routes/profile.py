@@ -15,7 +15,9 @@ def allowed_file(filename):
 def profile():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
-    avatar_url = f"{request.host_url}uploads/{user.avatar}" if user.avatar else None
+    avatar_url = f"{request.host_url}v1/uploads/{user.avatar}" if user.avatar else None
+    logger.info(f"Avatar URL: {avatar_url}")
+
     user_data = {
         "email": user.email,
         "name": user.name,
@@ -64,10 +66,11 @@ def upload_avatar():
         user.avatar = filename
         db.session.commit()
         logger.info(f"Avatar updated for user: {user.email}")
-        return jsonify({"message": "Avatar updated successfully", "avatar_url": f"{request.host_url}uploads/{filename}"}), 200
+        return jsonify({"message": "Avatar updated successfully", "avatar_url": f"{request.host_url}v1/uploads/{filename}"}), 200
 
     return jsonify({"message": "Invalid file type"}), 400
 
 @profile_bp.route('/v1/uploads/<filename>', methods=['GET'])
 def uploaded_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+
