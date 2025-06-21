@@ -16,15 +16,18 @@ login_manager = LoginManager()
 jwt = JWTManager()
 swagger = Swagger()
 
+
 @login_manager.user_loader
 def load_user(user_id):
     from .models import User
+
     return User.query.get(int(user_id))
+
 
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload):
     from .models import RevokedToken
+
     jti = jwt_payload["jti"]
     token = RevokedToken.query.filter_by(jti=jti).first()
     return token is not None
-
