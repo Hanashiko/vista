@@ -1,10 +1,10 @@
 import logging
 from flask import Flask
+from flask_cors import CORS
 from .config import Config
 from .extensions import db, migrate, bcrypt, login_manager, jwt, swagger
 from .models import User, RevokedToken, Quest, Task, UserQuest, Rating
 from .routes import auth_bp, profile_bp, quest_bp, progress_bp, user_bp, rating_bp, stats_bp, task_bp, backup_bp
-from flask_cors import CORS
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
