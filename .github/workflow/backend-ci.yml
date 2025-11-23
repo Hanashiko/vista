@@ -2,7 +2,10 @@ name: Backend CI
 
 on:
   push:
-    branches: [ master, develop, server-features ]
+    branches: 
+      - master
+      - develop
+      - server-features
     paths:
       - 'backend/**'
       - '.github/workflows/backend-ci.yml'
@@ -43,7 +46,7 @@ jobs:
       - name: Lint with flake8
         run: |
           cd backend
-          pip instll flake8
+          pip install flake8
           flake8 . --count --select=E9,E63,E7,E82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
