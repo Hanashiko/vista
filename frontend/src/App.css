@@ -17,10 +17,6 @@ html {
   min-height: 100vh;
 }
 
-/* .registration-page {
-  display: flex;
-} */
-
 .registration-form {
   width: 66%;
   padding: 20px;
@@ -160,12 +156,6 @@ input:focus {
 }
 
 .mainQuestsCreate {
-  /* margin: 80px;
-  min-height: 100vh;
-  background-color: #fff;
-  border-radius: 30px;
-  width: 214%; */
-
   margin: 80px;
   min-height: 109vh;
   background-color: #fff;
@@ -236,9 +226,6 @@ input:focus {
 
 .mainQuestsCreateBaseInfo {
   display: inline-block;
-  /* margin-top: 60px;
-position: relative;
-left: 218px; */
 }
 
 .MainContentProfile {
