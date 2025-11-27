@@ -2,7 +2,7 @@
   "name": "vista",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://46.63.19.144:5000",
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "@react-google-maps/api": "^2.20.6",
     "axios": "^1.7.9",
