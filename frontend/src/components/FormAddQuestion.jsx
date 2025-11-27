@@ -1,20 +1,57 @@
-
 import React, { useState } from "react";
 import UploadImageVariant from "./UploadImageVariant";
 
-export default function FormAddQuestion({ onDelete }) {
-  const [questionType, setQuestionType] = useState("");
-  const [selectedRadio, setSelectedRadio] = useState(null);
-  const [answers, setAnswers] = useState([
-    { id: 1, text: "", checked: false },
-    { id: 2, text: "", checked: false },
-    { id: 3, text: "", checked: false },
-  ]);
+export default function FormAddQuestion({ onDelete, questId, question }) {
+  // const [questionType, setQuestionType] = useState("");
+  // const [selectedRadio, setSelectedRadio] = useState(null);
+  // const [answers, setAnswers] = useState([
+  //   { id: 1, text: "", checked: false },
+  //   { id: 2, text: "", checked: false },
+  //   { id: 3, text: "", checked: false },
+  // ]);
+
+  // const [formData, setformData] = useState({
+  //   pointsOfForm: "",
+  //   questionOfForm: "",
+  // });
+
+  const [questionType, setQuestionType] = useState(() => {
+    if (!question) return "";
+    if (question.question_type === "open") return "open";
+    const correctCount =
+      question.options?.filter((o) => o.is_correct).length || 0;
+    return correctCount > 1 ? "multiple" : "single";
+  });
+
+  const [selectedRadio, setSelectedRadio] = useState(() => {
+    if (questionType === "single") {
+      const correct = question?.options?.find((o) => o.is_correct);
+      return correct ? correct.id : null;
+    }
+    return null;
+  });
+
+  const [answers, setAnswers] = useState(() => {
+    if (question?.options) {
+      return question.options.map((opt, idx) => ({
+        id: idx + 1,
+        text: opt.text,
+        checked: opt.is_correct,
+      }));
+    }
+    return [
+      { id: 1, text: "", checked: false },
+      { id: 2, text: "", checked: false },
+      { id: 3, text: "", checked: false },
+    ];
+  });
 
   const [formData, setformData] = useState({
-    pointsOfForm: "",
-    questionOfForm: "",
+    pointsOfForm: question?.points?.toString() || "",
+    questionOfForm: question?.text || "",
   });
+
+  // ------------
 
   const handleChange = (e) => {
     setformData({ ...formData, [e.target.name]: e.target.value });
@@ -46,14 +83,13 @@ export default function FormAddQuestion({ onDelete }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const data = {
-      question: formData.questionOfForm,
-      points: formData.pointsOfForm,
-      type: questionType,
-      answers: answers.map((answer) => ({
+      text: formData.questionOfForm,
+      question_type: "multiple_choice",
+      points: parseInt(formData.pointsOfForm, 10) || 0,
+      options: answers.map((answer) => ({
         text: answer.text,
-        correct:
+        is_correct:
           questionType === "single"
             ? selectedRadio === answer.id
             : answer.checked,
@@ -65,22 +101,22 @@ export default function FormAddQuestion({ onDelete }) {
       headers.append("Content-Type", "application/json");
       headers.append(
         "Authorization",
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczOTM4ODIyNiwianRpIjoiNWMxZDU2ODktYTdjYS00MjRjLTkzYzUtODFhNmYwN2YyZjBlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjciLCJuYmYiOjE3MzkzODgyMjYsImNzcmYiOiI1NzE4NWM4Yy03OWU4LTRlMjEtYjVkNi01ZTY0NDE1ZjFiMzAiLCJleHAiOjE3Mzk0NzQ2MjZ9.qBtZSw4KwM3_FgXL7PTqoG2UgI7LIfCDv6kusYQHVD0"
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0ODg5NTE2MiwianRpIjoiYTM4YWJhOWMtZmJlMC00NDk5LTgyYzgtYjQ0ZGNmY2Q5ZDExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NDg4OTUxNjIsImNzcmYiOiJhMzZmMTBlYS0yYzIwLTQ0N2EtYjNhNy00YzA1NTA5YTUwZWUiLCJleHAiOjE3NTE0ODcxNjJ9.JsN8GP71WaPBZgcup6eLgZkLpPOS0_owFVMNM6kG110"
       );
 
       const response = await fetch(
-        "http://54.89.245.167:5000/quests/18/tasks",
+        `http://46.63.19.144:5000/v1/quests/${questId}/tasks`,
         {
           method: "POST",
           headers: headers,
           body: JSON.stringify(data),
         }
       );
-      if (!response.ok) throw new Error("Ошибка при отправке данных");
+      if (!response.ok) throw new Error("Помилка");
       const result = await response.json();
-      console.log("Успех:", result);
+      console.log("Дані відправились успішно:", result);
     } catch (error) {
-      console.error("Ошибка:", error);
+      console.error("Помилка:", error);
     }
   };
 
@@ -184,7 +220,7 @@ export default function FormAddQuestion({ onDelete }) {
             </button>
           </div>
         </form>
-        <UploadImageVariant />
+        {/* <UploadImageVariant /> */}
       </div>
     </div>
   );
