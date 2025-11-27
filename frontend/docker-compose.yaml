@@ -1,13 +1,15 @@
+version: '3.8'
+
 services:
   react-app:
-    image: node:20
-    container_name: react-app 
-    working_dir: /app 
-    volumes:
-      - .:/app 
-      - /app/node_modules
+    build: .
+    container_name: my-react-app
     ports:
-      - "80:3000"
-    environment:
-      - NODE_ENV=development
-    command: ["sh", "-c", "npm install && npm start"]
+      - "3003:80"  # Прокидуємо порт 3001 на хості -> 80 в контейнері
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
