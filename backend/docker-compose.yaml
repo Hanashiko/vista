@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   mariadb:
     container_name: vista-mariadb
@@ -10,10 +8,16 @@ services:
       MYSQL_DATABASE: quests
       MYSQL_USER: py
       MYSQL_PASSWORD: JDsa87D7w
-    ports:
-      - "336:3306"
     volumes:
       - ./data:/var/lib/mysql
+    networks:
+      - vista-network
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-upy", "-pJDsa87D7w"]
+      interval: 3s
+      timeout: 2s
+      retries: 20
+      start_period: 40s
 
   phpmyadmin:
     container_name: vista-phpmyadmin
@@ -24,22 +28,34 @@ services:
       PMA_USER: py
       PMA_PASSWORD: JDsa87D7w
     ports:
-      - "888:80"
+      - "127.0.0.1:888:80"
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
 
-  flaskapp:
+
+    networks:
+      - vista-network
+
+  flask_app:
     container_name: vista-flask
     build: .
     restart: always
-    depends_on:
-      - mariadb
     environment:
       DATABASE_URI: mysql+pymysql://py:JDsa87D7w@mariadb:3306/quests
       JWT_SECRET_KEY: 4301e91c-7b96-47c4-bfb6-d869f3232fba
       SECRET_KEY: 229164f1-0877-44e8-b285-ad029aace192
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
+    networks:
+      - vista-network
+    depends_on:
+      mariadb:
+        condition: service_healthy
 
 volumes:
   data:
+
+networks:
+  vista-network:
+      driver: bridge

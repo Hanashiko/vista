@@ -1,4 +1,5 @@
 import logging
+from logging.handlers import RotatingFileHandler
 from flask import Flask
 from flask_cors import CORS
 from .config import Config
@@ -16,7 +17,7 @@ from .routes import (
     backup_bp,
 )
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)

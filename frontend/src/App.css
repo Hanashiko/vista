@@ -1,0 +1,1046 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  background-color: #f4f7fe;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* .registration-page {
+  display: flex;
+} */
+
+.registration-form {
+  width: 66%;
+  padding: 20px;
+  margin-top: 267px;
+  margin-left: 64px;
+}
+
+.registration {
+  font-size: 36px;
+  color: #2b3674;
+}
+
+.textOfRegistration {
+  font-size: 20px;
+  color: #a3aed0;
+}
+
+.label {
+  font-size: 16px;
+  margin-top: 36px;
+  color: #2b3674;
+  margin-top: 20px;
+}
+
+.input {
+  width: 70%;
+  display: block;
+  height: 50px;
+  margin-top: 20px;
+  padding: 8px;
+  border: 1px solid #a3aed0;
+  border-radius: 10px;
+  outline: none;
+}
+
+.input::placeholder {
+  font-size: 16px;
+  color: #a3aed0;
+}
+
+input:focus {
+  border-color: #6a5acd;
+}
+
+.submit-btn {
+  width: 70%;
+  background: #4318ff;
+  color: #ffffff;
+  border: none;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+  margin-top: 36px;
+}
+
+.submit-btn:hover {
+  background: #5a4bb3;
+}
+
+.login-link {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #707eae;
+}
+
+.login-link a {
+  color: #4318ff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+.form-box {
+  margin-top: 36px;
+}
+
+.TopBar {
+  background-color: #ffffff;
+  width: 265px;
+  height: 638px;
+  padding: 30px;
+  border-radius: 20px;
+}
+
+.container {
+  max-width: 1200px;
+}
+
+.mainPage,
+.mainQuests,
+.mainProfile {
+  display: flex;
+}
+
+.headerContent {
+  display: flex;
+  position: relative;
+  transform: translate3d(105px, 32px, 10px);
+}
+
+.formOfHeader {
+  display: flex;
+  position: relative;
+  transform: translate3d(802px, 10px, 10px);
+  background-color: #ffffff;
+  width: 495px;
+  height: 49px;
+  padding: 6px;
+  border-radius: 30px;
+}
+
+.MainContent {
+  display: flex;
+  margin: 100px;
+  justify-content: space-between;
+}
+
+.BradCrums {
+  margin-top: 50px;
+  color: #707eae;
+  font-size: 14px;
+  margin-left: 105px;
+}
+
+.MainContentQuests {
+  margin: 80px;
+  min-height: 100vh;
+  background-color: #fff;
+  border-radius: 30px;
+  width: 214%;
+}
+
+.mainQuestsCreate {
+  /* margin: 80px;
+  min-height: 100vh;
+  background-color: #fff;
+  border-radius: 30px;
+  width: 214%; */
+
+  margin: 80px;
+  min-height: 109vh;
+  background-color: #fff;
+  border-radius: 30px;
+  width: 151%;
+  padding: 20px;
+  position: relative;
+  left: 110px;
+}
+
+.mainQuestsCreateBaseTextarea {
+  display: block;
+}
+
+.mainQuestsCreateBaseInput {
+  border: 1px solid #4318ff;
+  width: 273%;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  outline: none;
+}
+
+.InfoAddCard {
+  position: relative;
+  left: 397px;
+}
+
+.mainQuestsCreateBaseContent {
+  margin-top: 120px;
+}
+
+.mainQuestsCreateBaseForm {
+  margin-top: 30px;
+  position: relative;
+  left: 120px;
+  top: 344px;
+}
+
+.mainQuestsCreateBaseInput ::placeholder {
+  position: relative;
+  color: #8f9bba;
+  font-size: 12px;
+}
+
+.mainQuestsCreateBaseTextarea {
+  margin-top: 20px;
+  border: 1px solid #4318ff;
+  width: 273%;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  outline: none;
+}
+
+.UploadImageForCreateQuestTitle {
+  font-size: 17px;
+  color: #2b3674;
+  text-align: center;
+  max-width: 200px;
+}
+
+.mainQuestsCreateBaseTextarea ::placeholder {
+  position: relative;
+  color: #8f9bba;
+  font-size: 12px;
+}
+
+.mainQuestsCreateBaseInfo {
+  display: inline-block;
+  /* margin-top: 60px;
+position: relative;
+left: 218px; */
+}
+
+.MainContentProfile {
+  margin: 80px;
+  min-height: 100vh;
+}
+
+.HistoryContent {
+  margin-left: 151px;
+}
+
+.ImageQuestBtn {
+  display: flex;
+}
+
+.ImageQuest {
+  background-image: url("./assets/BackgroundImage.png");
+  background-size: cover;
+  background-position: center;
+  width: 873px;
+  height: 293px;
+  border-radius: 30px;
+}
+
+.MyQuests {
+  margin-top: 100px;
+}
+
+.NewQuests {
+  margin-top: 100px;
+}
+
+.RatingOfAuthors {
+  background-color: #ffffff;
+  width: 500px;
+  height: 500px;
+  border-radius: 30px;
+}
+
+.AllOfAuthors {
+  display: flex;
+}
+
+.AllOfBtn {
+  margin-left: 90px;
+  padding: 13px;
+  background-color: #f4f7fe;
+  color: #4318ff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.InfoOfAuthorsList {
+  display: flex;
+  list-style: none;
+  margin-top: 43px;
+  flex-direction: row;
+  align-content: flex-end;
+  justify-content: center;
+}
+
+.InfoOfAuthorsList li:not(:last-child) {
+  margin-right: 104px;
+}
+
+.containerForm {
+  max-width: 1912px;
+  display: flex;
+}
+
+.mainProfileContainer {
+  max-width: 1700px;
+}
+
+.InfoOfAuthorsList li p {
+  font-size: 16px;
+  color: #a3aed0;
+  font-weight: 400;
+}
+
+.LastQuestsList {
+  position: relative;
+  text-align: center;
+}
+
+.Authors {
+  margin-top: 100px;
+  position: relative;
+  text-align: center;
+}
+
+.LastQuests {
+  margin-top: 50px;
+  background-color: #ffffff;
+  width: 500px;
+  height: 500px;
+  border-radius: 30px;
+}
+
+.LastInfo {
+  display: flex;
+}
+
+.LastQuestsList {
+  margin-top: 50px;
+}
+
+.AllOfTitle {
+  font-size: 25px;
+  margin-top: 20px;
+  margin-left: 20px;
+  color: #1b2559;
+}
+
+.Footer {
+  background-image: url("./assets/footer.png");
+  margin-top: 60px;
+  padding: 33px;
+}
+
+.FooterContacts {
+  display: flex;
+  position: relative;
+  transform: translate3d(1212px, 34px, 10px);
+}
+
+.FooterContent {
+  display: flex;
+}
+
+.FooterSectionOne p,
+.FooterSectionTwo p {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.FooterSectionOne p:hover {
+  text-decoration: underline;
+}
+
+.FooterSectionTwo {
+  margin-left: 50px;
+}
+
+.FooterSectionOne p:not(:last-child) {
+  margin-bottom: 10px;
+}
+.FooterSectionTwo p:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.SocialIcons {
+  display: flex;
+  list-style: none;
+}
+
+.SocialIconItem:not(:last-child) {
+  margin-right: 10px;
+}
+
+.TopBarTitle {
+  font-size: 26px;
+  color: #2b3674;
+  font-weight: 400;
+  position: relative;
+  display: inline-block;
+}
+
+.TopBarTitle::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: #a3aed0;
+  margin-top: 5px;
+}
+
+.TopBarNav {
+  margin-top: 43px;
+}
+
+.TopBarNavList {
+  list-style-type: none;
+}
+
+.TopBarNavListLink {
+  text-decoration: none;
+  color: #a3aed0;
+  font-size: 16px;
+  font-weight: 400;
+  margin-left: 10px;
+  transition: color 0.3s ease-in-out;
+  position: absolute;
+}
+
+.TopBarNavListLink:hover {
+  color: #000;
+}
+
+.ExitLink {
+  color: #4318ff;
+}
+
+.TopBarExit {
+  position: relative;
+  transform: translate3d(32px, 335px, 10px);
+}
+
+.TopBarNavListItem:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.search-input {
+  padding: 10px;
+  background-color: #f4f7fe;
+  border: none;
+  border-radius: 30px;
+  width: 120%;
+  outline: none;
+}
+
+.date {
+  margin-left: 130px;
+  margin-top: 2px;
+  position: relative;
+  transform: translate3d(-40px, -1px, 10px);
+  padding: 7px;
+  background-color: #f4f7fe;
+  border-radius: 20px;
+}
+
+.search-input::placeholder {
+  color: #8f9bba;
+  font-size: 13px;
+}
+
+.ImageQuestTitle {
+  font-size: 30px;
+  color: #ffffff;
+  font-weight: 600;
+  max-width: 380px;
+  padding: 15px;
+  margin-left: 24px;
+  position: relative;
+  top: 12px;
+}
+
+.ImageQuestText {
+  font-size: 16px;
+  color: #e3daff;
+  font-weight: 500;
+  max-width: 358px;
+  padding: 15px;
+  margin-left: 24px;
+  position: relative;
+  top: 12px;
+}
+
+.ImageQuestBtn {
+  position: relative;
+  left: 12px;
+}
+
+.ImageBtn {
+  margin: 20px;
+  padding: 12px;
+  background-color: #ffffff;
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.ImageBtn:hover {
+  background-color: #000;
+  color: #ffffff;
+}
+
+.ImageQuestParagraph {
+  margin-top: 23px;
+  margin-left: 12px;
+}
+
+.ImageQuestLink {
+  text-decoration: none;
+  color: #fff;
+}
+
+.MainTitle {
+  margin-left: 105px;
+  margin-top: 20px;
+}
+
+.ProfileInfo {
+  margin-top: 50px;
+  display: flex;
+}
+
+.ViewProfile {
+  background-color: #ffffff;
+  width: 1397px;
+  height: 225px;
+  border-radius: 30px;
+  top: -46px;
+  position: relative;
+}
+
+.ProfileAvatar {
+  background-image: url("./assets/avaBack.png");
+  background-size: cover;
+  background-position: center;
+  width: 1353px;
+  height: 95px;
+  border-radius: 16px;
+  position: relative;
+  top: 25px;
+  left: 20px;
+}
+
+.ProfileAvatarImg {
+  width: 70px;
+  height: 70px;
+  position: relative;
+  transform: translate3d(632px, 51px, 10px);
+}
+
+.ProfileAvatarText {
+  display: inline-block;
+  position: relative;
+  top: 77px;
+  left: 574px;
+}
+
+.EditProfileContent {
+  background-color: #ffffff;
+  width: 751px;
+  height: 500px;
+  border-radius: 30px;
+  margin-top: 20px;
+  display: flex;
+}
+
+.upload-box {
+  width: 235px;
+  height: 195px;
+  margin-left: 39px;
+  position: relative;
+  top: 120px;
+}
+
+.uploadBoxVariant {
+  width: 235px;
+  height: 195px;
+  position: relative;
+  top: -209px;
+  left: 700px;
+}
+
+.UploadButton {
+  position: relative;
+  left: 92px;
+  top: 166px;
+  padding: 15px;
+  background-color: #4318ff;
+  color: #fff;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.UploadButtonVariant {
+  position: relative;
+  left: 718px;
+  top: -170px;
+  padding: 15px;
+  background-color: #4318ff;
+  color: #fff;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  width: 200px;
+}
+
+.MainAddBtn {
+  position: relative;
+  width: 200px;
+  top: 6px;
+  left: 225px;
+
+  padding: 15px;
+  background-color: #4318ff;
+  color: #fff;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.MainHeaderFormForQuest {
+  background-image: url("./assets/avaBack.png");
+  background-size: cover;
+  background-position: center;
+  width: 1353px;
+  height: 95px;
+  border-radius: 16px;
+  position: relative;
+  top: 25px;
+  left: 20px;
+}
+
+.UploadButtonCreate {
+  position: relative;
+  left: 23px;
+  top: 22px;
+  padding: 15px;
+  background-color: #4318ff;
+  color: #fff;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  width: 200px;
+}
+
+.UploadImageCreate {
+  margin-top: 20px;
+}
+
+.UploadButtonForm {
+  position: relative;
+  left: 275px;
+  top: -81px;
+  padding: 15px;
+  background-color: #4318ff;
+  color: #fff;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.preview-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  position: relative;
+  left: 38px;
+  top: 20px;
+}
+
+.UpdateFormInput {
+  display: block;
+  border: 1px solid #d0d5dd;
+  padding: 15px;
+  margin-top: 20px;
+  width: 158%;
+  outline: none;
+}
+
+.MainUpdateForm {
+  margin-top: 93px;
+  margin-left: 75px;
+}
+
+.uploadBoxTitle {
+  position: relative;
+  top: -28px;
+  font-size: 25px;
+  color: #2b3674;
+  margin-left: 20px;
+}
+
+.uploadFormTitle {
+  position: relative;
+  font-size: 25px;
+  color: #2b3674;
+}
+
+.EditProfileTitle {
+  font-size: 30px;
+  color: #2b3674;
+  font-weight: 700;
+}
+
+.MyHistoryQuests {
+  width: 550px;
+  height: 500px;
+  background-color: #fff;
+  margin-left: 111px;
+  margin-top: 59px;
+  border-radius: 30px;
+}
+
+.MyHistoryQuestsTitle {
+  font-size: 25px;
+  color: #2b3674;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+.MainUploadImageForCreate {
+  position: relative;
+  left: 295px;
+  top: -191px;
+}
+
+.mainQuestsCreateBaseBtnOne {
+  padding: 10px;
+  background-color: #f4f7fe;
+  color: #707eae;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.mainQuestsCreateBaseBtnOne:hover {
+  background-color: #e0e5f2;
+}
+
+.mainQuestsCreateBaseBtnTwo:hover {
+  background-color: #e0e5f2;
+}
+
+.mainQuestsCreateBaseBtnSpan {
+  margin-left: 10px;
+  color: #4318ff;
+}
+
+.mainQuestsCreateBaseBtnTwo {
+  padding: 10px;
+  background-color: #f4f7fe;
+  color: #707eae;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  margin-left: 20px;
+  transition: all 0.3s;
+}
+
+.mainQuestsCreateBaseContentButtons {
+  margin-top: 60px;
+}
+
+/* .MainFormAddQuestion {
+  border: 1px solid #4318ff;
+  width: 500px;
+  height: 500px;
+} */
+
+.MainFormAddQuestioFormAndFoto {
+  margin-top: 30px;
+}
+
+.MainFormAddQuestioFormAndFotoWithCard {
+  margin-top: 30px;
+  display: flex;
+}
+
+.MainFormAddQuestioSelectAndInput {
+  display: flex;
+}
+
+.MainuploadBoxVariant {
+  display: inline-block;
+}
+
+/* .MainFormAddQuestioVariant {
+  display: flex;
+  position: relative;
+  top: -135px;
+  justify-content: space-around;
+} */
+
+.MainFormAddQuestion {
+  border: 2px solid #7a63f1;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 66px;
+}
+
+.MainFormAddQuestionWithCard {
+  border: 2px solid #7a63f1;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px;
+  height: 607px;
+}
+
+.MainFormAddQuestioSelect {
+  width: 200px;
+  padding: 10px;
+  border: 1px solid #7a63f1;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: block;
+  margin-top: 10px;
+  position: relative;
+  top: -4px;
+  left: -2px;
+}
+
+.MainFormAddQuestioSelectTwo {
+  width: 200px;
+  padding: 10px;
+  border: 1px solid #7a63f1;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: block;
+  margin-top: 10px;
+  position: relative;
+  top: -255px;
+  left: 661px;
+}
+
+.MainFormAddQuestioSelectWithCard {
+  width: 200px;
+  padding: 10px;
+  border: 1px solid #7a63f1;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: block;
+  margin-top: 10px;
+  position: relative;
+  top: -240px;
+  left: 300px;
+  outline: none;
+}
+
+.MainFormAddQuestioInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #7a63f1;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: block;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.MainFormAddQuestioInputWithCard {
+  width: 200px;
+  padding: 10px;
+  border: 1px solid #7a63f1;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: block;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.MainFormAddQuestioLabel {
+  font-size: 16px;
+  color: #2b3674;
+  font-weight: 500;
+}
+
+.MainFormAddQuestioLabelWithCard {
+  font-size: 16px;
+  color: #2b3674;
+  font-weight: 500;
+  margin-left: 20px;
+}
+
+.TextareaWithCard {
+  margin-top: 30px;
+}
+
+.MainFormAddQuestioTextarea {
+  width: 49%;
+  padding: 15px;
+  border: 1px solid #7a63f1;
+  border-radius: 10px;
+  margin-top: 10px;
+  outline: none;
+  display: block;
+  overflow: hidden;
+}
+
+.MainFormAddQuestioTextareaWithCard {
+  width: 241%;
+  padding: 20px;
+  border: 1px solid #7a63f1;
+  border-radius: 10px;
+  margin-top: 10px;
+  outline: none;
+  display: block;
+  overflow: hidden;
+  height: 127px;
+}
+
+.MainFormAddQuestioTextarea::placeholder {
+  font-size: 15px;
+  color: #667085;
+}
+
+.MainFormAddQuestioTextareaWithCard::placeholder {
+  font-size: 15px;
+  color: #667085;
+}
+
+.AddVariant {
+  margin-top: 20px;
+  padding: 15px;
+  width: 200px;
+}
+
+.AddVariantTitle {
+  font-size: 22px;
+  color: #2b3674;
+  font-weight: 400;
+}
+
+.MainFormAddQuestioVariants {
+  position: relative;
+  left: 35px;
+  top: -158px;
+}
+
+.answer-option {
+  width: 481px;
+  margin-top: 20px;
+}
+
+.answerOptionInput {
+  width: 110%;
+}
+
+.answer-option input[type="text"] {
+  flex-grow: 1;
+  padding: 15px;
+  border: 1px solid #7a63f1;
+  border-radius: 5px;
+  outline: none;
+}
+
+button {
+  background-color: #0a0a52;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #27275a;
+}
+
+.MainFormAddQuestioVariantsOnTimeSelect {
+  padding: 10px;
+  border: 1px solid #7a63f1;
+  border-radius: 5px;
+  margin-top: 10px;
+  width: 200px;
+  position: relative;
+  left: 866px;
+  bottom: 403px;
+  display: inline-block;
+}
+
+.MainFormAddQuestioVariantButtons {
+  display: flex;
+
+  margin-top: -109px;
+}
+
+.MainFormAddQuestioVariantButtonsWithCard {
+  margin-top: 40px;
+}
+
+.MainFormAddQuestioVariantButtonOne {
+  padding: 15px;
+  width: 200px;
+}
+
+.MainFormAddQuestioVariantButtonTwo {
+  margin-left: 20px;
+  padding: 15px;
+  width: 200px;
+}
+
+/* -------------------- */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6a11cb, #2575fc);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #4b0082, #00c6ff);
+}
