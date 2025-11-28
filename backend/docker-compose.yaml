@@ -9,7 +9,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - ./data:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     networks:
       - vista-network
     healthcheck:
@@ -48,6 +48,9 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - flask_migrations:/app/migrations
+      - flask_uploads:/app/uploads
     ports:
       - "127.0.0.1:5000:5000"
     networks:
@@ -57,7 +60,13 @@ services:
         condition: service_healthy
 
 volumes:
-  data:
+  mariadb_data:
+    driver: local
+  flask_migrations:
+    driver: local
+  flask_uploads:
+    driver: local
+
 
 networks:
   vista-network:
