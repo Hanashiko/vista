@@ -26,7 +26,7 @@ server {
     server_name myapp.example.com; 
 
     location / {
-        proxy_pass http://localhost:3001;
+        proxy_pass http://localhost:3003;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
