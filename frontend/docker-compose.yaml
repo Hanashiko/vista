@@ -5,7 +5,7 @@ services:
     build: .
     container_name: my-react-app
     ports:
-      - "3003:80"  # Прокидуємо порт 3001 на хості -> 80 в контейнері
+      - "3003:80"
     restart: unless-stopped
     networks:
       - app-network
