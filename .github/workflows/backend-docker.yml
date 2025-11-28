@@ -2,7 +2,7 @@ name: Backend Docker Build
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ master, develop, server-features ]
     paths:
       - 'backend/Dockerfile'
       - 'backend/requirements.txt'
