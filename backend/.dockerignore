@@ -1,0 +1,60 @@
+# git
+.git
+.gitignore
+.gitattributes
+
+# env
+.env
+.env.*
+!.env.exmaple
+
+# python
+__pycache__/
+env/
+venv/
+.venv/
+
+#build
+build
+
+#database
+*.db
+*.sqlite
+*.sqlite3
+data/
+migrations/
+
+#ide
+.vscode/
+.idea/
+*.swp
+*.swo
+
+#docker
+Dockerfile*
+docker-compose*.yml
+docker-compose*.yaml
+.dockerignore
+
+#Documentation
+README.md
+*.md
+docs/
+
+# Tests
+tests/
+test_*.py
+*_test.py
+
+#ci/cd
+.github/
+.gilab-ci.yml
+
+#logs
+*.log
+logs/
+
+#temporary files
+*.tmp
+*.temp
+.cache/
