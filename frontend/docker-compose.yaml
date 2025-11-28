@@ -3,7 +3,7 @@ version: '3.8'
 services:
   react-app:
     build: .
-    container_name: my-react-app
+    container_name: vista-web
     ports:
       - "3003:80"
     restart: unless-stopped
