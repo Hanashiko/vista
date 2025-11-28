@@ -4,13 +4,7 @@
 Для запуску проєкту потрібно увійти по такому маршруту директорії: vista-git > frontend  та запустити сам проєкт прописавши в терміналі команду `npm start`
 
 ### Необхідні бібліотеки для запуску: 
-npm install 
-  react@19.0.0 
-  react-dom@19.0.0 
-  react-router-dom@7.1.5 
-  react-scripts@5.0.1 
-  web-vitals@4.2.4
-
+npm install react@19.0.0 react-dom@19.0.0 react-router-dom@7.1.5 react-scripts@5.0.1 web-vitals@4.2.4
 
 ## Варіант з докером:
 
@@ -51,3 +45,10 @@ server {
 ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/
 ```
 > Вказуємо свій домен
+
+## Варіант запуску:
+
+```bash
+npm install
+npm start
+```
