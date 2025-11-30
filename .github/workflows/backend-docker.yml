@@ -75,7 +75,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: aquasecurity/trivy-action@0.28.0
         with: 
-          image-ref: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha }}
+          image-ref: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha.short }}
           format: sarif
           output: trivy-results.sarif
           severity: CRITICAL,HIGH
@@ -139,7 +139,7 @@ jobs:
 
       - name: Pull and test image
         run: |
-          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha }}"
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha.short }}"
 
           echo "Pulling image: $IMAGE_URL"
           docker pull "$IMAGE_URL"
@@ -194,7 +194,7 @@ jobs:
 
       - name: Image size check
         run: |
-          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha }}"
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha.short }}"
           SIZE=$(docker image inspect "$IMAGE_URL" --format='{{.Size}}')
           SIZE_MB=$((SIZE / 1024 / 1024))
           echo "Image size: ${SIZE_MB}MB"
@@ -214,14 +214,14 @@ jobs:
           cat >> $GITHUB_STEP_SUMMARY << EOF
           ## Docker Image Test Results
 
-          - **Image**: \`${IMAGE_URL}:sha-${{ github.sha }}\`
+          - **Image**: \`${IMAGE_URL}:sha-${{ github.sha.short }}\`
           - **Size**: ${IMAGE_SIZE_MB:-unknown}MB
           - **Status**: Test passed
 
           ### Image Tags
 
           \`\`\`
-          ${IMAGE_URL}:sha-${{github.sha }}
+          ${IMAGE_URL}:sha-${{github.sha.short }}
           ${IMAGE_URL}:latest
           \`\`\`
           EOF
