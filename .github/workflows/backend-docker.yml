@@ -92,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-push
     if: github.event_name != 'pull_request' &&
-      needs.build-and-push.results == 'success'
+      needs.build-and-push.result == 'success'
 
     steps:
       - name: Convert repository name to lowercase
