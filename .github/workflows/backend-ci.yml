@@ -62,7 +62,7 @@ jobs:
         image: mariadb:latest
         env:
           MYSQL_ROOT_PASSWORD: test_root_password
-          MYSQL_DATABASE: tets_quests
+          MYSQL_DATABASE: test_quests
           MYSQL_USER: test_user
           MYSQL_PASSWORD: test_pass
         ports:
