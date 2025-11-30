@@ -1,4 +1,4 @@
-name: Backend Docker Build
+name: Backend Docker Build & Push
 
 on:
   push:
@@ -14,7 +14,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/backend
 
 jobs:
   build-and-push:
@@ -31,6 +30,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Convert repository name to lowercase
+        id: lowercase
+        run: |
+          echo "image_name=$(echo '${{ github.repository }}/backend' | tr '[:upper:]' '[:lower']')" >> $GITHUB_OUTPUT
+
       - name: Log in to Github Container Registry
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
@@ -43,7 +47,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -68,7 +72,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with: 
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          image-ref: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}
           format: 'sarif'
           output: 'trivy-results.sarif'
         continue-on-error: true
@@ -85,21 +89,13 @@ jobs:
     needs: build-and-push
     if: github.event_name != 'pull_request'
 
-    services:
-      mariadb:
-        image: mariadb:latest
-        env:
-          MYSQL_ROOT_PASSWORD: test_root
-          MYSQL_DATABASE: test_db
-          MYSQL_USER: test_user
-          MYSQL_PASSWORD: test_pass
-        options: >-
-          --health-cmd="mariadb-admin ping -h localhost"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
 
     steps:
+      - name: Convert repository name to lowercase
+        id: lowercase
+        run: |
+          echo "image_name=$(echo '${{ github.repository }}/backend' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -107,34 +103,114 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Create Docker network
+        run: docker network create test-network
+
+      - name: Start MariaDB
+        run: |
+          docker run -d \
+            --name test-mariadb \
+            --network test-network \
+            -e MYSQL_ROOT_PASSWORD=test_root \
+            -e MYSQL_DATABASE=test_db \
+            -e MYSQL_USER=test_user \
+            -e MYSQL_PASSWORD=test_pass \
+            --helath-cmd="mariadb-admin ping -h localhost -u test_user -ptest_pass" \
+            --health-interval=10s \
+            --health-timeout=5s \
+            --health-retries=10 \
+            mariadb:latest
+
+      - name: Wait for MariaDB to be healthy
+        run: |
+          echo "Waiting for MariaDB to be ready..."
+          for i in {1..30}; do
+            if docker exec test-mariadb mariadb-admin ping -h localhost -u test_user -ptest_pass &> /dev/null; then
+              echo "MariaDB is ready!"
+              break
+            fi
+            echo "Attempt $i/30: MariaDB not ready yet..."
+            sleep 2
+          done
+
       - name: Pull and test image
         run: |
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker pull ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}
 
           docker run --name test-backend -d \
-            -e DATABASE_URI=mysql+pymysql://test_user:test_pass@mariadb:3306/test_db \
+            --network test-network
+            -e DATABASE_URI=mysql+pymysql://test_user:test_pass@test-mariadb:3306/test_db \
             -e JWT_SECRET_KEY=test-key \ 
             -e ADMIN_SECRET_KEY=test-key \
             -e SECRET_KEY=test-key \
+            -e MYSQL_USER=test_user \
+            -e MYSQL_PASSWORD=test_pass \
+            -e MYSQL_DATABASE=test_db \
             -e DEBUG=False \
-            --network ${{ job.services.mariadb.network }} \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            "$IMAGE_NAME"
 
-          sleep 10
+          echo "Waiting for Flask container to start..."
+          sleep 15
 
-          docker ps | grep test-backend
+          if docker ps | grep test-backend; then
+            echo "Container is running"
+          else
+            echo "Container failed to start"
+            docker logs test-backend
+            exit 1
+          fi
 
-          docker logs test-backend
+          if docker lgos test-backend 2>&1 | grep -i "error.*failed"; then
+            echo "Found critical errors in logs"
+            docker logs test-backend
+            exit 1
+          fi
 
-          docker stop test-backend
-          docker rm test-backend
+          echo "Container started successfully"
+
+      - name: Show container logs
+        if: always()
+        run: |
+          echo "=== Backend logs ==="
+          docker lgos test-backend || true
+          echo ""
+          echo "=== MariaDB logs ==="
+          docker logs test-mariadb || true
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop test-backend test-mariadb || true
+          docker rm test-backend test-mariadb || true
+          docker network rm test-network || true
 
       - name: Image size check
         run: |
-          SIZE=$(docker image inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:${{ github.sha }} --format='{{.Size}}')
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}"
+          SIZE=$(docker image inspect "$IMAGE_URL" --format='{{.Size}}')
           SIZE_MB=$((SIZE / 1024 / 1024))
           echo "Image size: ${SIZE_MB}MB"
 
           if [ $SIZE_MB -gt 1000 ]; then
             echo "Warning: Image is larger than 1GB"
+          else
+            echo "Image size is acceptable"
           fi
+
+          echo "IMAGE_SIZE_MB=${SIZE_MB}" >> $GITHUB_ENV
+
+      - name: Create summary
+        if: always()
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          ## Docker Image Test Results
+
+          - **Image**: \`${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}\`
+          - **Size**: ${IMAGE_SIZE_MB:-unknown}MB
+          - **Status**: Test passed
+
+          \`\`\`
+          ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}
+          ${{env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:latest
+          \`\`\`
+          EOF
