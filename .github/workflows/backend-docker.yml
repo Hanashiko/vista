@@ -1,4 +1,4 @@
-name: Backend Docker Build
+ame: Backend Docker Build
 
 on:
   push:
@@ -117,7 +117,7 @@ jobs:
             -e ADMIN_SECRET_KEY=test-key \
             -e SECRET_KEY=test-key \
             -e DEBUG=False \
-            --network ${{ jon.services.mariadb.network }} \
+            --network ${{ job.services.mariadb.network }} \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
           sleep 10
