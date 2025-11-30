@@ -252,14 +252,15 @@ def get_user_quests():
         .limit(limit)
         .all()
     )
-    image_url = f"{request.host_url}v1/uploads/{quest.image}" if quest.image else None
     quests_data = [
         {
             "id": quest.id,
             "title": quest.title,
             "description": quest.description,
             "time_limit": quest.time_limit,
-            "image": image_url,
+            "image": (
+                f"{request.host_url}v1/uploads/{quest.image}" if quest.image else None
+            ),
         }
         for quest in quests
     ]
