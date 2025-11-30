@@ -137,7 +137,7 @@ jobs:
 
       - name: Pull and test image
         run: |
-          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }})"
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}"
 
           echo "Pulling image: $IMAGE_URL"
           docker pull "$IMAGE_URL"
@@ -212,7 +212,7 @@ jobs:
           cat >> $GITHUB_STEP_SUMMARY << EOF
           ## Docker Image Test Results
 
-          - **Image**: \`${IMAGE_URL}: ${{ github.sha }}\`
+          - **Image**: \`${IMAGE_URL}:${{ github.sha }}\`
           - **Size**: ${IMAGE_SIZE_MB:-unknown}MB
           - **Status**: Test passed
 
