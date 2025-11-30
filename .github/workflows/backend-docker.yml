@@ -21,11 +21,14 @@ jobs:
     permissions:
       contents: read
       packages: write
-      id-token: write
+      security-events: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -53,8 +56,7 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha,prefix={{branch}}-
+            type=sha
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image
@@ -67,7 +69,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
 
       - name: Run Trivy vulnerability scanner
         if: github.event_name != 'pull_request'
@@ -135,7 +137,7 @@ jobs:
 
       - name: Pull and test image
         run: |
-          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha}})"
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }})"
 
           echo "Pulling image: $IMAGE_URL"
           docker pull "$IMAGE_URL"
@@ -144,7 +146,7 @@ jobs:
           docker run --name test-backend -d \
             --network test-network \
             -e DATABASE_URI=mysql+pymysql://test_user:test_pass@test-mariadb:3306/test_db \
-            -e JWT_SECRET_KEY=test-key \ 
+            -e JWT_SECRET_KEY=test-key \
             -e ADMIN_SECRET_KEY=test-key \
             -e SECRET_KEY=test-key \
             -e MYSQL_USER=test_user \
@@ -206,17 +208,18 @@ jobs:
       - name: Create summary
         if: always()
         run: |
-          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}"
+          cat >> $GITHUB_STEP_SUMMARY << EOF
           ## Docker Image Test Results
 
-          - **Image**: \`${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}\`
+          - **Image**: \`${IMAGE_URL}: ${{ github.sha }}\`
           - **Size**: ${IMAGE_SIZE_MB:-unknown}MB
           - **Status**: Test passed
 
           ### Image Tags
 
-          ```
-          ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}
-          ${{env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:latest
-          ```
+          \`\`\`
+          ${IMAGE_URL}: ${{github.sha }}
+          ${IMAGE_URL}:latest
+          \`\`\`
           EOF
