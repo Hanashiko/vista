@@ -10,7 +10,7 @@ on:
     branches: [ master ]
     paths:
       - 'backend/**'
-    workflow_dispatch:
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -33,9 +33,9 @@ jobs:
       - name: Convert repository name to lowercase
         id: lowercase
         run: |
-          echo "image_name=$(echo '${{ github.repository }}/backend' | tr '[:upper:]' '[:lower']')" >> $GITHUB_OUTPUT
+          echo "image_name=$(echo '${{ github.repository }}/backend' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
-      - name: Log in to Github Container Registry
+      - name: Log in to GitHub Container Registry
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
@@ -70,7 +70,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        if: github.event_name != 'pull_request'
+        uses: aquasecurity/trivy-action@0.28.0
         with: 
           image-ref: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}
           format: 'sarif'
@@ -78,8 +79,8 @@ jobs:
         continue-on-error: true
 
       - name: Upload Trivy results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
+        if: github.event_name != 'pull_request'
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: 'trivy-results.sarif'
         continue-on-error: true
@@ -88,7 +89,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-push
     if: github.event_name != 'pull_request'
-
 
     steps:
       - name: Convert repository name to lowercase
@@ -115,7 +115,7 @@ jobs:
             -e MYSQL_DATABASE=test_db \
             -e MYSQL_USER=test_user \
             -e MYSQL_PASSWORD=test_pass \
-            --helath-cmd="mariadb-admin ping -h localhost -u test_user -ptest_pass" \
+            --health-cmd="mariadb-admin ping -h localhost -u test_user -ptest_pass" \
             --health-interval=10s \
             --health-timeout=5s \
             --health-retries=10 \
@@ -135,10 +135,14 @@ jobs:
 
       - name: Pull and test image
         run: |
-          docker pull ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha}})"
 
+          echo "Pulling image: $IMAGE_URL"
+          docker pull "$IMAGE_URL"
+
+          echo "Starting test container..."
           docker run --name test-backend -d \
-            --network test-network
+            --network test-network \
             -e DATABASE_URI=mysql+pymysql://test_user:test_pass@test-mariadb:3306/test_db \
             -e JWT_SECRET_KEY=test-key \ 
             -e ADMIN_SECRET_KEY=test-key \
@@ -147,7 +151,7 @@ jobs:
             -e MYSQL_PASSWORD=test_pass \
             -e MYSQL_DATABASE=test_db \
             -e DEBUG=False \
-            "$IMAGE_NAME"
+            "$IMAGE_URL"
 
           echo "Waiting for Flask container to start..."
           sleep 15
@@ -160,7 +164,7 @@ jobs:
             exit 1
           fi
 
-          if docker lgos test-backend 2>&1 | grep -i "error.*failed"; then
+          if docker logs test-backend 2>&1 | grep -i "error.*failed"; then
             echo "Found critical errors in logs"
             docker logs test-backend
             exit 1
@@ -172,7 +176,7 @@ jobs:
         if: always()
         run: |
           echo "=== Backend logs ==="
-          docker lgos test-backend || true
+          docker logs test-backend || true
           echo ""
           echo "=== MariaDB logs ==="
           docker logs test-mariadb || true
@@ -192,7 +196,7 @@ jobs:
           echo "Image size: ${SIZE_MB}MB"
 
           if [ $SIZE_MB -gt 1000 ]; then
-            echo "Warning: Image is larger than 1GB"
+            echo "Warning: Image is larger than 1GB (${SIZE_MB}MB)"
           else
             echo "Image size is acceptable"
           fi
@@ -202,15 +206,17 @@ jobs:
       - name: Create summary
         if: always()
         run: |
-          cat >> $GITHUB_STEP_SUMMARY << EOF
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
           ## Docker Image Test Results
 
           - **Image**: \`${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}\`
           - **Size**: ${IMAGE_SIZE_MB:-unknown}MB
           - **Status**: Test passed
 
-          \`\`\`
+          ### Image Tags
+
+          ```
           ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:${{ github.sha }}
           ${{env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:latest
-          \`\`\`
+          ```
           EOF
