@@ -1,0 +1,196 @@
+name: Frontend Docker Build & Push
+
+on:
+  push:
+    branches: [ master, develop, react-features ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-docker.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'frontend/**'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Convert repository name to lowercase
+        id: lowercase
+        run: |
+          echo "image_name=$(echo '${{ github.repository }}/frontend' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract short SHA
+        id: sha
+        run: echo "short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+          build-args: |
+            DISABLE_ESLINT_PLUGIN=true
+
+      - name: Run Trivy vulnerability scanner
+        if: github.event_name != 'pull_request'
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH
+        continue-on-error: true
+
+      - name: Upload Trivy results to GitHub Security
+        if: github.event_name != 'pull_request'
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-results.sarif'
+        continue-on-error: true
+
+  test-image:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event_name != 'pull_request' &&
+      needs.build-and-push.result == 'success'
+
+    steps:
+      - name: Extract short SHA
+        id: sha
+        run: echo "short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Convert repository name to lowercase
+        id: lowercase
+        run: |
+          echo "image_name=$(echo '${{ github.repository }}/frontend' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull and test image
+        run: |
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}"
+
+          echo "Pulling image: $IMAGE_URL"
+          docker pull "$IMAGE_URL"
+
+          echo "Starting test container..."
+          docker run --name test-frontend -d -p 8080:80 "$IMAGE_URL"
+
+          echo "Waiting for container to start..."
+          sleep 5
+
+          if docker ps | grep test-frontend; then
+            echo "Container is running"
+          else
+            echo "Container failed to start"
+            docker logs test-frontend
+            exit 1
+          fi
+
+          echo "Testing HTTP response..."
+          if curl -f http://localhost:8080; then
+            echo "HTTP test passed"
+          else
+            echo "HTTP test failed"
+            docker logs test-frontend
+            exit 1
+          fi
+
+          echo "Container test successful"
+
+      - name: Show container logs
+        if: always()
+        run: |
+          echo "=== Frontend container logs ==="
+          docker logs test-frontend || true
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop test-frontend || true
+          docker rm test-frontend || true
+
+      - name: Image size check
+        run: |
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}"
+          SIZE=$(docker image inspect "$IMAGE_URL" --format='{{.Size}}')
+          SIZE_MB=$((SIZE / 1024 / 1024))
+          echo "Image size: ${SIZE_MB}MB"
+
+          if [ $SIZE_MB -gt 500 ]; then
+            echo "Warning: Image is larger than 500MB (${SIZE_MB}MB)"
+          else
+            echo "Image size is acceptable"
+          fi
+
+          echo "IMAGE_SIZE_MB=${SIZE_MB}" >> $GITHUB_ENV
+
+      - name: Create summary
+        if: always()
+        run: |
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}"
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          ## Docker Image Test Results
+
+          - **Image**: \`${IMAGE_URL}:sha-${{ steps.sha.outputs.short }}\`
+          - **Size**: ${IMAGE_SIZE_MB:-unknown}MB
+          - **Status**: Test passed
+
+          ### Image Tags
+
+          \`\`\`
+          ${IMAGE_URL}:sha-${{ steps.sha.outputs.short }}
+          ${IMAGE_URL}:latest
+          \`\`\`
+          EOF

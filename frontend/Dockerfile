@@ -2,12 +2,15 @@ FROM node:18-alpine as build
 
 WORKDIR /app
 
+ARG DISABLE_ESLINT_PLUGIN=true
+
 COPY package*.json ./
 
 RUN npm ci
 
 COPY . .
 
+ENV DISABLE_ESLINT_PLUGIN=${DISABLE_ESLINT_PLUGIN}
 RUN npm run build
 
 FROM nginx:alpine
