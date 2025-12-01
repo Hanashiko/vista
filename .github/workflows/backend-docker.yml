@@ -46,6 +46,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract short SHA
+        id: sha
+        run: echo "short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -74,8 +78,8 @@ jobs:
       - name: Run Trivy vulnerability scanner
         if: github.event_name != 'pull_request'
         uses: aquasecurity/trivy-action@0.28.0
-        with: 
-          image-ref: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha.short }}
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}
           format: sarif
           output: trivy-results.sarif
           severity: CRITICAL,HIGH
@@ -95,6 +99,10 @@ jobs:
       needs.build-and-push.result == 'success'
 
     steps:
+      - name: Extract short SHA
+        id: sha
+        run: echo "short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
       - name: Convert repository name to lowercase
         id: lowercase
         run: |
@@ -139,7 +147,7 @@ jobs:
 
       - name: Pull and test image
         run: |
-          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha.short }}"
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}"
 
           echo "Pulling image: $IMAGE_URL"
           docker pull "$IMAGE_URL"
@@ -194,7 +202,7 @@ jobs:
 
       - name: Image size check
         run: |
-          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha.short }}"
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}"
           SIZE=$(docker image inspect "$IMAGE_URL" --format='{{.Size}}')
           SIZE_MB=$((SIZE / 1024 / 1024))
           echo "Image size: ${SIZE_MB}MB"
@@ -214,14 +222,14 @@ jobs:
           cat >> $GITHUB_STEP_SUMMARY << EOF
           ## Docker Image Test Results
 
-          - **Image**: \`${IMAGE_URL}:sha-${{ github.sha.short }}\`
+          - **Image**: \`${IMAGE_URL}:sha-${{ steps.sha.outputs.short }}\`
           - **Size**: ${IMAGE_SIZE_MB:-unknown}MB
           - **Status**: Test passed
 
           ### Image Tags
 
           \`\`\`
-          ${IMAGE_URL}:sha-${{github.sha.short }}
+          ${IMAGE_URL}:sha-${{ steps.sha.outputs.short }}
           ${IMAGE_URL}:latest
           \`\`\`
           EOF

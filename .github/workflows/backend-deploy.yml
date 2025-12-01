@@ -1,7 +1,7 @@
 name: Deploy Backend
 
 on:
-  push: 
+  push:
     branches: [ master, server-features ]
     paths:
       - 'backend/**'
@@ -16,6 +16,9 @@ on:
           - staging
           - production
 
+env:
+  REGISTRY: ghcr.io
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -26,6 +29,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Extract short SHA
+        id: sha
+        run: echo "short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Convert repository name to lowercase
+        id: lowercase
+        run: |
+          echo "image_name=$(echo '${{ github.repository }}/backend' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -56,28 +68,28 @@ jobs:
       - name: Deploy on server
         id: deploy
         env:
-          DOCKER_IMAGE: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha.short }}
+          DOCKER_IMAGE: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << EOF
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
           set -e
-            
+
           DEPLOY_DIR="/opt/vista/backend"
           BACKUP_DIR="/opt/vista/backups"
-          DOCKER_IMAGE="${DOCKER_IMAGE}"
+          DOCKER_IMAGE="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}"
 
           echo "Creating backup..."
-          mkdir -p \$BACKUP_DIR
-          cd \$BACKUP_DIR
-          make backup || echo "Backup faile continuing..."
+          mkdir -p $BACKUP_DIR
+          cd $BACKUP_DIR
+          make backup || echo "Backup failed, continuing..."
 
-          echo "Deploting new version..."
+          echo "Deploying new version..."
           cd /tmp
-          tar -xzf backend-deploy.tar.gz -C \$DEPLOY_DIR
+          tar -xzf backend-deploy.tar.gz -C $DEPLOY_DIR
 
-          cd \$DEPLOY_DIR
+          cd $DEPLOY_DIR
 
-          echo "Pulling nw Docker image"
-          docker pull "\$DOCKER_IMAGE"
+          echo "Pulling new Docker image: $DOCKER_IMAGE"
+          docker pull "$DOCKER_IMAGE"
 
           echo "Rebuilding containers..."
           docker compose down
@@ -89,7 +101,6 @@ jobs:
 
           if docker compose ps | grep -q "vista-flask.*Up"; then
             echo "Deployment successful!"
-            echo "url=https://${{ secrets.SERVER_HOST }}" >> \$GITHUB_OUTPUT
           else
             echo "Deployment failed!"
             docker compose logs
@@ -99,16 +110,18 @@ jobs:
           rm /tmp/backend-deploy.tar.gz
           EOF
 
+          echo "url=https://${{ secrets.SERVER_HOST }}" >> $GITHUB_OUTPUT
+
       - name: Verify deployment
         run: |
           sleep 10
-          echo "Deployment verfied!"
+          echo "Deployment verified!"
 
       - name: Notify on success
         if: success()
         run: |
           echo "Deployment to ${{ github.event.inputs.environment || 'staging' }} successful!"
-          echo "Image: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha.short }}"
+          echo "Image: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}"
 
       - name: Rollback on failure
         if: failure()
