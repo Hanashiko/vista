@@ -17,9 +17,6 @@ on:
           - staging
           - production
 
-env:
-  REGISTRY: ghcr.io
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -30,15 +27,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Extract short SHA
-        id: sha
-        run: echo "short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
-
-      - name: Convert repository name to lowercase
-        id: lowercase
-        run: |
-          echo "image_name=$(echo '${{ github.repository }}/backend' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -55,11 +43,12 @@ jobs:
           cd backend
           tar -czf ../backend-deploy.tar.gz \
             --exclude='.git' \
-            --exclude='__pyache__' \
+            --exclude='__pycache__' \
             --exclude='*.pyc' \
             --exclude='data' \
-            --exclude='migration' \
+            --exclude='migrations' \
             --exclude='backups' \
+            --exclude='.env' \
             .
 
       - name: Upload to server
@@ -68,20 +57,25 @@ jobs:
 
       - name: Deploy on server
         id: deploy
-        env:
-          DOCKER_IMAGE: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
           set -e
 
           DEPLOY_DIR="/opt/vista/backend"
           BACKUP_DIR="/opt/vista/backups"
-          DOCKER_IMAGE="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}"
+
+          echo "Setting up directories..."
+          sudo mkdir -p $DEPLOY_DIR
+          sudo mkdir -p $BACKUP_DIR
+          sudo chown -R $USER:$USER /opt/vista
 
           echo "Creating backup..."
-          mkdir -p $BACKUP_DIR
-          cd $BACKUP_DIR
-          make backup || echo "Backup failed, continuing..."
+          if [ -d "$DEPLOY_DIR" ] && [ -f "$DEPLOY_DIR/Makefile" ]; then
+            cd $BACKUP_DIR
+            make -C $DEPLOY_DIR backup || echo "Backup failed, continuing..."
+          else
+            echo "First deployment - skipping backup"
+          fi
 
           echo "Deploying new version..."
           cd /tmp
@@ -89,13 +83,18 @@ jobs:
 
           cd $DEPLOY_DIR
 
-          echo "Pulling new Docker image: $DOCKER_IMAGE"
-          docker pull "$DOCKER_IMAGE"
+          echo "Checking environment configuration..."
+          if [ ! -f ".env" ]; then
+            echo "ERROR: .env file not found!"
+            echo "Please create .env file on the server based on .env.example"
+            exit 1
+          fi
 
-          echo "Rebuilding containers..."
-          docker compose down
-          docker compose build --no-cache
-          docker compose up -d
+          echo "Stopping existing containers..."
+          docker compose down || echo "No existing containers to stop"
+
+          echo "Building and starting containers..."
+          docker compose up -d --build
 
           echo "Waiting for services to be healthy..."
           sleep 15
@@ -122,20 +121,31 @@ jobs:
         if: success()
         run: |
           echo "Deployment to ${{ github.event.inputs.environment || 'staging' }} successful!"
-          echo "Image: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}"
+          echo "Commit: ${{ github.sha }}"
 
       - name: Rollback on failure
         if: failure()
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
-          cd /opt/vista/backend
-          echo "Rolling back to previous version..."
+          if [ -d "/opt/vista/backend" ]; then
+            cd /opt/vista/backend
+            echo "Rolling back to previous version..."
 
-          LATEST_BACKUP=$(ls -t backups/*.sql.gz | head -1)
-          if [ -n "$LATEST_BACKUP" ]; then
-            make restore FILE=$LATEST_BACKUP
-            echo "Rollback complete"
+            if [ -d "backups" ] && [ "$(ls -A backups/*.sql.gz 2>/dev/null)" ]; then
+              LATEST_BACKUP=$(ls -t backups/*.sql.gz | head -1)
+              if [ -n "$LATEST_BACKUP" ]; then
+                make restore FILE=$LATEST_BACKUP
+                echo "Rollback complete"
+              else
+                echo "No backup found for rollback"
+              fi
+            else
+              echo "No backups available - this may have been a first deployment"
+              echo "Attempting to restore containers to previous state..."
+              docker compose down
+              docker compose up -d || echo "Could not restore containers"
+            fi
           else
-            echo "No backup found for rollback"
+            echo "Deployment directory does not exist - nothing to rollback"
           fi
           EOF
