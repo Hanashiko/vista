@@ -35,6 +35,12 @@ jobs:
           cd frontend
           npm ci
 
+      - name: Update browserslist database
+        run: |
+          cd frontend
+          npx update-browserslist-db@latest
+        continue-on-error: true
+
       - name: Lint code
         run: |
           cd frontend
@@ -72,6 +78,7 @@ jobs:
           npm run build
         env:
           CI: true
+          DISABLE_ESLINT_PLUGIN: true
 
       - name: Check bundle size
         run: |
