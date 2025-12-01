@@ -2,7 +2,7 @@ name: Frontend Docker Build & Push
 
 on:
   push:
-    branches: [ master, develop, react-features ]
+    branches: [ prod, develop, react-features ]
     paths:
       - 'frontend/**'
       - '.github/workflows/frontend-docker.yml'
