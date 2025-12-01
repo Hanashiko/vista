@@ -11,6 +11,8 @@ import homeIcon from "../assets/homeIcon.png";
 import userIcon from "../assets/userIcon.png";
 import questsIcon from "../assets/questsIcon.png";
 import createQuestIcon from "../assets/createQuestIcon.png";
+import iconForGames from "../assets/IconOfGames.svg";
+import MyGames from "./MyGames";
 
 export default function MainTopbarSection() {
   return (
@@ -42,6 +44,12 @@ export default function MainTopbarSection() {
               Створити квест
             </Link>
           </li>
+          <li className="TopBarNavListItem">
+            <img src={iconForGames} alt="Create Quest" className="icon" />
+            <Link to="/mainPage/myGames" className="TopBarNavListLink">
+              Міні-ігри
+            </Link>
+          </li>
         </ul>
       </nav>
 
@@ -51,6 +59,7 @@ export default function MainTopbarSection() {
         <Route path="/mainPage/myQuests" element={<MyQuests />} />
         <Route path="/mainPage/createQuest" element={<CreateQuest />} />
         <Route path="/enter" element={<EnterPage />} />
+        <Route path="/mainPage/myGames" element={<MyGames />} />
       </Routes>
 
       <p className="TopBarExit">
