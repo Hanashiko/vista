@@ -2,7 +2,7 @@ name: Backend Docker Build & Push
 
 on:
   push:
-    branches: [ master, develop, server-features ]
+    branches: [ prod, develop, server-features ]
     paths:
       - 'backend/**'
       - '.github/workflows/backend-docker.yml'
