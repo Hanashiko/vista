@@ -2,7 +2,7 @@ name: Deploy Backend
 
 on:
   push: 
-    branches: [ master, server-feature ]
+    branches: [ master, server-features ]
     paths:
       - 'backend/**'
   workflow_dispatch:
