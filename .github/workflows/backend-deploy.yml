@@ -4,6 +4,7 @@ on:
   push:
     branches: [ master, server-features ]
     paths:
+      - '.github/workflows/backend-deploy.yml'
       - 'backend/**'
   workflow_dispatch:
     inputs:
