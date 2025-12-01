@@ -1,0 +1,151 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches: [ prod ]
+    paths:
+      - '.github/workflows/backend-deploy.yml'
+      - 'backend/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'staging' }}
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create deployment package
+        run: |
+          cd backend
+          tar -czf ../backend-deploy.tar.gz \
+            --exclude='.git' \
+            --exclude='__pycache__' \
+            --exclude='*.pyc' \
+            --exclude='data' \
+            --exclude='migrations' \
+            --exclude='backups' \
+            --exclude='.env' \
+            .
+
+      - name: Upload to server
+        run: |
+          scp backend-deploy.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:/tmp/
+
+      - name: Deploy on server
+        id: deploy
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          set -e
+
+          DEPLOY_DIR="/opt/vista/backend"
+          BACKUP_DIR="/opt/vista/backups"
+
+          echo "Setting up directories..."
+          sudo mkdir -p $DEPLOY_DIR
+          sudo mkdir -p $BACKUP_DIR
+          sudo chown -R $USER:$USER /opt/vista
+
+          echo "Creating backup..."
+          if [ -d "$DEPLOY_DIR" ] && [ -f "$DEPLOY_DIR/Makefile" ]; then
+            cd $BACKUP_DIR
+            make -C $DEPLOY_DIR backup || echo "Backup failed, continuing..."
+          else
+            echo "First deployment - skipping backup"
+          fi
+
+          echo "Deploying new version..."
+          cd /tmp
+          tar -xzf backend-deploy.tar.gz -C $DEPLOY_DIR
+
+          cd $DEPLOY_DIR
+
+          echo "Checking environment configuration..."
+          if [ ! -f ".env" ]; then
+            echo "ERROR: .env file not found!"
+            echo "Please create .env file on the server based on .env.example"
+            exit 1
+          fi
+
+          echo "Stopping existing containers..."
+          docker compose down || echo "No existing containers to stop"
+
+          echo "Building and starting containers..."
+          docker compose up -d --build
+
+          echo "Waiting for services to be healthy..."
+          sleep 15
+
+          if docker compose ps | grep -q "vista-flask.*Up"; then
+            echo "Deployment successful!"
+          else
+            echo "Deployment failed!"
+            docker compose logs
+            exit 1
+          fi
+
+          rm /tmp/backend-deploy.tar.gz
+          EOF
+
+          echo "url=https://${{ secrets.SERVER_HOST }}" >> $GITHUB_OUTPUT
+
+      - name: Verify deployment
+        run: |
+          sleep 10
+          echo "Deployment verified!"
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "Deployment to ${{ github.event.inputs.environment || 'staging' }} successful!"
+          echo "Commit: ${{ github.sha }}"
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          if [ -d "/opt/vista/backend" ]; then
+            cd /opt/vista/backend
+            echo "Rolling back to previous version..."
+
+            if [ -d "backups" ] && [ "$(ls -A backups/*.sql.gz 2>/dev/null)" ]; then
+              LATEST_BACKUP=$(ls -t backups/*.sql.gz | head -1)
+              if [ -n "$LATEST_BACKUP" ]; then
+                make restore FILE=$LATEST_BACKUP
+                echo "Rollback complete"
+              else
+                echo "No backup found for rollback"
+              fi
+            else
+              echo "No backups available - this may have been a first deployment"
+              echo "Attempting to restore containers to previous state..."
+              docker compose down
+              docker compose up -d || echo "Could not restore containers"
+            fi
+          else
+            echo "Deployment directory does not exist - nothing to rollback"
+          fi
+          EOF

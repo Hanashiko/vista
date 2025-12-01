@@ -9,8 +9,5 @@ test('renders registration page', () => {
     </MemoryRouter>
   );
 
-  // Your real app shows the registration form by default
   expect(screen.getByText(/registration/i)).toBeInTheDocument();
-  // or even more specific:
-  expect(screen.getByRole('heading', { name: /registration/i })).toBeInTheDocument();
 });

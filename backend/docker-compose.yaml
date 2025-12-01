@@ -4,16 +4,16 @@ services:
     image: mariadb:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: r8dD72SqQ
-      MYSQL_DATABASE: quests
-      MYSQL_USER: py
-      MYSQL_PASSWORD: JDsa87D7w
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - ./data:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     networks:
       - vista-network
     healthcheck:
-      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-upy", "-pJDsa87D7w"]
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
       interval: 3s
       timeout: 2s
       retries: 20
@@ -25,15 +25,13 @@ services:
     restart: always
     environment:
       PMA_HOST: mariadb
-      PMA_USER: py
-      PMA_PASSWORD: JDsa87D7w
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "127.0.0.1:888:80"
     depends_on:
       mariadb:
         condition: service_healthy
-
-
     networks:
       - vista-network
 
@@ -42,9 +40,17 @@ services:
     build: .
     restart: always
     environment:
-      DATABASE_URI: mysql+pymysql://py:JDsa87D7w@mariadb:3306/quests
-      JWT_SECRET_KEY: 4301e91c-7b96-47c4-bfb6-d869f3232fba
-      SECRET_KEY: 229164f1-0877-44e8-b285-ad029aace192
+      DATABASE_URI: ${DATABASE_URI}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      SECRET_KEY: ${SECRET_KEY}
+      ADMIN_SECRET_KEY: ${ADMIN_SECRET_KEY}
+      DEBUG: ${DEBUG}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - flask_migrations:/app/migrations
+      - flask_uploads:/app/uploads
     ports:
       - "127.0.0.1:5000:5000"
     networks:
@@ -54,7 +60,13 @@ services:
         condition: service_healthy
 
 volumes:
-  data:
+  mariadb_data:
+    driver: local
+  flask_migrations:
+    driver: local
+  flask_uploads:
+    driver: local
+
 
 networks:
   vista-network:

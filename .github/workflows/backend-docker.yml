@@ -1,0 +1,235 @@
+name: Backend Docker Build & Push
+
+on:
+  push:
+    branches: [ prod, develop, server-features ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-docker.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Convert repository name to lowercase
+        id: lowercase
+        run: |
+          echo "image_name=$(echo '${{ github.repository }}/backend' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract short SHA
+        id: sha
+        run: echo "short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+      - name: Run Trivy vulnerability scanner
+        if: github.event_name != 'pull_request'
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH
+        continue-on-error: true
+
+      - name: Upload Trivy results to GitHub Security
+        if: github.event_name != 'pull_request'
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-results.sarif'
+        continue-on-error: true
+
+  test-image:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event_name != 'pull_request' &&
+      needs.build-and-push.result == 'success'
+
+    steps:
+      - name: Extract short SHA
+        id: sha
+        run: echo "short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Convert repository name to lowercase
+        id: lowercase
+        run: |
+          echo "image_name=$(echo '${{ github.repository }}/backend' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Docker network
+        run: docker network create test-network
+
+      - name: Start MariaDB
+        run: |
+          docker run -d \
+            --name test-mariadb \
+            --network test-network \
+            -e MYSQL_ROOT_PASSWORD=test_root \
+            -e MYSQL_DATABASE=test_db \
+            -e MYSQL_USER=test_user \
+            -e MYSQL_PASSWORD=test_pass \
+            --health-cmd="mariadb-admin ping -h localhost -u test_user -ptest_pass" \
+            --health-interval=10s \
+            --health-timeout=5s \
+            --health-retries=10 \
+            mariadb:latest
+
+      - name: Wait for MariaDB to be healthy
+        run: |
+          echo "Waiting for MariaDB to be ready..."
+          for i in {1..30}; do
+            if docker exec test-mariadb mariadb-admin ping -h localhost -u test_user -ptest_pass &> /dev/null; then
+              echo "MariaDB is ready!"
+              break
+            fi
+            echo "Attempt $i/30: MariaDB not ready yet..."
+            sleep 2
+          done
+
+      - name: Pull and test image
+        run: |
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}"
+
+          echo "Pulling image: $IMAGE_URL"
+          docker pull "$IMAGE_URL"
+
+          echo "Starting test container..."
+          docker run --name test-backend -d \
+            --network test-network \
+            -e DATABASE_URI=mysql+pymysql://test_user:test_pass@test-mariadb:3306/test_db \
+            -e JWT_SECRET_KEY=test-key \
+            -e ADMIN_SECRET_KEY=test-key \
+            -e SECRET_KEY=test-key \
+            -e MYSQL_USER=test_user \
+            -e MYSQL_PASSWORD=test_pass \
+            -e MYSQL_DATABASE=test_db \
+            -e DEBUG=False \
+            "$IMAGE_URL"
+
+          echo "Waiting for Flask container to start..."
+          sleep 15
+
+          if docker ps | grep test-backend; then
+            echo "Container is running"
+          else
+            echo "Container failed to start"
+            docker logs test-backend
+            exit 1
+          fi
+
+          if docker logs test-backend 2>&1 | grep -i "error.*failed"; then
+            echo "Found critical errors in logs"
+            docker logs test-backend
+            exit 1
+          fi
+
+          echo "Container started successfully"
+
+      - name: Show container logs
+        if: always()
+        run: |
+          echo "=== Backend logs ==="
+          docker logs test-backend || true
+          echo ""
+          echo "=== MariaDB logs ==="
+          docker logs test-mariadb || true
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop test-backend test-mariadb || true
+          docker rm test-backend test-mariadb || true
+          docker network rm test-network || true
+
+      - name: Image size check
+        run: |
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ steps.sha.outputs.short }}"
+          SIZE=$(docker image inspect "$IMAGE_URL" --format='{{.Size}}')
+          SIZE_MB=$((SIZE / 1024 / 1024))
+          echo "Image size: ${SIZE_MB}MB"
+
+          if [ $SIZE_MB -gt 1000 ]; then
+            echo "Warning: Image is larger than 1GB (${SIZE_MB}MB)"
+          else
+            echo "Image size is acceptable"
+          fi
+
+          echo "IMAGE_SIZE_MB=${SIZE_MB}" >> $GITHUB_ENV
+
+      - name: Create summary
+        if: always()
+        run: |
+          IMAGE_URL="${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}"
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          ## Docker Image Test Results
+
+          - **Image**: \`${IMAGE_URL}:sha-${{ steps.sha.outputs.short }}\`
+          - **Size**: ${IMAGE_SIZE_MB:-unknown}MB
+          - **Status**: Test passed
+
+          ### Image Tags
+
+          \`\`\`
+          ${IMAGE_URL}:sha-${{ steps.sha.outputs.short }}
+          ${IMAGE_URL}:latest
+          \`\`\`
+          EOF
