@@ -1,0 +1,127 @@
+name: Deploy Backend
+
+on:
+  push: 
+    branches: [ master, server-feature ]
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'staging' }}
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create deployment package
+        run: |
+          cd backend
+          tar -czf ../backend-deploy.tar.gz \
+            --exclude='.git' \
+            --exclude='__pyache__' \
+            --exclude='*.pyc' \
+            --exclude='data' \
+            --exclude='migration' \
+            --exclude='backups' \
+            .
+
+      - name: Upload to server
+        run: |
+          scp backend-deploy.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:/tmp/
+
+      - name: Deploy on server
+        id: deploy
+        env:
+          DOCKER_IMAGE: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha.short }}
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << EOF
+          set -e
+            
+          DEPLOY_DIR="/opt/vista/backend"
+          BACKUP_DIR="/opt/vista/backups"
+          DOCKER_IMAGE="${DOCKER_IMAGE}"
+
+          echo "Creating backup..."
+          mkdir -p \$BACKUP_DIR
+          cd \$BACKUP_DIR
+          make backup || echo "Backup faile continuing..."
+
+          echo "Deploting new version..."
+          cd /tmp
+          tar -xzf backend-deploy.tar.gz -C \$DEPLOY_DIR
+
+          cd \$DEPLOY_DIR
+
+          echo "Pulling nw Docker image"
+          docker pull "\$DOCKER_IMAGE"
+
+          echo "Rebuilding containers..."
+          docker compose down
+          docker compose build --no-cache
+          docker compose up -d
+
+          echo "Waiting for services to be healthy..."
+          sleep 15
+
+          if docker compose ps | grep -q "vista-flask.*Up"; then
+            echo "Deployment successful!"
+            echo "url=https://${{ secrets.SERVER_HOST }}" >> \$GITHUB_OUTPUT
+          else
+            echo "Deployment failed!"
+            docker compose logs
+            exit 1
+          fi
+
+          rm /tmp/backend-deploy.tar.gz
+          EOF
+
+      - name: Verify deployment
+        run: |
+          sleep 10
+          echo "Deployment verfied!"
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "Deployment to ${{ github.event.inputs.environment || 'staging' }} successful!"
+          echo "Image: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.image_name }}:sha-${{ github.sha.short }}"
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          cd /opt/vista/backend
+          echo "Rolling back to previous version..."
+
+          LATEST_BACKUP=$(ls -t backups/*.sql.gz | head -1)
+          if [ -n "$LATEST_BACKUP" ]; then
+            make restore FILE=$LATEST_BACKUP
+            echo "Rollback complete"
+          else
+            echo "No backup found for rollback"
+          fi
+          EOF
