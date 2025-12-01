@@ -13,13 +13,15 @@ wait_for_database() {
 		if python3 << 'PYEOF'
 import pymysql
 import sys
+import os
+
 try:
     conn = pymysql.connect(
         host='mariadb',
         port=3306,
-        user='py',
-        password='JDsa87D7w',
-        database='quests',
+        user=os.environ['MYSQL_USER'],
+        password=os.environ['MYSQL_PASSWORD'],
+        database=os.environ['MYSQL_DATABASE'],
         connect_timeout=3
     )
     conn.close()
