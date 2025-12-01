@@ -1,0 +1,149 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [ master, react-features ]
+    paths:
+      - '.github/workflows/frontend-deploy.yml'
+      - 'frontend/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'staging' }}
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create deployment package
+        run: |
+          cd frontend
+          tar -czf ../frontend-deploy.tar.gz \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='build' \
+            --exclude='coverage' \
+            --exclude='.env' \
+            --exclude='.env.local' \
+            .
+
+      - name: Upload to server
+        run: |
+          scp frontend-deploy.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:/tmp/
+
+      - name: Deploy on server
+        id: deploy
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          set -e
+
+          DEPLOY_DIR="/opt/vista/frontend"
+          BACKUP_DIR="/opt/vista/backups"
+
+          echo "Setting up directories..."
+          sudo mkdir -p $DEPLOY_DIR
+          sudo mkdir -p $BACKUP_DIR
+          sudo chown -R $USER:$USER /opt/vista
+
+          echo "Creating backup..."
+          if [ -d "$DEPLOY_DIR/build" ]; then
+            BACKUP_FILE="$BACKUP_DIR/frontend-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
+            tar -czf "$BACKUP_FILE" -C "$DEPLOY_DIR" . || echo "Backup failed, continuing..."
+            echo "Backup created: $BACKUP_FILE"
+          else
+            echo "First deployment - skipping backup"
+          fi
+
+          echo "Deploying new version..."
+          cd /tmp
+          tar -xzf frontend-deploy.tar.gz -C $DEPLOY_DIR
+
+          cd $DEPLOY_DIR
+
+          echo "Stopping existing containers..."
+          docker compose down || echo "No existing containers to stop"
+
+          echo "Building and starting containers..."
+          docker compose up -d --build
+
+          echo "Waiting for services to be healthy..."
+          sleep 10
+
+          if docker compose ps | grep -q "react-app.*Up"; then
+            echo "Deployment successful!"
+          else
+            echo "Deployment failed!"
+            docker compose logs
+            exit 1
+          fi
+
+          rm /tmp/frontend-deploy.tar.gz
+          EOF
+
+          echo "url=https://${{ secrets.SERVER_HOST }}" >> $GITHUB_OUTPUT
+
+      - name: Verify deployment
+        run: |
+          sleep 5
+          echo "Deployment verified!"
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "Deployment to ${{ github.event.inputs.environment || 'staging' }} successful!"
+          echo "Commit: ${{ github.sha }}"
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          if [ -d "/opt/vista/frontend" ]; then
+            cd /opt/vista/frontend
+            echo "Rolling back to previous version..."
+
+            BACKUP_DIR="/opt/vista/backups"
+            if [ -d "$BACKUP_DIR" ] && [ "$(ls -A $BACKUP_DIR/frontend-backup-*.tar.gz 2>/dev/null)" ]; then
+              LATEST_BACKUP=$(ls -t $BACKUP_DIR/frontend-backup-*.tar.gz | head -1)
+              if [ -n "$LATEST_BACKUP" ]; then
+                echo "Restoring from: $LATEST_BACKUP"
+                rm -rf /opt/vista/frontend/*
+                tar -xzf "$LATEST_BACKUP" -C /opt/vista/frontend
+                docker compose down
+                docker compose up -d --build
+                echo "Rollback complete"
+              else
+                echo "No backup found for rollback"
+              fi
+            else
+              echo "No backups available - this may have been a first deployment"
+              echo "Attempting to restore containers to previous state..."
+              docker compose down
+              docker compose up -d || echo "Could not restore containers"
+            fi
+          else
+            echo "Deployment directory does not exist - nothing to rollback"
+          fi
+          EOF
