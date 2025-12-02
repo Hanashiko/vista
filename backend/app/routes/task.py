@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from ..extensions import db, logger
-from ..models import MapInteraction, Ques, Task, TaskOption
+from ..models import MapInteraction, Quest, Task, TaskOption
 
 task_bp = Blueprint("task", __name__)
 
