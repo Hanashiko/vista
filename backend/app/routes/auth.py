@@ -1,16 +1,13 @@
 import os
-from flask import Blueprint, request, jsonify
-from flask_login import login_user
-from flask_jwt_extended import (
-    create_access_token,
-    jwt_required,
-    get_jwt,
-    get_jwt_identity,
-    create_refresh_token,
-)
+
 from flasgger.utils import swag_from
-from ..extensions import db, bcrypt, logger
-from ..models import User, RevokedToken
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import (create_access_token, create_refresh_token,
+    get_jwt, get_jwt_identity, jwt_required)
+from flask_login import login_user
+
+from ..extensions import bcrypt, db, logger
+from ..models import RevokedToken, User
 
 auth_bp = Blueprint("auth", __name__)
 

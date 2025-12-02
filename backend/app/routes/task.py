@@ -1,9 +1,11 @@
 import os
 import uuid
+
 from flask import Blueprint, request, jsonify, current_app
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
+
 from ..extensions import db, logger
-from ..models import Task, TaskOption, MapInteraction, Quest
+from ..models import MapInteraction, Ques, Task, TaskOption
 
 task_bp = Blueprint("task", __name__)
 

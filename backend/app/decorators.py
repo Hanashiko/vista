@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, abort
+from flask import abort, request
 from app.config import Config
 
 

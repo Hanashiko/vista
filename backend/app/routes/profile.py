@@ -1,8 +1,10 @@
 import os
 import uuid
-from flask import Blueprint, request, jsonify, current_app, send_from_directory
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from ..extensions import db, logger, bcrypt
+
+from flask import Blueprint, current_app, jsonify, request, send_from_directory
+from flask_jwt_extended import get_jwt_identity, jwt_required
+
+from ..extensions import bcrypt, db, logger
 from ..models import User
 
 profile_bp = Blueprint("profile", __name__)

@@ -1,4 +1,5 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify, request
+
 from ..extensions import db, logger
 from ..models import Rating, User
 

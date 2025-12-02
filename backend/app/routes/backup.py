@@ -1,9 +1,11 @@
 import os
 import zipfile
 from datetime import datetime
-from flask import Blueprint, request, send_file, jsonify
-from app.decorators import requires_secret_key
+
+from flask import Blueprint, jsonify, request, send_file
+
 from app.config import Config
+from app.decorators import requires_secret_key
 
 backup_bp = Blueprint("backup", __name__)
 
