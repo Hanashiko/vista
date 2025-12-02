@@ -1,12 +1,10 @@
 import logging
-from logging.handlers import RotatingFileHandler
 
 from flask import Flask
 from flask_cors import CORS
 
 from .config import Config
 from .extensions import bcrypt, db, jwt, login_manager, migrate, swagger
-from .models import Quest, Rating, RevokedToken, Task, User, UserQuest
 from .routes import (auth_bp, backup_bp, profile_bp, progress_bp, quest_bp,
     rating_bp, stats_bp, task_bp, user_bp)
 
