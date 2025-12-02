@@ -12,15 +12,6 @@ from ..models import MapInteraction, Quest, Task, TaskOption
 quest_bp = Blueprint("quest", __name__)
 
 
-def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in {
-        "png",
-        "jpg",
-        "jpeg",
-        "gif",
-    }
-
-
 @quest_bp.route("/v1/quests", methods=["POST"])
 @jwt_required()
 def create_quest():
@@ -379,3 +370,4 @@ def upload_quest_image(quest_id):
             200,
         )
     return jsonify({"message": "Invalid file type"}), 400
+
